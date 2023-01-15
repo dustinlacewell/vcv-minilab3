@@ -1,0 +1,47 @@
+{
+  "slug": "Minilab3",
+  "name": "Minilab3",
+  "version": "2.0.0",
+  "license": "MIT",
+  "brand": "ldlework",
+  "author": "ldlework",
+  "authorEmail": "",
+  "authorUrl": "",
+  "pluginUrl": "",
+  "manualUrl": "",
+  "sourceUrl": "",
+  "donateUrl": "",
+  "changelogUrl": "",
+  "modules": [
+    {
+      "slug": "SimpleSlew",
+      "name": "SimpleSlew",
+      "description": "",
+      "tags": []
+    },
+    {
+      "slug": "MidiLog",
+      "name": "MidiLog",
+      "description": "",
+      "tags": []
+    },
+    {
+      "slug": "MidiLogExt",
+      "name": "MidiLogExt",
+      "description": "",
+      "tags": []
+    },
+    {
+      "slug": "MiniLab3",
+      "name": "MiniLab3",
+      "description": "",
+      "tags": []
+    },
+    {
+      "slug": "G8Pad",
+      "name": "G8Pad",
+      "description": "",
+      "tags": []
+    }
+  ]
+}
