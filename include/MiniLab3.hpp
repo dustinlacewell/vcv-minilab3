@@ -1,9 +1,11 @@
 #pragma once
 
-#include "plugin.hpp"
-#include "slew/slew.hpp"
-#include "utils/Relay.cpp"
-#include "utils/EventedInputQueue.cpp"
+#include <rack.hpp>
+#include "utils/Relay.hpp"
+#include "utils/EventedInputQueue.hpp"
+#include "slew/SlewVoltage.hpp"
+#include "slew/SlewLimitQuantity.hpp"
+#include "slew/VoltageMode.hpp"
 
 // use the rack::dsp namespace for convenience
 using namespace rack::dsp;

@@ -1,5 +1,6 @@
-#include "plugin.hpp"
+#include <rack.hpp>
 
+#include "plugin.hpp"
 #include "MiniLab3.hpp"
 #include "menu/MenuSlider.cpp"
 #include "ui/OutputPort.cpp"

@@ -1,4 +1,8 @@
+#include <rack.hpp>
+
 #include "plugin.hpp"
+
+using namespace rack;
 
 
 struct SimpleSlew : Module {

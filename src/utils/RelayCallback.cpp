@@ -1,28 +1,26 @@
 #pragma once
 
-#include "../plugin.hpp"
-#include "Relay.cpp"
+#include <rack.hpp>
+#include <utils/RelayCallback.hpp>
+#include <utils/Relay.hpp>
+
 
 template <typename T>
-struct RelayCallback {
+RelayCallback<T>::RelayCallback(std::function<void(T)> callback) {
+    this->callback = callback;
+}
 
-    int handle = -1;
 
-    std::function<void(T)> callback;
+template <typename T>
+void RelayCallback<T>::registerCallback(Relay<T>* relay) {
+    this->relay = relay;
+    this->handle = relay->registerCallback(callback);
+}
 
-    Relay<T>* relay;
-
-    void registerCallback(Relay<T>* relay) {
-        this->relay = relay;
-        this->handle = relay->registerCallback(callback);
+template <typename T>
+void RelayCallback<T>::unregisterCallback() {
+    if (handle >= 0 && relay) {
+        this->relay->unregisterCallback(handle);
+        this->handle = -1;
     }
-
-    void unregisterCallback() {
-        if (handle >= 0 && relay) {
-            this->relay->unregisterCallback(handle);
-            this->handle = -1;
-        }
-    }
-
-    RelayCallback(std::function<void(T)> callback) : callback(callback) {}
-};
+}

@@ -1,5 +1,6 @@
 #include <osdialog.h>
 #include <iomanip>
+#include <rack.hpp>
 
 #include "plugin.hpp"
 #include "MiniLab3.hpp"

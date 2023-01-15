@@ -1,41 +1,36 @@
 #pragma once
 
-#include "../plugin.hpp"
-#include "Relay.cpp"
+#include <rack.hpp>
+#include <utils/ExpanderRelay.hpp>
+#include <utils/Relay.hpp>
+
+using namespace rack;
+
 
 template <typename T>
-struct ExpanderRelay {
+ExpanderRelay<T>::ExpanderRelay(Model* model, bool side) {
+    this->model = model;
+    this->side = side;
+}
 
-    Relay<T> connectedRelay;
-    Relay<T> disconnectedRelay;
-
-    Model* model;
-
-    bool side = false;
-
-    ExpanderRelay(Model* model, bool side) {
-        this->model = model;
-        this->side = side;
+template <typename T>
+void ExpanderRelay<T>::onExpanderChange(const Module::ExpanderChangeEvent& e, Module::Expander leftExpander, Module::Expander rightExpander) {
+    if (e.side != side) {
+        return;
     }
-
-    void onExpanderChange(const Module::ExpanderChangeEvent& e, Module::Expander leftExpander, Module::Expander rightExpander) {
-        if (e.side != side) {
-            return;
+    if (e.side) {
+        if (rightExpander.module && rightExpander.module->model == model) {
+            connectedRelay.processMessage((T)(rightExpander.module));
         }
-        if (e.side) {
-            if (rightExpander.module && rightExpander.module->model == model) {
-                connectedRelay.processMessage((T)(rightExpander.module));
-            }
-            else {
-                disconnectedRelay.processMessage((T)(rightExpander.module));
-            }
-        } else {
-            if (leftExpander.module && leftExpander.module->model == model) {
-                connectedRelay.processMessage((T)(leftExpander.module));
-            }
-            else {
-                disconnectedRelay.processMessage((T)(leftExpander.module));
-            }
+        else {
+            disconnectedRelay.processMessage((T)(rightExpander.module));
+        }
+    } else {
+        if (leftExpander.module && leftExpander.module->model == model) {
+            connectedRelay.processMessage((T)(leftExpander.module));
+        }
+        else {
+            disconnectedRelay.processMessage((T)(leftExpander.module));
         }
     }
 };

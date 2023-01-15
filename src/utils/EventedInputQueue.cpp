@@ -1,13 +1,12 @@
-#include "../plugin.hpp"
+#include <rack.hpp>
 
-#include "Relay.cpp"
+#include <utils/EventedInputQueue.hpp>
+#include <utils/Relay.hpp>
 
-struct EventedInputQueue : midi::InputQueue {
+using namespace rack;
 
-    Relay<bool> deviceStatusRelay;
 
-    void setDeviceId(int deviceId) override {
-        InputQueue::setDeviceId(deviceId);
-        deviceStatusRelay.processMessage(deviceId >= 0);
-    }
-};
+void EventedInputQueue::setDeviceId(int deviceId) {
+    InputQueue::setDeviceId(deviceId);
+    deviceStatusRelay.processMessage(deviceId >= 0);
+}

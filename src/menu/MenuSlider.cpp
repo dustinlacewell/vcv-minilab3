@@ -1,9 +1,9 @@
-#include "../plugin.hpp"
+#include <rack.hpp>
+
+#include <menu/MenuSlider.hpp>
 
 
-struct MenuSlider : ui::Slider {
-	MenuSlider(Quantity* q) {
-		box.size.x = 220.0f;
-		quantity = q;
-	}
-};
+MenuSlider::MenuSlider(Quantity* q) {
+	box.size.x = 220.0f;
+	quantity = q;
+}

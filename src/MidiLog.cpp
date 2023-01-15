@@ -1,7 +1,10 @@
-#include "plugin.hpp"
-#include "ui/LedText.cpp"
 #include <osdialog.h>
 #include <iomanip>
+#include <rack.hpp>
+
+#include "plugin.hpp"
+#include "ui/LedText.cpp"
+
 
 const int BUFFERSIZE = 800;
 
