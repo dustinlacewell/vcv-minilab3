@@ -5,7 +5,7 @@
 #include "utils/EventedInputQueue.hpp"
 #include "slew/SlewVoltage.hpp"
 #include "slew/SlewLimitQuantity.hpp"
-#include "slew/VoltageMode.hpp"
+#include "utils/VoltageMode.hpp"
 
 // use the rack::dsp namespace for convenience
 using namespace rack::dsp;

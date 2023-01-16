@@ -2,8 +2,9 @@
 
 #include <rack.hpp>
 
+#include <utils/VoltageMode.hpp>
+
 #include "SlewLimitQuantity.hpp"
-#include "VoltageMode.hpp"
 
 using namespace rack::dsp;
 

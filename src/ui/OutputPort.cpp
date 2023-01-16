@@ -2,50 +2,26 @@
 #include <rack.hpp>
 
 #include <MiniLab3.hpp>
+#include <G8Pad.hpp>
 #include <ui/OutputPort.hpp>
+#include <slew/SlewVoltage.hpp>
 
 using namespace rack;
 
 
 OutputPort::OutputPort() {
-    setSvg(Svg::load(asset::system("res/ComponentLibrary/CL1362.svg")));
+    setSvg(Svg::load(asset::system("res/ComponentLibrary/PJ301M.svg")));
+    voltage = nullptr;
+    slewLimitQuantity = nullptr;
 }
-    
 
 void OutputPort::appendContextMenu(Menu *menu)
 {
     menu->addChild(new MenuSeparator());
-    menu->addChild(new MenuSeparator());
-    // menu->addChild(createCheckMenuItem(
-    //     "0V:1V", "",
-    //     [=]() {
-    //         return module->mod->getVoltageMode() == VoltageMode::UNIPOLAR_1;
-    //     },
-    //     [=]() {
-    //         return module->mod->setVoltageMode(VoltageMode::UNIPOLAR_1);
-    //     }));
-    // menu->addChild(createCheckMenuItem(
-    //     "0V:10V", "",
-    //     [=]() {
-    //         return module->mod->getVoltageMode() == VoltageMode::UNIPOLAR_10;
-    //     },
-    //     [=]() {
-    //         return module->mod->setVoltageMode(VoltageMode::UNIPOLAR_10);
-    //     }));
-    // menu->addChild(createCheckMenuItem(
-    //     "-1V:1V", "",
-    //     [=]() {
-    //         return module->mod->getVoltageMode() == VoltageMode::BIPOLAR_1;
-    //     },
-    //     [=]() {
-    //         return module->mod->setVoltageMode(VoltageMode::BIPOLAR_1);
-    //     }));
-    // menu->addChild(createCheckMenuItem(
-    //     "-10V:10V", "",
-    //     [=]() {
-    //         return module->mod->getVoltageMode() == VoltageMode::BIPOLAR_10;
-    //     },
-    //     [=]() {
-    //         return module->mod->setVoltageMode(VoltageMode::BIPOLAR_10);
-    //     }));
+    if (voltage) {        
+        menu->addChild(createIndexPtrSubmenuItem("Voltage mode", {"0V:1V", "0V:10V", "-1V:1V", "-10V:10V"}, &voltage->voltageMode));    
+    }
+    if (slewLimitQuantity) {
+        menu->addChild(new MenuSlider(slewLimitQuantity));
+    }
 };

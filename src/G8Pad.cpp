@@ -4,6 +4,7 @@
 #include <G8Pad.hpp>
 #include <MiniLab3.hpp>
 #include <ui/LedText.hpp>
+#include <ui/OutputPort.hpp>
 #include <utils/Relay.hpp>
 #include <utils/RelayCallback.hpp>
 #include <menu/MenuSlider.hpp>
@@ -34,91 +35,91 @@ G8Pad::G8Pad() {
 
 json_t* G8Pad::dataToJson() {
 	json_t* rootJ = json_object();
-	json_object_set_new(rootJ, "bendLimit", bendLimit->toJson());
-	json_object_set_new(rootJ, "bend", bend->toJson());
+	// json_object_set_new(rootJ, "bendLimit", bendLimit->toJson());
+	// json_object_set_new(rootJ, "bend", bend->toJson());
 
-	json_object_set_new(rootJ, "modLimit", modLimit->toJson());
-	json_object_set_new(rootJ, "mod", mod->toJson());
+	// json_object_set_new(rootJ, "modLimit", modLimit->toJson());
+	// json_object_set_new(rootJ, "mod", mod->toJson());
 
-	json_object_set_new(rootJ, "touchLimit", touchLimit->toJson());
-	json_object_set_new(rootJ, "touch", touchLimit->toJson());
+	// json_object_set_new(rootJ, "touchLimit", touchLimit->toJson());
+	// json_object_set_new(rootJ, "touch", touchLimit->toJson());
 
 
-	// knob strength: int
-	json_object_set_new(rootJ, "knobStrength", json_integer(knobStrength));
-	// knob voltage mode
-	json_object_set_new(rootJ, "knobVoltageMode", json_integer(knobVoltageMode));
-	// knob slew limit
-	json_object_set_new(rootJ, "knobLimit", knobLimit->toJson());
-	// 8 SlewVoltage->toJson objects from knobs as json array
-	json_t* knobsJ = json_array();
-	for (int i = 0; i < 8; i++) {
-		json_array_append_new(knobsJ, knobs[i]->toJson());
-	}
-	json_object_set_new(rootJ, "knobVoltages", knobsJ);
+	// // knob strength: int
+	// json_object_set_new(rootJ, "knobStrength", json_integer(knobStrength));
+	// // knob voltage mode
+	// json_object_set_new(rootJ, "knobVoltageMode", json_integer(knobVoltageMode));
+	// // knob slew limit
+	// json_object_set_new(rootJ, "knobLimit", knobLimit->toJson());
+	// // 8 SlewVoltage->toJson objects from knobs as json array
+	// json_t* knobsJ = json_array();
+	// for (int i = 0; i < 8; i++) {
+	// 	json_array_append_new(knobsJ, knobs[i]->toJson());
+	// }
+	// json_object_set_new(rootJ, "knobVoltages", knobsJ);
 
 	return rootJ;
 }
 
 void G8Pad::dataFromJson(json_t* rootJ) {
-	// bend slew limit
-	json_t* bendLimitJ = json_object_get(rootJ, "bendLimit");
-	if (bendLimitJ) {
-		bendLimit->fromJson(bendLimitJ);
-	}
-	// bend voltage
-	json_t* bendJ = json_object_get(rootJ, "bend");
-	if (bendJ) {
-		bend->fromJson(bendJ, bendLimit);
-	}
+	// // bend slew limit
+	// json_t* bendLimitJ = json_object_get(rootJ, "bendLimit");
+	// if (bendLimitJ) {
+	// 	bendLimit->fromJson(bendLimitJ);
+	// }
+	// // bend voltage
+	// json_t* bendJ = json_object_get(rootJ, "bend");
+	// if (bendJ) {
+	// 	bend->fromJson(bendJ, bendLimit);
+	// }
 
-	// mod slew limit
-	json_t* modLimitJ = json_object_get(rootJ, "modLimit");
-	if (modLimitJ) {
-		modLimit->fromJson(modLimitJ);
-	}
-	// mod voltage
-	json_t* modJ = json_object_get(rootJ, "mod");
-	if (modJ) {
-		mod->fromJson(modJ, modLimit);
-	}
+	// // mod slew limit
+	// json_t* modLimitJ = json_object_get(rootJ, "modLimit");
+	// if (modLimitJ) {
+	// 	modLimit->fromJson(modLimitJ);
+	// }
+	// // mod voltage
+	// json_t* modJ = json_object_get(rootJ, "mod");
+	// if (modJ) {
+	// 	mod->fromJson(modJ, modLimit);
+	// }
 
-	// touch slew limit
-	json_t* touchLimitJ = json_object_get(rootJ, "touchLimit");
-	if (touchLimitJ) {
-		touchLimit->fromJson(touchLimitJ);
-	}
-	// touch voltage
-	json_t* touchJ = json_object_get(rootJ, "touch");
-	if (touchJ) {
-		touch->fromJson(touchJ, touchLimit);
-	}
+	// // touch slew limit
+	// json_t* touchLimitJ = json_object_get(rootJ, "touchLimit");
+	// if (touchLimitJ) {
+	// 	touchLimit->fromJson(touchLimitJ);
+	// }
+	// // touch voltage
+	// json_t* touchJ = json_object_get(rootJ, "touch");
+	// if (touchJ) {
+	// 	touch->fromJson(touchJ, touchLimit);
+	// }
 
-	// knob strength: int
-	json_t* knobStrengthJ = json_object_get(rootJ, "knobStrength");
-	if (knobStrengthJ) {
-		knobStrength = json_integer_value(knobStrengthJ);
-	}
-	// knob voltage mode
-	json_t* knobVoltageModeJ = json_object_get(rootJ, "knobVoltageMode");
-	if (knobVoltageModeJ) {
-		knobVoltageMode = (VoltageMode)json_integer_value(knobVoltageModeJ);
-	}
-	// knob slew limit
-	json_t* knobLimitJ = json_object_get(rootJ, "knobLimit");
-	if (knobLimitJ) {
-		knobLimit->fromJson(knobLimitJ);
-	}
-	// 8 SlewVoltage->fromJson objects from knobs as json array
-	json_t* knobsJ = json_object_get(rootJ, "knobVoltages");
-	if (knobsJ) {
-		for (int i = 0; i < 8; i++) {
-			json_t* knobJ = json_array_get(knobsJ, i);
-			if (knobJ) {
-				knobs[i]->fromJson(knobJ, knobLimit);
-			}
-		}
-	}
+	// // knob strength: int
+	// json_t* knobStrengthJ = json_object_get(rootJ, "knobStrength");
+	// if (knobStrengthJ) {
+	// 	knobStrength = json_integer_value(knobStrengthJ);
+	// }
+	// // knob voltage mode
+	// json_t* knobVoltageModeJ = json_object_get(rootJ, "knobVoltageMode");
+	// if (knobVoltageModeJ) {
+	// 	knobVoltageMode = (VoltageMode)json_integer_value(knobVoltageModeJ);
+	// }
+	// // knob slew limit
+	// json_t* knobLimitJ = json_object_get(rootJ, "knobLimit");
+	// if (knobLimitJ) {
+	// 	knobLimit->fromJson(knobLimitJ);
+	// }
+	// // 8 SlewVoltage->fromJson objects from knobs as json array
+	// json_t* knobsJ = json_object_get(rootJ, "knobVoltages");
+	// if (knobsJ) {
+	// 	for (int i = 0; i < 8; i++) {
+	// 		json_t* knobJ = json_array_get(knobsJ, i);
+	// 		if (knobJ) {
+	// 			knobs[i]->fromJson(knobJ, knobLimit);
+	// 		}
+	// 	}
+	// }
 }
 
 void G8Pad::processExpander() {
@@ -336,11 +337,19 @@ struct G8PadWidget : ModuleWidget {
 		addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 		addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
+
+		OutputPort* modPort = createOutputCentered<OutputPort>(mm2px(Vec(20.72, 58.734)), module, G8Pad::MOD_OUTPUT);
+		addOutput(modPort);
+		if (module) {
+			modPort->voltage = module->mod;
+			modPort->slewLimitQuantity = module->modLimit;
+		}
+
 		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(15.189, 24.457)), module, G8Pad::GATE_OUTPUT));
 		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(9.803, 41.619)), module, G8Pad::TOUCH_OUTPUT));
 		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(20.677, 41.619)), module, G8Pad::VELOCITY_OUTPUT));
 		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(9.847, 58.734)), module, G8Pad::BEND_OUTPUT));
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(20.72, 58.734)), module, G8Pad::MOD_OUTPUT));
+		
 		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(9.847, 78.694)), module, G8Pad::KNOB1_OUTPUT));
 		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(20.72, 78.694)), module, G8Pad::KNOB2_OUTPUT));
 		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(9.76, 91.276)), module, G8Pad::KNOB3_OUTPUT));

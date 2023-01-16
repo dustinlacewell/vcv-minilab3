@@ -4,7 +4,7 @@
 
 #include <slew/SlewVoltage.hpp>
 #include <slew/SlewLimitQuantity.hpp>
-#include <slew/VoltageMode.hpp>
+#include <utils/VoltageMode.hpp>
 
 using namespace rack::dsp;
 
