@@ -70,6 +70,8 @@ json_t* SlewVoltage::toJson() {
     json_object_set_new(rootJ, "max", json_real(max));
     json_object_set_new(rootJ, "voltageMode", json_integer(voltageMode));
     json_object_set_new(rootJ, "slewLimiterOut", json_real(slewLimiter.out));
+
+    return rootJ;
 }
 
 void SlewVoltage::fromJson(json_t* rootJ, SlewLimitQuantity* slewLimitQuantity) {

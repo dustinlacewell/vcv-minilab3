@@ -13,9 +13,9 @@ LDFLAGS +=
 
 # Add .cpp files to the build
 SOURCES += $(wildcard src/*.cpp)
-SOURCES += $(wildcard src/ui/*.cpp)
 SOURCES += $(wildcard src/menu/*.cpp)
 SOURCES += $(wildcard src/slew/*.cpp)
+SOURCES += $(wildcard src/ui/*.cpp)
 SOURCES += $(wildcard src/utils/*.cpp)
 
 # Add files to the ZIP package when running `make dist`

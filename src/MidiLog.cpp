@@ -3,7 +3,7 @@
 #include <rack.hpp>
 
 #include "plugin.hpp"
-#include "ui/LedText.cpp"
+#include <ui/LedText.hpp>
 
 
 const int BUFFERSIZE = 800;

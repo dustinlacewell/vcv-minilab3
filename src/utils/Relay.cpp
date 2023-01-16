@@ -1,6 +1,7 @@
 #pragma once
 
 #include <rack.hpp>
+#include <MiniLab3.hpp>
 #include <utils/Relay.hpp>
 
 
@@ -24,3 +25,7 @@ void Relay<T>::processMessage(T msg) {
         it.second(msg);
     }
 }
+
+template class Relay<rack::midi::Message&>;
+template class Relay<bool>;
+template class Relay<MiniLab3*>;

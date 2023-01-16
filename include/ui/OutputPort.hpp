@@ -2,7 +2,7 @@
 
 #include <rack.hpp>
 
-#include "MiniLab3.hpp"
+#include <MiniLab3.hpp>
 
 using namespace rack;
 

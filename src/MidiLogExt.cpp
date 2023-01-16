@@ -3,13 +3,13 @@
 #include <rack.hpp>
 
 #include "plugin.hpp"
-#include "MiniLab3.hpp"
-#include "ui/TextLogWidget.cpp"
-#include "utils/MidiMessageFilter.cpp"
-#include "utils/MidiMessageRenderer.cpp"
-#include "utils/Relay.cpp"
-#include "utils/RelayCallback.cpp"
-#include "utils/ExpanderRelay.cpp"
+#include <MiniLab3.hpp>
+#include <ui/TextLogWidget.hpp>
+#include <utils/MidiMessageFilter.hpp>
+#include <utils/MidiMessageRenderer.hpp>
+#include <utils/Relay.hpp>
+#include <utils/RelayCallback.hpp>
+#include <utils/ExpanderRelay.hpp>
 
 const int BUFFERSIZE = 800;
 

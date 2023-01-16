@@ -1,6 +1,7 @@
 #pragma once
 
 #include <rack.hpp>
+#include <MiniLab3.hpp>
 #include <utils/RelayCallback.hpp>
 #include <utils/Relay.hpp>
 
@@ -24,3 +25,7 @@ void RelayCallback<T>::unregisterCallback() {
         this->handle = -1;
     }
 }
+
+template class RelayCallback<rack::midi::Message&>;
+template class RelayCallback<bool>;
+template class RelayCallback<MiniLab3*>;

@@ -1,9 +1,9 @@
 #include <rack.hpp>
 
 #include "plugin.hpp"
-#include "MiniLab3.hpp"
-#include "menu/MenuSlider.cpp"
-#include "ui/OutputPort.cpp"
+#include <MiniLab3.hpp>
+#include <menu/MenuSlider.hpp>
+#include <ui/OutputPort.hpp>
 
 // use the rack::dsp namespace for convenience
 using namespace rack::dsp;

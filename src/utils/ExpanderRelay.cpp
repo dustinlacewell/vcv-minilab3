@@ -1,6 +1,7 @@
 #pragma once
 
 #include <rack.hpp>
+#include <MiniLab3.hpp>
 #include <utils/ExpanderRelay.hpp>
 #include <utils/Relay.hpp>
 
@@ -34,3 +35,5 @@ void ExpanderRelay<T>::onExpanderChange(const Module::ExpanderChangeEvent& e, Mo
         }
     }
 };
+
+template class ExpanderRelay<MiniLab3*>;
