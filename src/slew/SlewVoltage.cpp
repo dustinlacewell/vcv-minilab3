@@ -6,24 +6,24 @@
 #include <slew/SlewLimitQuantity.hpp>
 #include <utils/VoltageMode.hpp>
 
+
 using namespace rack::dsp;
 
-
-SlewVoltage::SlewVoltage(SlewLimitQuantity* slewLimitQuantity, VoltageMode voltageMode, float min, float max) {
+SlewVoltage::SlewVoltage(SlewLimitQuantity *slewLimitQuantity, VoltageMode voltageMode, float min, float max) {
     this->slewLimitQuantity = slewLimitQuantity;
     this->voltageMode = voltageMode;
     this->min = min;
     this->max = max;
 }
 
-SlewVoltage::SlewVoltage(SlewLimitQuantity* slewLimitQuantity, VoltageMode voltageMode) {
+SlewVoltage::SlewVoltage(SlewLimitQuantity *slewLimitQuantity, VoltageMode voltageMode) {
     this->slewLimitQuantity = slewLimitQuantity;
     this->voltageMode = voltageMode;
     this->min = 0.f;
     this->max = 127.f;
 }
 
-SlewVoltage::SlewVoltage(SlewLimitQuantity* slewLimitQuantity) {
+SlewVoltage::SlewVoltage(SlewLimitQuantity *slewLimitQuantity) {
     this->slewLimitQuantity = slewLimitQuantity;
     this->voltageMode = UNIPOLAR_1;
     this->min = 0.f;
@@ -52,19 +52,15 @@ float SlewVoltage::getVoltage(float sampleTime, int sampleRate) {
     float value = slewLimiter.process(sampleTime, target);
 
     switch (voltageMode) {
-        case UNIPOLAR_1:
-            return rescale(value, min, max, 0.f, 1.f);
-        case UNIPOLAR_10:
-            return rescale(value, min, max, 0.f, 10.f);
-        case BIPOLAR_1:
-            return rescale(value, min, max, -1.f, 1.f);
-        case BIPOLAR_10:
-            return rescale(value, min, max, -10.f, 10.f);
+        case UNIPOLAR_1:return rescale(value, min, max, 0.f, 1.f);
+        case UNIPOLAR_10:return rescale(value, min, max, 0.f, 10.f);
+        case BIPOLAR_1:return rescale(value, min, max, -1.f, 1.f);
+        case BIPOLAR_10:return rescale(value, min, max, -10.f, 10.f);
     }
 }
 
-json_t* SlewVoltage::toJson() {
-    json_t* rootJ = json_object();
+json_t *SlewVoltage::toJson() {
+    json_t *rootJ = json_object();
     json_object_set_new(rootJ, "target", json_real(target));
     json_object_set_new(rootJ, "min", json_real(min));
     json_object_set_new(rootJ, "max", json_real(max));
@@ -74,22 +70,27 @@ json_t* SlewVoltage::toJson() {
     return rootJ;
 }
 
-void SlewVoltage::fromJson(json_t* rootJ, SlewLimitQuantity* slewLimitQuantity) {
-    json_t* targetJ = json_object_get(rootJ, "target");
-    if (targetJ)
+void SlewVoltage::fromJson(json_t *rootJ, SlewLimitQuantity *slewLimitQuantity) {
+    json_t *targetJ = json_object_get(rootJ, "target");
+    if (targetJ) {
         setTarget(json_number_value(targetJ));
-    json_t* minJ = json_object_get(rootJ, "min");
-    if (minJ)
+    }
+    json_t *minJ = json_object_get(rootJ, "min");
+    if (minJ) {
         min = json_number_value(minJ);
-    json_t* maxJ = json_object_get(rootJ, "max");
-    if (maxJ)
+    }
+    json_t *maxJ = json_object_get(rootJ, "max");
+    if (maxJ) {
         max = json_number_value(maxJ);
-    json_t* voltageModeJ = json_object_get(rootJ, "voltageMode");
-    if (voltageModeJ)
-        voltageMode = (VoltageMode)json_integer_value(voltageModeJ);
-    json_t* slewLimiterOutJ = json_object_get(rootJ, "slewLimiterOut");
-    if (slewLimiterOutJ)
+    }
+    json_t *voltageModeJ = json_object_get(rootJ, "voltageMode");
+    if (voltageModeJ) {
+        voltageMode = (VoltageMode) json_integer_value(voltageModeJ);
+    }
+    json_t *slewLimiterOutJ = json_object_get(rootJ, "slewLimiterOut");
+    if (slewLimiterOutJ) {
         slewLimiter.out = json_number_value(slewLimiterOutJ);
-    
+    }
+
     this->slewLimitQuantity = slewLimitQuantity;
 } 

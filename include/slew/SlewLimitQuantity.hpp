@@ -2,7 +2,9 @@
 
 #include <rack.hpp>
 
+
 using namespace rack;
+
 
 struct SlewLimitQuantity : Quantity {
     std::string label;
@@ -25,6 +27,6 @@ struct SlewLimitQuantity : Quantity {
     float getMinValue() override;
     void setRange(float min, float max);
 
-    json_t* toJson();
-    void fromJson(json_t* rootJ);
+    json_t *toJson();
+    void fromJson(json_t *rootJ);
 };

@@ -2,8 +2,10 @@
 
 #include <rack.hpp>
 
+
 using namespace rack;
 
+
 struct MenuSlider : ui::Slider {
-	MenuSlider(Quantity* q);
+    MenuSlider(Quantity *q);
 };

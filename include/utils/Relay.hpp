@@ -2,7 +2,8 @@
 
 #include <rack.hpp>
 
-template <typename T>
+
+template<typename T>
 struct Relay {
     int nextHandle = 0;
 

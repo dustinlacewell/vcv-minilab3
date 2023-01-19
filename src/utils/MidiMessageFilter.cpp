@@ -3,8 +3,8 @@
 #include <rack.hpp>
 #include <utils/MidiMessageFilter.hpp>
 
-using namespace rack;
 
+using namespace rack;
 
 void MidiMessageFilter::reset() {
     showNoteMsg = true;
@@ -64,13 +64,12 @@ bool MidiMessageFilter::shouldHandle(midi::Message msg) {
                     break;
             }
             break;
-        default:
-            return false;
+        default:return false;
     }
 }
 
-json_t* MidiMessageFilter::toJson() {
-    json_t* rootJ = json_object();
+json_t *MidiMessageFilter::toJson() {
+    json_t *rootJ = json_object();
     json_object_set_new(rootJ, "showNoteMsg", json_boolean(showNoteMsg));
     json_object_set_new(rootJ, "showKeyPressure", json_boolean(showKeyPressure));
     json_object_set_new(rootJ, "showCcMsg", json_boolean(showCcMsg));
@@ -84,44 +83,54 @@ json_t* MidiMessageFilter::toJson() {
     return rootJ;
 }
 
-void MidiMessageFilter::fromJson(json_t* rootJ) {
-    json_t* showNoteMsgJ = json_object_get(rootJ, "showNoteMsg");
-    if (showNoteMsgJ)
+void MidiMessageFilter::fromJson(json_t *rootJ) {
+    json_t *showNoteMsgJ = json_object_get(rootJ, "showNoteMsg");
+    if (showNoteMsgJ) {
         showNoteMsg = json_is_true(showNoteMsgJ);
+    }
 
-    json_t* showKeyPressureJ = json_object_get(rootJ, "showKeyPressure");
-    if (showKeyPressureJ)
+    json_t *showKeyPressureJ = json_object_get(rootJ, "showKeyPressure");
+    if (showKeyPressureJ) {
         showKeyPressure = json_is_true(showKeyPressureJ);
+    }
 
-    json_t* showCcMsgJ = json_object_get(rootJ, "showCcMsg");
-    if (showCcMsgJ)
+    json_t *showCcMsgJ = json_object_get(rootJ, "showCcMsg");
+    if (showCcMsgJ) {
         showCcMsg = json_is_true(showCcMsgJ);
+    }
 
-    json_t* showProgChangeMsgJ = json_object_get(rootJ, "showProgChangeMsg");
-    if (showProgChangeMsgJ)
+    json_t *showProgChangeMsgJ = json_object_get(rootJ, "showProgChangeMsg");
+    if (showProgChangeMsgJ) {
         showProgChangeMsg = json_is_true(showProgChangeMsgJ);
+    }
 
-    json_t* showChannelPressurelMsgJ = json_object_get(rootJ, "showChannelPressurelMsg");
-    if (showChannelPressurelMsgJ)
+    json_t *showChannelPressurelMsgJ = json_object_get(rootJ, "showChannelPressurelMsg");
+    if (showChannelPressurelMsgJ) {
         showChannelPressurelMsg = json_is_true(showChannelPressurelMsgJ);
+    }
 
-    json_t* showPitchWheelMsgJ = json_object_get(rootJ, "showPitchWheelMsg");
-    if (showPitchWheelMsgJ)
+    json_t *showPitchWheelMsgJ = json_object_get(rootJ, "showPitchWheelMsg");
+    if (showPitchWheelMsgJ) {
         showPitchWheelMsg = json_is_true(showPitchWheelMsgJ);
+    }
 
-    json_t* showSysExMsgJ = json_object_get(rootJ, "showSysExMsg");
-    if (showSysExMsgJ)
+    json_t *showSysExMsgJ = json_object_get(rootJ, "showSysExMsg");
+    if (showSysExMsgJ) {
         showSysExMsg = json_is_true(showSysExMsgJ);
+    }
 
-    json_t* showSysExDataJ = json_object_get(rootJ, "showSysExData");
-    if (showSysExDataJ)
+    json_t *showSysExDataJ = json_object_get(rootJ, "showSysExData");
+    if (showSysExDataJ) {
         showSysExData = json_is_true(showSysExDataJ);
+    }
 
-    json_t* showClockMsgJ = json_object_get(rootJ, "showClockMsg");
-    if (showClockMsgJ)
+    json_t *showClockMsgJ = json_object_get(rootJ, "showClockMsg");
+    if (showClockMsgJ) {
         showClockMsg = json_is_true(showClockMsgJ);
+    }
 
-    json_t* showSystemMsgJ = json_object_get(rootJ, "showSystemMsg");
-    if (showSystemMsgJ)
+    json_t *showSystemMsgJ = json_object_get(rootJ, "showSystemMsg");
+    if (showSystemMsgJ) {
         showSystemMsg = json_is_true(showSystemMsgJ);
+    }
 }

@@ -4,18 +4,19 @@
 
 #include "LedText.hpp"
 
-struct TextLogWidget : Widget {
-	LedDisplay* background;
-	LedTextDisplay* ledDisplay;
-	std::list<std::string> buffer;
 
-	TextLogWidget();
-	
-	void step() override;
+struct TextLogWidget : Widget {
+    LedDisplay *background;
+    LedTextDisplay *ledDisplay;
+    std::list<std::string> buffer;
+
+    TextLogWidget();
+
+    void step() override;
 
     void clear();
 
-	void bufferToString();
+    void bufferToString();
 
-	void push(std::string text);
+    void push(std::string text);
 };
