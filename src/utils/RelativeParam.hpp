@@ -2,35 +2,40 @@
 
 #include <rack.hpp>
 
-
 using namespace rack::engine;
 
-#include "CallbackQuantity.hpp"
-#include "Clamp.hpp"
+#include "BaseParam.hpp"
 #include "Pile.hpp"
-#include "Slew.hpp"
 #include "VoltageMode.hpp"
-#include "VoltageRescaler.hpp"
 
+struct RelativeParam : BaseParam {
+    Pile* pile;
 
-struct RelativeParam {
-    engine::Output *output;
-    Pile *pile;
-    Clamp<int> *clamp;
-    VoltageRescaler *rescaler;
-    Slew *slew;
+    RelativeParam(engine::Output* output);
+    RelativeParam(engine::Output* output, int min, int max);
+    RelativeParam(engine::Output* output, int min, int max, float slew);
+    RelativeParam(
+        engine::Output* output,
+        int min,
+        int max,
+        float slew,
+        VoltageMode voltageMode
+    );
 
-    CallbackQuantity *slewLimitQuantity;
+    RelativeParam(
+        engine::Output* output,
+        int min,
+        int max,
+        float slew,
+        VoltageMode voltageMode,
+        int strength
+    );
 
-    RelativeParam(engine::Output *output);
-    RelativeParam(engine::Output *output, float slew);
-    RelativeParam(engine::Output *output, float slew, int strength);
-    RelativeParam(engine::Output *output, float slew, int strength, int min, int max);
     ~RelativeParam();
 
-    void send(int value);
-    void process();
+    void send(int value) override;
+    void process() override;
 
-    json_t *toJson();
-    void fromJson(json_t *rootJ);
+    json_t* toJson() override;
+    void fromJson(json_t* rootJ) override;
 };

@@ -1,15 +1,9 @@
 #include <rack.hpp>
 
-#include "BaseWidget.hpp"
 #include "G8Pad.hpp"
 #include "G8PadWidget.hpp"
 
 #include "plugin.hpp"
-
-//template struct BaseWidget<G8Pad>;
-// the compiler says: undefined reference to `BaseWidget<G8Pad>::createAbsolutePort(rack::math::Vec, G8Pad*, int, std::function<AbsoluteParam* (G8Pad*)> const&)'
-// despite this explicit instantiation of the template here in G8PadWidget.cpp
-// the reason for this is that the template is not instantiated in the same translation unit as the definition of the template
 
 G8PadWidget::G8PadWidget(G8Pad* module) {
 

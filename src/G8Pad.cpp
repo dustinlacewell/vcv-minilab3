@@ -1,7 +1,7 @@
 #include <rack.hpp>
 
 #include "G8Pad.hpp"
-#include "G8PadWidget.hpp"
+#include "widgets/G8PadWidget.hpp"
 
 using namespace rack;
 
@@ -27,11 +27,15 @@ G8Pad::G8Pad() : knobs{} {
     divider.setDivision(1024 * 4);
 
     bend = new AbsoluteParam(&outputs[BEND_OUTPUT]);
+    bend->setVoltageMode(VoltageMode::BIPOLAR_5);
+
     mod = new AbsoluteParam(&outputs[MOD_OUTPUT]);
+
     touch = new AbsoluteParam(&outputs[TOUCH_OUTPUT]);
 
     for (int i = 0; i < 8; i++) {
         knobs[i] = new RelativeParam(&outputs[KNOB1_OUTPUT + i]);
+        knobs[i]->setVoltageMode(VoltageMode::BIPOLAR_5);
     }
 
     padBinder = new PadBinder(&midiInput);

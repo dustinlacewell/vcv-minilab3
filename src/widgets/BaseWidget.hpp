@@ -1,8 +1,31 @@
-#include "BaseWidget.hpp"
-#include "G8Pad.hpp"
-#include "MiniLab3.hpp"
+#pragma once
+
+#include <rack.hpp>
 #include "menu/AbsoluteParamMenu.hpp"
 #include "menu/RelativeParamMenu.hpp"
+#include "ui/OutputPort.hpp"
+#include "utils/AbsoluteParam.hpp"
+#include "utils/RelativeParam.hpp"
+
+using namespace rack;
+
+template <typename T>
+struct BaseWidget : ModuleWidget {
+
+    OutputPort* createAbsolutePort(
+        Vec pos,
+        T* module,
+        int outputId,
+        const std::function<AbsoluteParam*(T*)>& getParam
+    );
+
+    OutputPort* createRelativePort(
+        Vec pos,
+        T* module,
+        int outputId,
+        const std::function<RelativeParam*(T*)>& getParam
+    );
+};
 
 template <typename T>
 OutputPort* BaseWidget<T>::createAbsolutePort(
@@ -39,6 +62,3 @@ OutputPort* BaseWidget<T>::createRelativePort(
     addOutput(port);
     return port;
 }
-
-template struct BaseWidget<G8Pad>;
-template struct BaseWidget<MiniLab3>;

@@ -1,8 +1,8 @@
 #include <rack.hpp>
 
 #include "MiniLab3.hpp"
-#include "MiniLab3Widget.hpp"
 #include "ui/OutputPort.hpp"
+#include "widgets/MiniLab3Widget.hpp"
 
 using namespace rack::dsp;
 
@@ -26,37 +26,46 @@ MiniLab3::MiniLab3() {
     configOutput(SLIDER3_OUTPUT, "1V Slider 3");
     configOutput(SLIDER4_OUTPUT, "1V Slider 4");
 
+    noteParam = new AbsoluteParam(&outputs[NOTE_OUTPUT]);
+    noteParam->setRange(0, 120);
+    noteParam->setVoltageMode(VoltageMode::BIPOLAR_5);
+
     bendParam = new AbsoluteParam(&outputs[BEND_OUTPUT]);
-    bendParam->slewLimitQuantity->setValue(0.01f);
+    bendParam->setSlew(0.01f);
+
     modParam = new AbsoluteParam(&outputs[MOD_OUTPUT]);
-    modParam->slewLimitQuantity->setValue(0.01f);
+    modParam->setSlew(0.01f);
 
     for (int i = 0; i < 8; i++) {
         knobParams[i] = new RelativeParam(&outputs[KNOB1_OUTPUT + i]);
-        knobParams[i]->slewLimitQuantity->setValue(0.01f);
+        knobParams[i]->setSlew(0.01f);
     }
 
     for (int i = 0; i < 4; i++) {
         sliderParams[i] = new AbsoluteParam(&outputs[SLIDER1_OUTPUT + i]);
-        sliderParams[i]->slewLimitQuantity->setValue(0.01f);
+        sliderParams[i]->setSlew(0.01f);
     }
+
+    lights[GATE_LIGHT].setBrightness(1.0f);
 
     midiRouter = new MidiRouter(-1);
 
     midiRouter->onGateOpen([this]() { lights[GATE_LIGHT].setBrightness(1.0); });
-
     midiRouter->onGateClose([this]() { lights[GATE_LIGHT].setBrightness(0.0); }
     );
 
     midiRouter->onNoteOn([this](NoteOnEvent e) {
-        float noteVoltage = e.note / 12.0 - 5.0f;
-        outputs[NOTE_OUTPUT].setVoltage(noteVoltage);
-        outputs[VELOCITY_OUTPUT].setVoltage(1.0f);
+        noteParam->send(e.note);
+        outputs[VELOCITY_OUTPUT].setVoltage(e.velocity / 127.0f * 10.0f);
         outputs[GATE_OUTPUT].setVoltage(10.0f);
+        notesOn++;
     });
 
     midiRouter->onNoteOff([this](NoteOffEvent e) {
-        outputs[GATE_OUTPUT].setVoltage(0.0f);
+        notesOn--;
+        if (notesOn == 0) {
+            outputs[GATE_OUTPUT].setVoltage(0.0f);
+        }
     });
 
     midiRouter->onPitchBend([this](PitchBendEvent e) {
@@ -201,12 +210,7 @@ void MiniLab3::process(const ProcessArgs& args) {
         midiRouter->processMessage(msg);
     }
 
-    if (midiRouter->gateOpen) {
-        lights[GATE_LIGHT].setBrightness(1.0);
-    } else {
-        lights[GATE_LIGHT].setBrightness(0.0);
-    }
-
+    noteParam->process();
     bendParam->process();
     modParam->process();
     for (auto& knob : knobParams) {

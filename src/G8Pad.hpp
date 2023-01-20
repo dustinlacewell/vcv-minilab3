@@ -2,12 +2,12 @@
 
 #include <experimental/memory>
 #include <rack.hpp>
-#include "BaseWidget.hpp"
 #include "MiniLab3.hpp"
 #include "utils/AbsoluteParam.hpp"
 #include "utils/PadBinder.hpp"
 #include "utils/PadMidi.hpp"
 #include "utils/RelativeParam.hpp"
+#include "widgets/BaseWidget.hpp"
 
 using namespace std::experimental;
 

@@ -14,20 +14,8 @@
   "changelogUrl": "",
   "modules": [
     {
-      "slug": "SimpleSlew",
-      "name": "SimpleSlew",
-      "description": "",
-      "tags": []
-    },
-    {
-      "slug": "MidiLog",
-      "name": "MidiLog",
-      "description": "",
-      "tags": []
-    },
-    {
-      "slug": "MidiLogExt",
-      "name": "MidiLogExt",
+      "slug": "MiniLog",
+      "name": "MiniLog",
       "description": "",
       "tags": []
     },

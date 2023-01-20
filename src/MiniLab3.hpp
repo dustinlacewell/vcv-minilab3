@@ -1,7 +1,6 @@
 #pragma once
 
 #include <rack.hpp>
-#include "BaseWidget.hpp"
 #include "slew/SlewLimitQuantity.hpp"
 #include "slew/SlewVoltage.hpp"
 #include "utils/AbsoluteParam.hpp"
@@ -10,6 +9,7 @@
 #include "utils/RelativeParam.hpp"
 #include "utils/Relay.hpp"
 #include "utils/VoltageMode.hpp"
+#include "widgets/BaseWidget.hpp"
 
 // use the rack::dsp namespace for convenience
 using namespace rack::dsp;
@@ -43,7 +43,9 @@ struct MiniLab3 : Module {
     Relay<midi::Message&> midiRelay;
 
     bool gateOpen;
+    int notesOn = 0;
 
+    AbsoluteParam* noteParam;
     AbsoluteParam* bendParam;
     AbsoluteParam* modParam;
     AbsoluteParam* sliderParams[4];
