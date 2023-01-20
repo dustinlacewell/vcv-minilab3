@@ -1,37 +1,14 @@
 #include <rack.hpp>
-#include "../plugin.hpp"
+
+#include "BaseWidget.hpp"
 #include "G8Pad.hpp"
-#include "menu/AbsoluteParamMenu.hpp"
-#include "menu/RelativeParamMenu.hpp"
-#include "ui/LedText.hpp"
-#include "ui/OutputPort.hpp"
+#include "G8PadWidget.hpp"
 
-// generalize the above by adding a parameter for the module's AbsoluteParam pointer
-OutputPort* G8PadWidget::createAbsolutePort(
-    Vec pos, G8Pad* module, int outputId, AbsoluteParam* param
-) {
-    auto* port = createOutputCentered<OutputPort>(mm2px(pos), module, outputId);
+#include "plugin.hpp"
 
-    if (module) {
-        port->contextMenus.push_back(new AbsoluteParamMenu(param));
-    }
+template struct BaseWidget<G8Pad>;
 
-    addOutput(port);
-}
-
-OutputPort* G8PadWidget::createRelativePort(
-    Vec pos, G8Pad* module, int outputId, RelativeParam* param
-) {
-    auto* port = createOutputCentered<OutputPort>(mm2px(pos), module, outputId);
-
-    if (module) {
-        port->contextMenus.push_back(new RelativeParamMenu(param));
-    }
-
-    addOutput(port);
-}
-
-[[gnu::used]] G8PadWidget::G8PadWidget(G8Pad* module) {
+G8PadWidget::G8PadWidget(G8Pad* module) {
 
     setModule(module);
     setPanel(createPanel(asset::plugin(pluginInstance, "res/G8Pad.svg")));
@@ -51,15 +28,24 @@ OutputPort* G8PadWidget::createRelativePort(
     ));
 
     createAbsolutePort(
-        Vec(20.72, 58.734), module, G8Pad::MOD_OUTPUT, module->mod
+        Vec(20.72, 58.734),
+        module,
+        G8Pad::MOD_OUTPUT,
+        [](G8Pad* pad) { return pad->mod; }
     );
 
     createAbsolutePort(
-        Vec(9.803, 41.619), module, G8Pad::TOUCH_OUTPUT, module->touch
+        Vec(9.803, 41.619),
+        module,
+        G8Pad::TOUCH_OUTPUT,
+        [](G8Pad* pad) { return pad->touch; }
     );
 
     createAbsolutePort(
-        Vec(9.875, 58.734), module, G8Pad::BEND_OUTPUT, module->bend
+        Vec(9.875, 58.734),
+        module,
+        G8Pad::BEND_OUTPUT,
+        [](G8Pad* pad) { return pad->bend; }
     );
 
     addOutput(createOutputCentered<PJ301MPort>(
@@ -67,28 +53,52 @@ OutputPort* G8PadWidget::createRelativePort(
     ));
 
     createRelativePort(
-        Vec(9.847, 78.694), module, G8Pad::KNOB1_OUTPUT, module->knobs[0]
+        Vec(9.847, 78.694),
+        module,
+        G8Pad::KNOB1_OUTPUT,
+        [](G8Pad* pad) { return pad->knobs[0]; }
     );
     createRelativePort(
-        Vec(20.72, 78.694), module, G8Pad::KNOB2_OUTPUT, module->knobs[1]
+        Vec(20.72, 78.694),
+        module,
+        G8Pad::KNOB2_OUTPUT,
+        [](G8Pad* pad) { return pad->knobs[1]; }
     );
     createRelativePort(
-        Vec(9.76, 91.276), module, G8Pad::KNOB3_OUTPUT, module->knobs[2]
+        Vec(9.76, 91.276),
+        module,
+        G8Pad::KNOB3_OUTPUT,
+        [](G8Pad* pad) { return pad->knobs[2]; }
     );
     createRelativePort(
-        Vec(20.633, 91.276), module, G8Pad::KNOB4_OUTPUT, module->knobs[3]
+        Vec(20.633, 91.276),
+        module,
+        G8Pad::KNOB4_OUTPUT,
+        [](G8Pad* pad) { return pad->knobs[3]; }
     );
     createRelativePort(
-        Vec(9.76, 103.857), module, G8Pad::KNOB5_OUTPUT, module->knobs[4]
+        Vec(9.76, 103.857),
+        module,
+        G8Pad::KNOB5_OUTPUT,
+        [](G8Pad* pad) { return pad->knobs[4]; }
     );
     createRelativePort(
-        Vec(20.633, 103.857), module, G8Pad::KNOB6_OUTPUT, module->knobs[5]
+        Vec(20.633, 103.857),
+        module,
+        G8Pad::KNOB6_OUTPUT,
+        [](G8Pad* pad) { return pad->knobs[5]; }
     );
     createRelativePort(
-        Vec(9.76, 116.438), module, G8Pad::KNOB7_OUTPUT, module->knobs[6]
+        Vec(9.76, 116.438),
+        module,
+        G8Pad::KNOB7_OUTPUT,
+        [](G8Pad* pad) { return pad->knobs[6]; }
     );
     createRelativePort(
-        Vec(20.633, 116.439), module, G8Pad::KNOBS8_OUTPUT, module->knobs[7]
+        Vec(20.633, 116.439),
+        module,
+        G8Pad::KNOBS8_OUTPUT,
+        [](G8Pad* pad) { return pad->knobs[7]; }
     );
 
     addChild(createLightCentered<SmallLight<GreenLight>>(

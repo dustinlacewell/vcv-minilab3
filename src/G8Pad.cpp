@@ -1,13 +1,7 @@
-#include <G8Pad.hpp>
-#include <menu/AbsoluteParamMenu.hpp>
 #include <rack.hpp>
-#include <ui/LedText.hpp>
-#include <ui/OutputPort.hpp>
-#include <utils/AbsoluteParam.hpp>
-#include <utils/PadBinder.hpp>
-#include <utils/RelativeParam.hpp>
 
-#include "../plugin.hpp"
+#include "G8Pad.hpp"
+#include "G8PadWidget.hpp"
 
 using namespace rack;
 
@@ -41,11 +35,11 @@ G8Pad::G8Pad() : knobs{} {
     }
 
     padBinder = new PadBinder(&midiInput);
-    padMidi = new PadMidi(-1);
+    padMidi = new PadMidi(0);
 
-    padMidi->onGateOpen([this](GateOpenEvent e) {
+    padMidi->onGateOpen([this]() {
         outputs[GATE_OUTPUT].setVoltage(10.0f);
-        outputs[VELOCITY_OUTPUT].setVoltage(e.velocity / 127.0f * 10.0f);
+        //        outputs[VELOCITY_OUTPUT].setVoltage(e.velocity / 127.0f * 10.0f);
         lights[GATE_LIGHT].setBrightness(1.0);
     });
 
@@ -95,6 +89,50 @@ void G8Pad::process(const ProcessArgs& args) {
     processBinder();
     processMidi(args.frame);
     processParams();
+}
+
+json_t* G8Pad::dataToJson() {
+    json_t* rootJ = json_object();
+    json_object_set_new(rootJ, "midiInput", midiInput.toJson());
+    json_object_set_new(rootJ, "padMidi", padMidi->toJson());
+    json_object_set_new(rootJ, "bend", bend->toJson());
+    json_object_set_new(rootJ, "mod", mod->toJson());
+    json_object_set_new(rootJ, "touch", touch->toJson());
+
+    json_t* knobsJ = json_array();
+    for (int i = 0; i < 8; i++) {
+        json_t* knobJ = knobs[i]->toJson();
+        json_array_append_new(knobsJ, knobJ);
+    }
+
+    return rootJ;
+}
+
+void G8Pad::dataFromJson(json_t* rootJ) {
+    json_t* bendJ = json_object_get(rootJ, "bend");
+    if (bendJ) {
+        bend->fromJson(bendJ);
+    }
+
+    json_t* modJ = json_object_get(rootJ, "mod");
+    if (modJ) {
+        mod->fromJson(modJ);
+    }
+
+    json_t* touchJ = json_object_get(rootJ, "touch");
+    if (touchJ) {
+        touch->fromJson(touchJ);
+    }
+
+    json_t* knobsJ = json_object_get(rootJ, "knobs");
+    if (knobsJ) {
+        for (int i = 0; i < 8; i++) {
+            json_t* knobJ = json_array_get(knobsJ, i);
+            if (knobJ) {
+                knobs[i]->fromJson(knobJ);
+            }
+        }
+    }
 }
 
 Model* modelG8Pad = createModel<G8Pad, G8PadWidget>("G8Pad");

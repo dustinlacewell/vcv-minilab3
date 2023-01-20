@@ -19,7 +19,8 @@ AllowShortLambdasOnASingleLine: Inline
 AllowShortLoopsOnASingleLine: false
 AlwaysBreakAfterReturnType: None
 AlwaysBreakTemplateDeclarations: Yes
-BinPackArguments: true
+BinPackArguments: false
+BinPackParameters: false
 BreakBeforeBraces: Attach
 BraceWrapping:
   AfterCaseLabel: true

@@ -1,8 +1,7 @@
 #include <rack.hpp>
 
-#include <utils/EventedInputQueue.hpp>
-#include <utils/Relay.hpp>
-
+#include "EventedInputQueue.hpp"
+#include "Relay.hpp"
 
 using namespace rack;
 

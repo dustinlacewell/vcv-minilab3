@@ -1,9 +1,6 @@
+#include "ModularContextMenuItem.hpp"
 #include <rack.hpp>
-#include <menu/ModularContextMenuItem.hpp>
-
 
 using namespace rack;
 
-void ModularContextMenuItem::appendContextMenu(Menu *menu) {
-}
-
+void ModularContextMenuItem::appendContextMenu(Menu* menu) {}

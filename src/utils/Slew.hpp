@@ -2,13 +2,11 @@
 
 #include <rack.hpp>
 
-#include <utils/VoltageMode.hpp>
+#include "VoltageMode.hpp"
 
-#include <slew/SlewLimitQuantity.hpp>
-
+#include "../slew/SlewLimitQuantity.hpp"
 
 using namespace rack::dsp;
-
 
 struct Slew {
     TSlewLimiter<float> slewLimiter;
@@ -30,6 +28,6 @@ struct Slew {
 
     float getSlewed(float sampleTime);
 
-    json_t *toJson();
-    void fromJson(json_t *rootJ);
+    json_t* toJson();
+    void fromJson(json_t* rootJ);
 };

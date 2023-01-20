@@ -1,8 +1,8 @@
 #include <rack.hpp>
 
-#include <menu/MenuSlider.hpp>
-#include <menu/RelativeParamMenu.hpp>
-#include <utils/RelativeParam.hpp>
+#include "../utils/RelativeParam.hpp"
+#include "MenuSlider.hpp"
+#include "RelativeParamMenu.hpp"
 
 using namespace rack;
 

@@ -1,8 +1,7 @@
 #include <rack.hpp>
 
-#include <ui/TextLogWidget.hpp>
-#include <ui/LedText.hpp>
-
+#include "LedText.hpp"
+#include "TextLogWidget.hpp"
 
 using namespace rack;
 
@@ -38,4 +37,3 @@ void TextLogWidget::push(std::string text) {
 
     bufferToString();
 }
-

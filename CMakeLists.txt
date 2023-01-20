@@ -9,7 +9,7 @@ set(PLUGIN_NAME ${PROJECT_NAME})
 set(ADDITIONAL_PLUGIN_DISTRIBUTABLES README.md)
 include(RackSDK.cmake)
 
-include_directories(include)
+include_directories(src)
 
 file(GLOB_RECURSE SOURCE_FILES "src/*.cpp")
 target_sources(${RACK_PLUGIN_LIB} PRIVATE ${SOURCE_FILES})

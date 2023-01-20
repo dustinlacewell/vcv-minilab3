@@ -1,9 +1,8 @@
 #include <rack.hpp>
 
-#include <menu/MenuSlider.hpp>
+#include "MenuSlider.hpp"
 
-
-MenuSlider::MenuSlider(Quantity *q) {
+MenuSlider::MenuSlider(Quantity* q) {
     box.size.x = 220.0f;
     quantity = q;
 }

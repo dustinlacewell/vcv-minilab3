@@ -1,17 +1,16 @@
 #include <rack.hpp>
 
-#include <utils/AbsoluteParam.hpp>
-#include <menu/MenuSlider.hpp>
-#include <menu/ModularContextMenuItem.hpp>
-#include <menu/AbsoluteParamMenu.hpp>
-
+#include "../utils/AbsoluteParam.hpp"
+#include "AbsoluteParamMenu.hpp"
+#include "MenuSlider.hpp"
+#include "ModularContextMenuItem.hpp"
 
 using namespace rack;
 
-AbsoluteParamMenu::AbsoluteParamMenu(AbsoluteParam *param) {
+AbsoluteParamMenu::AbsoluteParamMenu(AbsoluteParam* param) {
     this->param = param;
 }
 
-void AbsoluteParamMenu::appendContextMenu(Menu *menu) {
+void AbsoluteParamMenu::appendContextMenu(Menu* menu) {
     menu->addChild(new MenuSlider(this->param->slewLimitQuantity));
 }

@@ -2,12 +2,10 @@
 
 #include <rack.hpp>
 
-#include <utils/VoltageMode.hpp>
-#include <utils/Clamp.hpp>
-
+#include "Clamp.hpp"
+#include "VoltageMode.hpp"
 
 using namespace rack::dsp;
-
 
 struct VoltageRescaler {
 
@@ -21,6 +19,6 @@ struct VoltageRescaler {
 
     float rescale(float normalizedVoltage);
 
-    json_t *toJson();
-    void fromJson(json_t *rootJ);
+    json_t* toJson();
+    void fromJson(json_t* rootJ);
 };

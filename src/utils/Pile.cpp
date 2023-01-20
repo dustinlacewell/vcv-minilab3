@@ -1,5 +1,4 @@
-#include <utils/Pile.hpp>
-
+#include "Pile.hpp"
 
 Pile::Pile() {
     this->value = 0;
@@ -66,8 +65,8 @@ int Pile::send(int code) {
     }
 }
 
-json_t *Pile::toJson() {
-    json_t *rootJ = json_object();
+json_t* Pile::toJson() {
+    json_t* rootJ = json_object();
     json_object_set_new(rootJ, "decCode", json_integer(this->decCode));
     json_object_set_new(rootJ, "incCode", json_integer(this->incCode));
     json_object_set_new(rootJ, "strength", json_integer(this->strength));
@@ -75,20 +74,20 @@ json_t *Pile::toJson() {
     return rootJ;
 }
 
-void Pile::fromJson(json_t *rootJ) {
-    json_t *decCodeJ = json_object_get(rootJ, "decCode");
+void Pile::fromJson(json_t* rootJ) {
+    json_t* decCodeJ = json_object_get(rootJ, "decCode");
     if (decCodeJ) {
         this->decCode = json_integer_value(decCodeJ);
     }
-    json_t *incCodeJ = json_object_get(rootJ, "incCode");
+    json_t* incCodeJ = json_object_get(rootJ, "incCode");
     if (incCodeJ) {
         this->incCode = json_integer_value(incCodeJ);
     }
-    json_t *strengthJ = json_object_get(rootJ, "strength");
+    json_t* strengthJ = json_object_get(rootJ, "strength");
     if (strengthJ) {
         this->strength = json_integer_value(strengthJ);
     }
-    json_t *valueJ = json_object_get(rootJ, "value");
+    json_t* valueJ = json_object_get(rootJ, "value");
     if (valueJ) {
         this->value = json_integer_value(valueJ);
     }

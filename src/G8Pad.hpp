@@ -2,18 +2,12 @@
 
 #include <experimental/memory>
 #include <rack.hpp>
-#include <utils/PadBinder.hpp>
-#include <utils/PadMidi.hpp>
-#include <utils/RelativeParam.hpp>
-
+#include "BaseWidget.hpp"
 #include "MiniLab3.hpp"
-#include "menu/MenuSlider.hpp"
-#include "plugin.hpp"
-#include "ui/LedText.hpp"
-#include "ui/OutputPort.hpp"
 #include "utils/AbsoluteParam.hpp"
-#include "utils/Relay.hpp"
-#include "utils/RelayCallback.hpp"
+#include "utils/PadBinder.hpp"
+#include "utils/PadMidi.hpp"
+#include "utils/RelativeParam.hpp"
 
 using namespace std::experimental;
 
@@ -60,21 +54,4 @@ struct G8Pad : Module {
     void processBinder();
     void processParams();
     void processMidi(int frame);
-};
-
-struct G8PadWidget : ModuleWidget {
-    LedTextDisplay* padIdText;
-
-    explicit G8PadWidget(G8Pad* module);
-
-    void step() override;
-    void appendContextMenu(Menu* menu) override;
-
-    OutputPort* createAbsolutePort(
-        Vec pos, G8Pad* module, int outputId, AbsoluteParam* param
-    );
-
-    OutputPort* createRelativePort(
-        Vec pos, G8Pad* module, int outputId, RelativeParam* param
-    );
 };

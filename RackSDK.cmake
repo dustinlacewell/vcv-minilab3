@@ -61,7 +61,7 @@ else ()
     message(STATUS "Defaulting CMAKE_CXX_STANDARD to ${CMAKE_CXX_STANDARD}")
 endif ()
 
-add_library(${RACK_PLUGIN_LIB} MODULE src/G8Pad/json.cpp src/G8Pad/module.cpp src/G8Pad/widget.cpp)
+add_library(${RACK_PLUGIN_LIB} MODULE)
 set_target_properties(${RACK_PLUGIN_LIB} PROPERTIES PREFIX "")
 
 # Since the plugin's compiler could be a different version than Rack's compiler, link libstdc++ and libgcc statically to avoid ABI issues.

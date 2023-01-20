@@ -1,6 +1,5 @@
 #pragma once
 
-#include <G8Pad.hpp>
 #include <experimental/memory>
 #include <rack.hpp>
 

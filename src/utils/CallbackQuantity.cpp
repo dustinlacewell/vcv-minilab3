@@ -1,7 +1,8 @@
-#include <utils/CallbackQuantity.hpp>
+#include "CallbackQuantity.hpp"
 
-
-CallbackQuantity::CallbackQuantity(std::string label, float min, float max, std::function<void(float)> callback) {
+CallbackQuantity::CallbackQuantity(
+    std::string label, float min, float max, std::function<void(float)> callback
+) {
     this->label = label;
     this->callback = callback;
     setRange(min, max);
@@ -41,8 +42,8 @@ void CallbackQuantity::setRange(float min, float max) {
     max_value = max;
 }
 
-json_t *CallbackQuantity::toJson() {
-    json_t *rootJ = json_object();
+json_t* CallbackQuantity::toJson() {
+    json_t* rootJ = json_object();
     json_object_set_new(rootJ, "value", json_real(getValue()));
     json_object_set_new(rootJ, "min", json_real(getMinValue()));
     json_object_set_new(rootJ, "max", json_real(getMaxValue()));
@@ -50,17 +51,17 @@ json_t *CallbackQuantity::toJson() {
     return rootJ;
 }
 
-void CallbackQuantity::fromJson(json_t *rootJ) {
-    json_t *valueJ = json_object_get(rootJ, "value");
+void CallbackQuantity::fromJson(json_t* rootJ) {
+    json_t* valueJ = json_object_get(rootJ, "value");
     if (valueJ) {
         setValue(json_number_value(valueJ));
     }
-    json_t *minJ = json_object_get(rootJ, "min");
-    json_t *maxJ = json_object_get(rootJ, "max");
+    json_t* minJ = json_object_get(rootJ, "min");
+    json_t* maxJ = json_object_get(rootJ, "max");
     if (minJ && maxJ) {
         setRange(json_number_value(minJ), json_number_value(maxJ));
     }
-    json_t *labelJ = json_object_get(rootJ, "label");
+    json_t* labelJ = json_object_get(rootJ, "label");
     if (labelJ) {
         label = json_string_value(labelJ);
     }

@@ -1,7 +1,6 @@
 #include <rack.hpp>
 
-#include <ui/LedText.hpp>
-
+#include "LedText.hpp"
 
 using namespace rack;
 
@@ -12,7 +11,7 @@ LedTextDisplay::LedTextDisplay() {
     textOffset = math::Vec(5, 4);
 }
 
-void LedTextDisplay::drawLayer(const DrawArgs &args, int layer) {
+void LedTextDisplay::drawLayer(const DrawArgs& args, int layer) {
     nvgScissor(args.vg, RECT_ARGS(args.clipBox));
     if (layer == 1) {
         if (bgColor.a > 0.0) {
@@ -22,13 +21,17 @@ void LedTextDisplay::drawLayer(const DrawArgs &args, int layer) {
             nvgFill(args.vg);
         }
 
-        std::shared_ptr<Font> font = APP->window->loadFont(asset::system("res/fonts/ShareTechMono-Regular.ttf"));
+        std::shared_ptr<Font> font = APP->window->loadFont(
+            asset::system("res/fonts/ShareTechMono-Regular.ttf")
+        );
         nvgFillColor(args.vg, color);
         nvgFontFaceId(args.vg, font->handle);
         nvgTextLetterSpacing(args.vg, 0.0);
         nvgFontSize(args.vg, 12);
-        nvgTextBox(args.vg, textOffset.x,
-                   textOffset.y + fontSize, box.size.x - 2 * textOffset.x, text.c_str(), nullptr);
+        nvgTextBox(
+            args.vg, textOffset.x, textOffset.y + fontSize,
+            box.size.x - 2 * textOffset.x, text.c_str(), nullptr
+        );
     }
     nvgResetScissor(args.vg);
 }
