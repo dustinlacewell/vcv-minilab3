@@ -1,6 +1,6 @@
 #include "BaseWidget.hpp"
 #include "G8Pad.hpp"
-#include "G8PadWidget.hpp"
+#include "MiniLab3.hpp"
 #include "menu/AbsoluteParamMenu.hpp"
 #include "menu/RelativeParamMenu.hpp"
 
@@ -40,5 +40,5 @@ OutputPort* BaseWidget<T>::createRelativePort(
     return port;
 }
 
-//template struct BaseWidget<MiniLab3>;
-//template struct BaseWidget<G8Pad>;
+template struct BaseWidget<G8Pad>;
+template struct BaseWidget<MiniLab3>;

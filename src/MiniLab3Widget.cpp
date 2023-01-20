@@ -5,7 +5,7 @@
 
 #include "plugin.hpp"
 
-template struct BaseWidget<MiniLab3>;
+//template struct BaseWidget<MiniLab3>;
 
 MiniLab3Widget::MiniLab3Widget(MiniLab3* module) {
     setModule(module);
