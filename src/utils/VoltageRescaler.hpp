@@ -15,7 +15,7 @@ struct VoltageRescaler {
     VoltageRescaler(VoltageMode voltageMode);
 
     VoltageMode getVoltageMode();
-    void setVoltageMode(VoltageMode voltageMode);
+    void setVoltageMode(VoltageMode newVoltageMode);
 
     float rescale(float normalizedVoltage);
 

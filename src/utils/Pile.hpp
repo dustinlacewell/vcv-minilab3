@@ -2,9 +2,7 @@
 
 #include <rack.hpp>
 
-
 using namespace rack;
-
 
 struct Pile {
 
@@ -18,19 +16,19 @@ struct Pile {
     Pile(int strength);
     Pile(int strength, int decCode, int incCode);
 
-    void setDecCode(int decCode);
-    void setIncCode(int incCode);
+    void setDecCode(int newDecCode);
+    void setIncCode(int newIncCode);
 
     int getStrength();
-    void setStrength(int strength);
+    void setStrength(int newStrength);
 
     int getValue();
-    void setValue(int value);
+    void setValue(int newValue);
 
     int inc();
     int dec();
     int send(int code);
 
-    json_t *toJson();
-    void fromJson(json_t *rootJ);
+    json_t* toJson();
+    void fromJson(json_t* rootJ);
 };

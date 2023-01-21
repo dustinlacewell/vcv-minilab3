@@ -1,20 +1,18 @@
 #pragma once
 
 #include <rack.hpp>
-#include "slew/SlewLimitQuantity.hpp"
-#include "slew/SlewVoltage.hpp"
-#include "utils/AbsoluteParam.hpp"
-#include "utils/EventedInputQueue.hpp"
-#include "utils/MidiRouter.hpp"
-#include "utils/RelativeParam.hpp"
-#include "utils/Relay.hpp"
+#include "BaseModule.hpp"
+#include "params/AbsoluteParam.hpp"
+#include "params/RelativeParam.hpp"
+#include "props/SlewLimitQuantity.hpp"
+#include "routing/MidiRouter.hpp"
 #include "utils/VoltageMode.hpp"
 #include "widgets/BaseWidget.hpp"
 
 // use the rack::dsp namespace for convenience
 using namespace rack::dsp;
 
-struct MiniLab3 : Module {
+struct MiniLab3 : BaseModule {
     enum ParamId { PARAMS_LEN };
     enum InputId { INPUTS_LEN };
     enum OutputId {
@@ -39,55 +37,19 @@ struct MiniLab3 : Module {
     };
     enum LightId { GATE_LIGHT, LIGHTS_LEN };
 
-    EventedInputQueue midiInput;
-    Relay<midi::Message&> midiRelay;
-
     bool gateOpen;
     int notesOn = 0;
 
+    midi::InputQueue midiInput;
+    MidiRouter* midiRouter;
+
+    AbsoluteParam* gateParam;
+    AbsoluteParam* velocityParam;
     AbsoluteParam* noteParam;
     AbsoluteParam* bendParam;
     AbsoluteParam* modParam;
     AbsoluteParam* sliderParams[4];
     RelativeParam* knobParams[8];
-
-    MidiRouter* midiRouter;
-
-    // 16 boolean gates
-    bool gates[16] = {false};
-
-    SlewLimitQuantity* bendLimit = new SlewLimitQuantity("Bend Slew", 0, 10);
-    SlewVoltage* bend =
-        new SlewVoltage(bendLimit, VoltageMode::BIPOLAR_1, 0, 16383);
-
-    SlewLimitQuantity* modLimit = new SlewLimitQuantity("Mod Slew", 0, 10);
-    SlewVoltage* mod = new SlewVoltage(modLimit);
-
-    float sampleTime = 0.0f;
-
-    int knobStrength = 2;
-    VoltageMode knobVoltageMode = VoltageMode::BIPOLAR_1;
-    SlewLimitQuantity* knobLimit = new SlewLimitQuantity("Knob Slew", 0, 0.8f);
-    // 8 SlewVoltages
-    SlewVoltage* knobs[8] = {
-        new SlewVoltage(knobLimit),
-        new SlewVoltage(knobLimit),
-        new SlewVoltage(knobLimit),
-        new SlewVoltage(knobLimit),
-        new SlewVoltage(knobLimit),
-        new SlewVoltage(knobLimit),
-        new SlewVoltage(knobLimit),
-        new SlewVoltage(knobLimit)};
-
-    VoltageMode sliderVoltageMode = VoltageMode::UNIPOLAR_1;
-    SlewLimitQuantity* sliderLimit =
-        new SlewLimitQuantity("Slider Slew", 0, 0.8f);
-    // 4 SlewVoltages
-    SlewVoltage* sliders[4] = {
-        new SlewVoltage(sliderLimit),
-        new SlewVoltage(sliderLimit),
-        new SlewVoltage(sliderLimit),
-        new SlewVoltage(sliderLimit)};
 
     MiniLab3();
     json_t* dataToJson() override;

@@ -20,10 +20,18 @@ MiniLogWidget::MiniLogWidget(MiniLog* module) {
     log = createWidget<TextLogWidget>(mm2px(Vec(0, 13.f)));
     log->box.size = mm2px(Vec(40.64, 128.5f - 13.f - 5.f));
     addChild(log);
+
+    if (module) {
+        module->whenReinit([this]() {
+            log->clear();
+            dirty = true;
+        });
+    }
 }
 
 void MiniLogWidget::step() {
     ModuleWidget::step();
+
     if (!module) {
         return;
     }

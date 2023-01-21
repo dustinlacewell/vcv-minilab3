@@ -5,7 +5,7 @@
 using namespace rack;
 
 #include "ModularContextMenuItem.hpp"
-#include "utils/VoltageModeChoice.hpp"
+#include "props/VoltageModeChoice.hpp"
 
 struct VoltageModeSelector : ModularContextMenuItem {
     VoltageModeChoice* voltageChoice;

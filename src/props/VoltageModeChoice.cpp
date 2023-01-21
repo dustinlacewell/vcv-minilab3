@@ -1,5 +1,5 @@
 
-#include "utils/VoltageModeChoice.hpp"
+#include "VoltageModeChoice.hpp"
 #include "utils/VoltageMode.hpp"
 
 std::vector<std::tuple<std::string, VoltageMode>> VoltageModeChoice::getChoices(

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <rack.hpp>
+#include "../../../../Rack-SDK/include/rack.hpp"
 
 using namespace rack;
 

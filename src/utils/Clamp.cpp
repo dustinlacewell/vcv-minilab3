@@ -32,13 +32,13 @@ T Clamp<T>::getMax() {
 }
 
 template <typename T>
-void Clamp<T>::setMin(T min) {
-    this->min = min;
+void Clamp<T>::setMin(T newMin) {
+    min = newMin;
 }
 
 template <typename T>
-void Clamp<T>::setMax(T max) {
-    this->max = max;
+void Clamp<T>::setMax(T newMax) {
+    max = newMax;
 }
 
 // float

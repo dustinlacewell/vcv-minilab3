@@ -22,48 +22,37 @@ bool MidiMessageFilter::shouldHandle(midi::Message msg) {
         case 0x8:  // Note Off
         case 0x9:  // Note On
             return true;
-            break;
         case 0xa:  // Key Pressure
             return showKeyPressure;
-            break;
         case 0xb:  // Control Change
             return showCcMsg;
-            break;
         case 0xc:  // Program Change
             return showProgChangeMsg;
-            break;
         case 0xd:  // Channel Pressure
             return showChannelPressurelMsg;
-            break;
         case 0xe:  // Pitch Wheel
             return showPitchWheelMsg;
-            break;
         case 0xf:  // System
             switch (msg.getChannel()) {
                 case 0xF0:  // SysEx
                     return showSysExMsg;
-                    break;
                 case 0xF1:  // MTC Quarter Frame
                 case 0xF2:  // Song Position Pointer
                 case 0xF3:  // Song Select
                 case 0xF6:  // Tune Request
                     return showSystemMsg;
-                    break;
                 case 0xF8:  // Timing Clock
                     return showClockMsg;
-                    break;
                 case 0xFA:  // Start
                 case 0xFB:  // Continue
                 case 0xFC:  // Stop
                 case 0xFE:  // Active Sensing
                 case 0xFF:  // System Reset
                     return showSystemMsg;
-                    break;
             }
             break;
-        default:
-            return false;
     }
+    return false;
 }
 
 json_t* MidiMessageFilter::toJson() {

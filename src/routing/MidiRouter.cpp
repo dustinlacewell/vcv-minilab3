@@ -1,9 +1,9 @@
 #include "MidiRouter.hpp"
-#include "utils/padNotes.hpp"
+#include "padNotes.hpp"
 
 MidiRouter::MidiRouter(int padId) {
     this->padId = padId;
-    this->gateOpen = padId == -1 ? true : false;
+    this->gateOpen = padId == -1;
 }
 
 MidiRouter::~MidiRouter() {
@@ -125,7 +125,7 @@ void MidiRouter::processNoteOn(midi::Message& msg) {
         processGateNoteOn(msg);
     }
 
-    if (gateOpen) {
+    if (padId == -1 || note == noteForPad(this->padId)) {
         NoteOnEvent noteEvent{note, velocity};
 
         for (const auto& noteOnCallback : this->noteOnCallbacks) {
@@ -142,7 +142,7 @@ void MidiRouter::processNoteOff(midi::Message& msg) {
         processGateNoteOff(msg);
     }
 
-    if (gateOpen) {
+    if (padId == -1) {
         for (const auto& noteOffCallback : this->noteOffCallbacks) {
             NoteOffEvent noteEvent{};
             noteEvent.note = note;

@@ -19,24 +19,24 @@ VoltageMode Slew::getVoltageMode() {
     return voltageMode;
 }
 
-void Slew::setVoltageMode(VoltageMode voltageMode) {
-    this->voltageMode = voltageMode;
+void Slew::setVoltageMode(VoltageMode newVoltageMode) {
+    voltageMode = newVoltageMode;
 }
 
 float Slew::getLimit() {
     return limit;
 }
 
-void Slew::setLimit(float limit) {
-    this->limit = limit;
+void Slew::setLimit(float newLimit) {
+    limit = newLimit;
 }
 
 float Slew::getTarget() {
     return target;
 }
 
-void Slew::setTarget(float target) {
-    this->target = target;
+void Slew::setTarget(float newTarget) {
+    target = newTarget;
 }
 
 float Slew::getSlewed(float sampleTime) {
@@ -44,7 +44,7 @@ float Slew::getSlewed(float sampleTime) {
         return this->target;
     }
 
-    float limitValue = 1 / this->limit * 0.25f;
+    float limitValue = 1 / this->limit;
 
     switch (this->voltageMode) {
         case VoltageMode::UNIPOLAR_1:

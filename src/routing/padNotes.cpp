@@ -1,4 +1,4 @@
-#include "utils/padNotes.hpp"
+#include "padNotes.hpp"
 
 int noteForPad(int padId) {
     switch (padId) {

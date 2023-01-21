@@ -1,7 +1,7 @@
 #pragma once
 
-#include "utils/Choice.hpp"
-#include "utils/VoltageMode.hpp"
+#include "../utils/VoltageMode.hpp"
+#include "Choice.hpp"
 
 struct VoltageModeChoice : Choice<VoltageMode> {
     VoltageModeChoice(

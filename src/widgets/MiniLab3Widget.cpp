@@ -19,6 +19,29 @@ MiniLab3Widget::MiniLab3Widget(MiniLab3* module) {
         box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH
     )));
 
+    auto* display = createWidget<MidiDisplay>(mm2px(Vec(0.0, 13.f)));
+    display->box.size = mm2px(Vec(60.960, 29.012));
+    display->setMidiPort(module ? &module->midiInput : nullptr);
+    addChild(display);
+
+    addChild(createLightCentered<SmallLight<GreenLight>>(
+        mm2px(Vec(5, 8.894)), module, MiniLab3::GATE_LIGHT
+    ));
+
+    createAbsolutePort(
+        Vec(30.48, 51.645),
+        module,
+        MiniLab3::GATE_OUTPUT,
+        [](MiniLab3* lab) { return lab->gateParam; }
+    );
+
+    createAbsolutePort(
+        Vec(51.577, 51.645),
+        module,
+        MiniLab3::VELOCITY_OUTPUT,
+        [](MiniLab3* lab) { return lab->velocityParam; }
+    );
+
     createAbsolutePort(
         Vec(9.382, 51.645),
         module,
@@ -26,63 +49,54 @@ MiniLab3Widget::MiniLab3Widget(MiniLab3* module) {
         [](MiniLab3* lab) { return lab->noteParam; }
     );
 
-    addOutput(createOutputCentered<PJ301MPort>(
-        mm2px(Vec(30.48, 51.645)), module, MiniLab3::GATE_OUTPUT
-    ));
-    addOutput(createOutputCentered<PJ301MPort>(
-        mm2px(Vec(51.577, 51.645)), module, MiniLab3::VELOCITY_OUTPUT
-    ));
-    addOutput(createOutputCentered<PJ301MPort>(
-        mm2px(Vec(18.282, 66.756)), module, MiniLab3::BEND_OUTPUT
-    ));
-    addOutput(createOutputCentered<PJ301MPort>(
-        mm2px(Vec(41.677, 66.756)), module, MiniLab3::MOD_OUTPUT
-    ));
-    addOutput(createOutputCentered<PJ301MPort>(
-        mm2px(Vec(6.445, 84.75)), module, MiniLab3::KNOB1_OUTPUT
-    ));
-    addOutput(createOutputCentered<PJ301MPort>(
-        mm2px(Vec(22.119, 84.75)), module, MiniLab3::KNOB2_OUTPUT
-    ));
-    addOutput(createOutputCentered<PJ301MPort>(
-        mm2px(Vec(38.768, 84.75)), module, MiniLab3::KNOB3_OUTPUT
-    ));
-    addOutput(createOutputCentered<PJ301MPort>(
-        mm2px(Vec(56.03, 84.75)), module, MiniLab3::KNOB4_OUTPUT
-    ));
-    addOutput(createOutputCentered<PJ301MPort>(
-        mm2px(Vec(6.445, 97.364)), module, MiniLab3::KNOB5_OUTPUT
-    ));
-    addOutput(createOutputCentered<PJ301MPort>(
-        mm2px(Vec(22.119, 97.364)), module, MiniLab3::KNOB6_OUTPUT
-    ));
-    addOutput(createOutputCentered<PJ301MPort>(
-        mm2px(Vec(38.768, 97.364)), module, MiniLab3::KNOB7_OUTPUT
-    ));
-    addOutput(createOutputCentered<PJ301MPort>(
-        mm2px(Vec(55.428, 97.364)), module, MiniLab3::KNOB8_OUTPUT
-    ));
-    addOutput(createOutputCentered<PJ301MPort>(
-        mm2px(Vec(6.445, 115.842)), module, MiniLab3::SLIDER1_OUTPUT
-    ));
-    addOutput(createOutputCentered<PJ301MPort>(
-        mm2px(Vec(22.119, 115.842)), module, MiniLab3::SLIDER2_OUTPUT
-    ));
-    addOutput(createOutputCentered<PJ301MPort>(
-        mm2px(Vec(38.768, 115.842)), module, MiniLab3::SLIDER3_OUTPUT
-    ));
-    addOutput(createOutputCentered<PJ301MPort>(
-        mm2px(Vec(55.729, 115.842)), module, MiniLab3::SLIDER4_OUTPUT
-    ));
+    createAbsolutePort(
+        Vec(18.282, 66.756),
+        module,
+        MiniLab3::BEND_OUTPUT,
+        [](MiniLab3* lab) { return lab->bendParam; }
+    );
 
-    addChild(createLightCentered<SmallLight<GreenLight>>(
-        mm2px(Vec(5, 8.894)), module, MiniLab3::GATE_LIGHT
-    ));
+    createAbsolutePort(
+        Vec(41.677, 66.756),
+        module,
+        MiniLab3::MOD_OUTPUT,
+        [](MiniLab3* lab) { return lab->modParam; }
+    );
 
-    auto* display = createWidget<MidiDisplay>(mm2px(Vec(0.0, 13.f)));
-    display->box.size = mm2px(Vec(60.960, 29.012));
-    display->setMidiPort(module ? &module->midiInput : nullptr);
-    addChild(display);
+    std::vector<Vec> knobPositions = {
+        Vec(6.445, 84.75),
+        Vec(22.119, 84.75),
+        Vec(38.768, 84.75),
+        Vec(56.03, 84.75),
+        Vec(6.445, 97.364),
+        Vec(22.119, 97.364),
+        Vec(38.768, 97.364),
+        Vec(55.428, 97.364)};
+
+    for (int i = 0; i < knobPositions.size(); i++) {
+        createRelativePort(
+            knobPositions[i],
+            module,
+            MiniLab3::KNOB1_OUTPUT + i,
+            [&i](MiniLab3* lab) { return lab->knobParams[i]; }
+        );
+    }
+
+    std::vector<Vec> sliderPositions = {
+        Vec(6.445, 115.842),
+        Vec(22.119, 115.842),
+        Vec(38.768, 115.842),
+        Vec(55.729, 115.842),
+    };
+
+    for (int i = 0; i < sliderPositions.size(); i++) {
+        createAbsolutePort(
+            sliderPositions[i],
+            module,
+            MiniLab3::SLIDER1_OUTPUT + i,
+            [&i](MiniLab3* lab) { return lab->sliderParams[i]; }
+        );
+    }
 }
 
 void MiniLab3Widget::appendContextMenu(Menu* menu) {

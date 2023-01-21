@@ -16,31 +16,26 @@ VoltageMode VoltageRescaler::getVoltageMode() {
     return voltageMode;
 }
 
-void VoltageRescaler::setVoltageMode(VoltageMode voltageMode) {
-    this->voltageMode = voltageMode;
+void VoltageRescaler::setVoltageMode(VoltageMode newVoltageMode) {
+    voltageMode = newVoltageMode;
 }
 
 float VoltageRescaler::rescale(float voltage) {
     switch (this->voltageMode) {
         case VoltageMode::UNIPOLAR_1:
             return voltage;
-            break;
         case VoltageMode::UNIPOLAR_5:
             return rack::math::rescale(voltage, 0.0f, 1.0f, 0.0f, 5.0f);
-            break;
         case VoltageMode::UNIPOLAR_10:
             return rack::math::rescale(voltage, 0.0f, 1.0f, 0.0f, 10.0f);
-            break;
         case VoltageMode::BIPOLAR_1:
             return rack::math::rescale(voltage, 0.0f, 1.0f, -1.0f, 1.0f);
-            break;
         case VoltageMode::BIPOLAR_5:
             return rack::math::rescale(voltage, 0.0f, 1.0f, -5.0f, 5.0f);
-            break;
         case VoltageMode::BIPOLAR_10:
             return rack::math::rescale(voltage, 0.0f, 1.0f, -10.0f, 10.0f);
-            break;
     }
+    return voltage;
 }
 
 json_t* VoltageRescaler::toJson() {

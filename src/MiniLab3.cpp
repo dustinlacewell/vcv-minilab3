@@ -1,52 +1,51 @@
 #include <rack.hpp>
 
 #include "MiniLab3.hpp"
-#include "ui/OutputPort.hpp"
 #include "widgets/MiniLab3Widget.hpp"
 
 using namespace rack::dsp;
 
 MiniLab3::MiniLab3() {
     config(PARAMS_LEN, INPUTS_LEN, OUTPUTS_LEN, LIGHTS_LEN);
-    configOutput(NOTE_OUTPUT, "10V Note");
-    configOutput(GATE_OUTPUT, "10V Gate");
-    configOutput(VELOCITY_OUTPUT, "10V Velocity");
-    configOutput(BEND_OUTPUT, "1V Bend");
-    configOutput(MOD_OUTPUT, "1V Mod");
-    configOutput(KNOB1_OUTPUT, "1V Knob 1");
-    configOutput(KNOB2_OUTPUT, "1V Knob 2");
-    configOutput(KNOB3_OUTPUT, "1V Knob 3");
-    configOutput(KNOB4_OUTPUT, "1V Knob 4");
-    configOutput(KNOB5_OUTPUT, "1V Knob 5");
-    configOutput(KNOB6_OUTPUT, "1V Knob 6");
-    configOutput(KNOB7_OUTPUT, "1V Knob 7");
-    configOutput(KNOB8_OUTPUT, "1V Knob 8");
-    configOutput(SLIDER1_OUTPUT, "1V Slider 1");
-    configOutput(SLIDER2_OUTPUT, "1V Slider 2");
-    configOutput(SLIDER3_OUTPUT, "1V Slider 3");
-    configOutput(SLIDER4_OUTPUT, "1V Slider 4");
+    configLight(GATE_LIGHT, "MiniLab3 gate");
 
-    noteParam = new AbsoluteParam(&outputs[NOTE_OUTPUT]);
+    lights[GATE_LIGHT].setBrightness(1.0f);
+
+    gateParam = createAbsoluteOutput(GATE_OUTPUT, "Gate");
+    gateParam->setSlew(0.0f);
+    gateParam->setRange(0, 1);
+    gateParam->setVoltageMode(VoltageMode::UNIPOLAR_10);
+
+    velocityParam = createAbsoluteOutput(VELOCITY_OUTPUT, "Velocity");
+    velocityParam->setVoltageMode(VoltageMode::UNIPOLAR_10);
+    velocityParam->setSlew(0.1f);
+
+    noteParam = createAbsoluteOutput(NOTE_OUTPUT, "Note");
     noteParam->setRange(0, 120);
     noteParam->setVoltageMode(VoltageMode::BIPOLAR_5);
+    noteParam->setSlew(0.0f);
 
-    bendParam = new AbsoluteParam(&outputs[BEND_OUTPUT]);
+    bendParam = createAbsoluteOutput(BEND_OUTPUT, "Bend");
     bendParam->setSlew(0.01f);
 
-    modParam = new AbsoluteParam(&outputs[MOD_OUTPUT]);
+    modParam = createAbsoluteOutput(MOD_OUTPUT, "Mod");
     modParam->setSlew(0.01f);
 
     for (int i = 0; i < 8; i++) {
-        knobParams[i] = new RelativeParam(&outputs[KNOB1_OUTPUT + i]);
+        knobParams[i] = createRelativeOutput(
+            KNOB1_OUTPUT + i, "Knob " + std::to_string(i + 1)
+        );
         knobParams[i]->setSlew(0.01f);
+        knobParams[i]->send(0);
     }
 
     for (int i = 0; i < 4; i++) {
-        sliderParams[i] = new AbsoluteParam(&outputs[SLIDER1_OUTPUT + i]);
+        sliderParams[i] = createAbsoluteOutput(
+            SLIDER1_OUTPUT + i, "Slider " + std::to_string(i + 1)
+        );
         sliderParams[i]->setSlew(0.01f);
+        sliderParams[i]->send(0);
     }
-
-    lights[GATE_LIGHT].setBrightness(1.0f);
 
     midiRouter = new MidiRouter(-1);
 
@@ -56,15 +55,15 @@ MiniLab3::MiniLab3() {
 
     midiRouter->onNoteOn([this](NoteOnEvent e) {
         noteParam->send(e.note);
-        outputs[VELOCITY_OUTPUT].setVoltage(e.velocity / 127.0f * 10.0f);
-        outputs[GATE_OUTPUT].setVoltage(10.0f);
+        velocityParam->send(e.velocity);
+        gateParam->send(1);
         notesOn++;
     });
 
     midiRouter->onNoteOff([this](NoteOffEvent e) {
         notesOn--;
         if (notesOn == 0) {
-            outputs[GATE_OUTPUT].setVoltage(0.0f);
+            gateParam->send(0);
         }
     });
 
@@ -88,41 +87,21 @@ MiniLab3::MiniLab3() {
 json_t* MiniLab3::dataToJson() {
     json_t* rootJ = json_object();
     json_object_set_new(rootJ, "midiInput", midiInput.toJson());
-
-    json_object_set_new(rootJ, "bendLimit", bendLimit->toJson());
-    json_object_set_new(rootJ, "bend", bend->toJson());
-
-    json_object_set_new(rootJ, "modLimit", modLimit->toJson());
-    json_object_set_new(rootJ, "mod", mod->toJson());
-
-    // knob strength: int
-    json_object_set_new(rootJ, "knobStrength", json_integer(knobStrength));
-    // knob voltage mode
-    json_object_set_new(
-        rootJ, "knobVoltageMode", json_integer(knobVoltageMode)
-    );
-    // knob slew limit
-    json_object_set_new(rootJ, "knobLimit", knobLimit->toJson());
-    // 8 SlewVoltage->toJson objects from knobs as json array
+    json_object_set_new(rootJ, "bend", bendParam->toJson());
+    json_object_set_new(rootJ, "mod", modParam->toJson());
     json_t* knobsJ = json_array();
     for (int i = 0; i < 8; i++) {
-        json_array_append_new(knobsJ, knobs[i]->toJson());
+        json_t* knobJ = knobParams[i]->toJson();
+        json_array_append_new(knobsJ, knobJ);
     }
     json_object_set_new(rootJ, "knobs", knobsJ);
-
-    // slider voltage mode
-    json_object_set_new(
-        rootJ, "sliderVoltageMode", json_integer(sliderVoltageMode)
-    );
-    // slider slew limit
-    json_object_set_new(rootJ, "sliderLimit", sliderLimit->toJson());
-    // 4 SlewVoltage->toJson objects from sliders as json array
     json_t* slidersJ = json_array();
     for (int i = 0; i < 4; i++) {
-        json_array_append_new(slidersJ, sliders[i]->toJson());
+        json_t* sliderJ = sliderParams[i]->toJson();
+        json_array_append_new(slidersJ, sliderJ);
     }
     json_object_set_new(rootJ, "sliders", slidersJ);
-
+    json_object_set_new(rootJ, "midiRouter", midiRouter->toJson());
     return rootJ;
 }
 
@@ -132,93 +111,41 @@ void MiniLab3::dataFromJson(json_t* rootJ) {
     if (midiInputJ) {
         midiInput.fromJson(midiInputJ);
     }
-
-    // bend slew limit
-    json_t* bendLimitJ = json_object_get(rootJ, "bendLimit");
-    if (bendLimitJ) {
-        bendLimit->fromJson(bendLimitJ);
-    }
-    // bend voltage
     json_t* bendJ = json_object_get(rootJ, "bend");
     if (bendJ) {
-        bend->fromJson(bendJ, bendLimit);
+        bendParam->fromJson(bendJ);
     }
-
-    // mod slew limit
-    json_t* modLimitJ = json_object_get(rootJ, "modLimit");
-    if (modLimitJ) {
-        modLimit->fromJson(modLimitJ);
-    }
-    // mod voltage
     json_t* modJ = json_object_get(rootJ, "mod");
     if (modJ) {
-        mod->fromJson(modJ, modLimit);
+        modParam->fromJson(modJ);
     }
-
-    // knob strength
-    json_t* knobStrengthJ = json_object_get(rootJ, "knobStrength");
-    if (knobStrengthJ) {
-        knobStrength = json_integer_value(knobStrengthJ);
-    }
-    // knob voltage mode
-    json_t* knobVoltageModeJ = json_object_get(rootJ, "knobVoltageMode");
-    if (knobVoltageModeJ) {
-        knobVoltageMode = (VoltageMode)json_integer_value(knobVoltageModeJ);
-    }
-    // knob slew limit
-    json_t* knobLimitJ = json_object_get(rootJ, "knobLimit");
-    if (knobLimitJ) {
-        knobLimit->fromJson(knobLimitJ);
-    }
-    // knob voltages
     json_t* knobsJ = json_object_get(rootJ, "knobs");
     if (knobsJ) {
         for (int i = 0; i < 8; i++) {
             json_t* knobJ = json_array_get(knobsJ, i);
             if (knobJ) {
-                knobs[i]->fromJson(knobJ, knobLimit);
+                knobParams[i]->fromJson(knobJ);
             }
         }
     }
-
-    // slider voltage mode
-    json_t* sliderVoltageModeJ = json_object_get(rootJ, "sliderVoltageMode");
-    if (sliderVoltageModeJ) {
-        sliderVoltageMode = (VoltageMode)json_integer_value(sliderVoltageModeJ);
-    }
-    // slider slew limit
-    json_t* sliderLimitJ = json_object_get(rootJ, "sliderLimit");
-    if (sliderLimitJ) {
-        sliderLimit->fromJson(sliderLimitJ);
-    }
-    // slider voltages
     json_t* slidersJ = json_object_get(rootJ, "sliders");
     if (slidersJ) {
         for (int i = 0; i < 4; i++) {
             json_t* sliderJ = json_array_get(slidersJ, i);
             if (sliderJ) {
-                sliders[i]->fromJson(sliderJ, sliderLimit);
+                sliderParams[i]->fromJson(sliderJ);
             }
         }
     }
 }
 
 void MiniLab3::process(const ProcessArgs& args) {
-
     midi::Message msg;
     while (midiInput.tryPop(&msg, args.frame)) {
         midiRouter->processMessage(msg);
     }
 
-    noteParam->process();
-    bendParam->process();
-    modParam->process();
-    for (auto& knob : knobParams) {
-        knob->process();
-    }
-    for (auto& slider : sliderParams) {
-        slider->process();
-    }
+    BaseModule::process(args);
 }
 
 Model* modelMiniLab3 = createModel<MiniLab3, MiniLab3Widget>("MiniLab3");

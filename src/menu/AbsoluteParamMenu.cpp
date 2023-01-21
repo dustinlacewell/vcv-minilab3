@@ -1,9 +1,9 @@
 #include <rack.hpp>
 
-#include "../utils/AbsoluteParam.hpp"
 #include "AbsoluteParamMenu.hpp"
 #include "MenuSlider.hpp"
 #include "VoltageModeSelector.hpp"
+#include "params/AbsoluteParam.hpp"
 
 using namespace rack;
 

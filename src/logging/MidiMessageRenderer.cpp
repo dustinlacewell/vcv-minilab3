@@ -22,13 +22,13 @@ std::string MidiMessageRenderer::pads(size_t n, std::string s) {
 std::string MidiMessageRenderer::renderSysexMessage(midi::Message& msg) {
     std::string s = string::f("SYSEX (%i bytes)", msg.getSize());
     return s;
-    std::ostringstream ss;
-    ss << std::hex;
-    for (int i = 0; i < msg.getSize(); i++) {
-        ss << std::setw(2) << std::setfill('0')
-           << static_cast<int>(msg.bytes[i]) << " ";
-    }
-    return ss.str();
+    //    std::ostringstream ss;
+    //    ss << std::hex;
+    //    for (int i = 0; i < msg.getSize(); i++) {
+    //        ss << std::setw(2) << std::setfill('0')
+    //           << static_cast<int>(msg.bytes[i]) << " ";
+    //    }
+    //    return ss.str();
 }
 
 std::string MidiMessageRenderer::renderSongPointerMessage(midi::Message& msg) {
@@ -60,7 +60,9 @@ std::string MidiMessageRenderer::renderStopMessage(midi::Message& msg) {
 }
 
 std::string MidiMessageRenderer::renderNoteOn(
-    midi::Message& msg, std::string chan, std::string note
+    midi::Message& msg,
+    std::string chan,
+    std::string note
 ) {
     uint8_t vel = msg.getValue();
     std::string s = string::f(
@@ -70,7 +72,9 @@ std::string MidiMessageRenderer::renderNoteOn(
 }
 
 std::string MidiMessageRenderer::renderNoteOff(
-    midi::Message& msg, std::string chan, std::string note
+    midi::Message& msg,
+    std::string chan,
+    std::string note
 ) {
     uint8_t vel = msg.getValue();
     std::string s = string::f(
@@ -80,30 +84,39 @@ std::string MidiMessageRenderer::renderNoteOff(
 }
 
 std::string MidiMessageRenderer::renderKeyPressure(
-    midi::Message& msg, std::string chan, std::string note
+    midi::Message& msg,
+    std::string chan,
+    std::string note
 ) {
     uint8_t value = msg.getValue();
     std::string s = string::f(
-        "%s %s %s | %i", chan.c_str(), pads(5, "TOUCH").c_str(), note.c_str(),
+        "%s %s %s | %i",
+        chan.c_str(),
+        pads(5, "TOUCH").c_str(),
+        note.c_str(),
         value
     );
     return s;
 }
 
 std::string MidiMessageRenderer::renderCC(
-    midi::Message& msg, std::string chan, std::string note
+    midi::Message& msg,
+    std::string chan,
+    std::string note
 ) {
     int8_t value = msg.bytes[2];
     std::string s = string::f(
-        "%s %s %s | %i", chan.c_str(), pads(5, "CC").c_str(), note.c_str(),
+        "%s %s %s | %i",
+        chan.c_str(),
+        pads(5, "CC").c_str(),
+        note.c_str(),
         value
     );
     return s;
 }
 
-std::string MidiMessageRenderer::renderProgramChange(
-    midi::Message& msg, std::string chan
-) {
+std::string
+MidiMessageRenderer::renderProgramChange(midi::Message& msg, std::string chan) {
     uint8_t prog = msg.getNote();
     std::string s =
         string::f("%s %s %i", chan.c_str(), pads(5, "PROG").c_str(), prog);
@@ -111,16 +124,16 @@ std::string MidiMessageRenderer::renderProgramChange(
 }
 
 std::string MidiMessageRenderer::renderChannelPressure(
-    midi::Message& msg, std::string chan
+    midi::Message& msg,
+    std::string chan
 ) {
     uint8_t value = msg.getNote();
     std::string s = string::f("%s PRESS %i", chan.c_str(), value);
     return s;
 }
 
-std::string MidiMessageRenderer::renderPitchWheel(
-    midi::Message& msg, std::string chan
-) {
+std::string
+MidiMessageRenderer::renderPitchWheel(midi::Message& msg, std::string chan) {
     uint8_t value = msg.getValue();
     std::string s = string::f("%s PITCH %i", chan.c_str(), value);
     return s;
@@ -130,28 +143,20 @@ std::string MidiMessageRenderer::renderSystemMessage(midi::Message& msg) {
     switch (msg.getChannel()) {
         case 0x0:  // sysex
             return renderSysexMessage(msg);
-            break;
         case 0x2:  // song pointer
             return renderSongPointerMessage(msg);
-            break;
         case 0x3:  // song select
             return renderSongSelectMessage(msg);
-            break;
         case 0x8:  // timing clock
             return renderTimingClockMessage(msg);
-            break;
         case 0xa:  // start
             return renderStartMessage(msg);
-            break;
         case 0xb:  // continue
             return renderContinueMessage(msg);
-            break;
         case 0xc:  // stop
             return renderStopMessage(msg);
-            break;
         default:
             return "UNKOWN SYSTEM MSG";
-            break;
     }
 }
 
@@ -164,30 +169,21 @@ std::string MidiMessageRenderer::render(midi::Message& msg) {
     switch (msg.getStatus()) {
         case 0x9:  // note on
             return renderNoteOn(msg, chan, note);
-            break;
         case 0x8:  // note off
             return renderNoteOff(msg, chan, note);
-            break;
         case 0xa:  // key pressure
             return renderKeyPressure(msg, chan, note);
-            break;
         case 0xb:  // cc
             return renderCC(msg, chan, note);
-            break;
         case 0xc:  // program change
             return renderProgramChange(msg, chan);
-            break;
         case 0xd:  // channel pressure
             return renderChannelPressure(msg, chan);
-            break;
         case 0xe:  // pitch wheel
             return renderPitchWheel(msg, chan);
-            break;
         case 0xf:  // system
             return renderSystemMessage(msg);
-            break;
         default:
             return "UNKOWN MSG";
-            break;
     }
 }

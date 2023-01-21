@@ -1,6 +1,5 @@
 #include "PadBinder.hpp"
 #include "../G8Pad.hpp"
-#include "../MiniLab3.hpp"
 
 #include "../plugin.hpp"
 
@@ -16,10 +15,10 @@ int PadBinder::process(Module* module) {
     }
 }
 
-void PadBinder::attachMidi(InputQueue& midiInput) {
-    bool driverMatch = midiInput.driverId == this->midiInput->driverId;
-    bool deviceMatch = midiInput.deviceId == this->midiInput->deviceId;
-    bool channelMatch = midiInput.channel == this->midiInput->channel;
+void PadBinder::attachMidi(InputQueue& newQueue) {
+    bool driverMatch = newQueue.driverId == midiInput->driverId;
+    bool deviceMatch = newQueue.deviceId == midiInput->deviceId;
+    bool channelMatch = newQueue.channel == midiInput->channel;
 
     if (driverMatch && deviceMatch && channelMatch) {
         return;
@@ -27,15 +26,15 @@ void PadBinder::attachMidi(InputQueue& midiInput) {
 
     this->unbind();
 
-    this->midiInput->setDriverId(midiInput.driverId);
-    this->midiInput->setDeviceId(midiInput.deviceId);
-    this->midiInput->setChannel(midiInput.channel);
+    midiInput->setDriverId(newQueue.driverId);
+    midiInput->setDeviceId(newQueue.deviceId);
+    midiInput->setChannel(newQueue.channel);
 }
 
 int PadBinder::unbind() {
-    this->midiInput->setChannel(-1);
-    this->midiInput->setDeviceId(-1);
-    this->midiInput->setDriverId(-1);
+    midiInput->setChannel(-1);
+    midiInput->setDeviceId(-1);
+    midiInput->setDriverId(-1);
     return -1;
 }
 
@@ -53,7 +52,7 @@ int PadBinder::bindToMiniLab3(Module* module) {
 int PadBinder::bindToG8Pad(Module* module) {
     G8Pad* leftPad = dynamic_cast<G8Pad*>(module);
     int padId = leftPad->getId();
-    if (leftPad && padId >= 0) {
+    if (leftPad != nullptr && padId >= 0) {
         attachMidi(leftPad->midiInput);
         return padId + 1;
     } else {

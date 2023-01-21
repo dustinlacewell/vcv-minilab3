@@ -4,30 +4,31 @@
 #include "MiniLab3.hpp"
 #include "widgets/MiniLogWidget.hpp"
 
+void resetMessages(dsp::RingBuffer<std::string, 512>& messages) {
+    messages.clear();
+    messages.push(string::f("RATE %i", int(APP->engine->getSampleRate())));
+}
+
 MiniLog::MiniLog() {
     config(PARAMS_LEN, INPUTS_LEN, OUTPUTS_LEN, LIGHTS_LEN);
     configLight(CONNECTED_LIGHT, "Connected");
 
-    midiInput.setChannel(-1);
-    midiInput.setDeviceId(-1);
-    midiInput.setDriverId(-1);
+    padBinder = new PadBinder(&midiInput);
 
     expanderDivider.setDivision(1024);
 
-    onReset();
+    resetMessages(messages);
+}
+
+void MiniLog::whenReinit(std::function<void()> callback) {
+    reinitCallbacks.push_back(callback);
 }
 
 void MiniLog::process(const ProcessArgs& args) {
     if (expanderDivider.process()) {
-        // check if right expander is MiniLab3
-        auto miniLab3 = dynamic_cast<MiniLab3*>(rightExpander.module);
-        if (miniLab3) {
-            // copy minilab3's mini input settings
-            midiInput.setDriverId(miniLab3->midiInput.driverId);
-            midiInput.setDeviceId(miniLab3->midiInput.deviceId);
-            midiInput.setChannel(miniLab3->midiInput.channel);
-            bool ready = miniLab3->midiInput.deviceId >= 0;
-            adjustLight(ready);
+        padBinder->process(rightExpander.module);
+        if (midiInput.driverId >= 0 && midiInput.deviceId >= 0) {
+            adjustLight(true);
         } else {
             adjustLight(false);
         }
@@ -40,9 +41,12 @@ void MiniLog::process(const ProcessArgs& args) {
 }
 
 void MiniLog::onReset() {
+    resetMessages(messages);
     midiMessageFilter.reset();
-    messages.push(string::f("RATE %i", int(APP->engine->getSampleRate())));
     Module::onReset();
+    for (auto& callback : reinitCallbacks) {
+        callback();
+    }
 }
 
 void MiniLog::processMessage(midi::Message& msg) {

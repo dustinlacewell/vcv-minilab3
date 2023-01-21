@@ -1,6 +1,5 @@
 #include <rack.hpp>
 
-#include "../slew/SlewVoltage.hpp"
 #include "VoltageModeSelector.hpp"
 
 using namespace rack;
@@ -13,7 +12,7 @@ void VoltageModeSelector::appendContextMenu(Menu* menu) {
     menu->addChild(createIndexSubmenuItem(
         "Mode",
         {"0V:1V", "0V:5V", "0V:10V", "-1V:1V", "-5V:5V", "-10V:10V"},
-        [=]() {
+        [this]() {
             VoltageMode mode = this->voltageChoice->get();
             switch (mode) {
                 case VoltageMode::UNIPOLAR_1:
@@ -32,7 +31,7 @@ void VoltageModeSelector::appendContextMenu(Menu* menu) {
                     return 0;
             }
         },
-        [=](int mode) {
+        [this](int mode) {
             switch (mode) {
                 case 0:
                     this->voltageChoice->set(VoltageMode::UNIPOLAR_1);

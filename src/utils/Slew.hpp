@@ -4,7 +4,7 @@
 
 #include "VoltageMode.hpp"
 
-#include "../slew/SlewLimitQuantity.hpp"
+#include "props/SlewLimitQuantity.hpp"
 
 using namespace rack::dsp;
 
@@ -18,13 +18,13 @@ struct Slew {
     Slew(float limit);
 
     VoltageMode getVoltageMode();
-    void setVoltageMode(VoltageMode voltageMode);
+    void setVoltageMode(VoltageMode newVoltageMode);
 
     float getLimit();
-    void setLimit(float limit);
+    void setLimit(float newLimit);
 
     float getTarget();
-    void setTarget(float target);
+    void setTarget(float newTarget);
 
     float getSlewed(float sampleTime);
 

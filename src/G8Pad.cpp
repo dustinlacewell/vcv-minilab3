@@ -9,50 +9,50 @@ using namespace std::experimental;
 
 G8Pad::G8Pad() : knobs{} {
     config(PARAMS_LEN, INPUTS_LEN, OUTPUTS_LEN, LIGHTS_LEN);
-    configOutput(GATE_OUTPUT, "Pad Gate");
-    configOutput(VELOCITY_OUTPUT, "Pad Velocity");
-    configOutput(BEND_OUTPUT, "Pitch Bend");
-    configOutput(TOUCH_OUTPUT, "Aftertouch");
-    configOutput(MOD_OUTPUT, "Mod-wheel");
-    configOutput(KNOB1_OUTPUT, "Knob 1");
-    configOutput(KNOB2_OUTPUT, "Knob 2");
-    configOutput(KNOB3_OUTPUT, "Knob 3");
-    configOutput(KNOB4_OUTPUT, "Knob 4");
-    configOutput(KNOB5_OUTPUT, "Knob 5");
-    configOutput(KNOB6_OUTPUT, "Knob 6");
-    configOutput(KNOB7_OUTPUT, "Knob 7");
-    configOutput(KNOBS8_OUTPUT, "Knob 8");
     configLight(GATE_LIGHT, "Gate Light");
 
     divider.setDivision(1024 * 4);
 
-    bend = new AbsoluteParam(&outputs[BEND_OUTPUT]);
+    gate = createAbsoluteOutput(GATE_OUTPUT, "Gate");
+    gate->setSlew(0.0f);
+    gate->setRange(0, 1);
+    gate->setVoltageMode(VoltageMode::UNIPOLAR_10);
+
+    velocity = createAbsoluteOutput(VELOCITY_OUTPUT, "Velocity");
+    velocity->setVoltageMode(VoltageMode::UNIPOLAR_10);
+    velocity->setSlew(0.1f);
+
+    bend = createAbsoluteOutput(BEND_OUTPUT, "Bend");
     bend->setVoltageMode(VoltageMode::BIPOLAR_5);
+    bend->setSlew(0.01f);
 
-    mod = new AbsoluteParam(&outputs[MOD_OUTPUT]);
+    mod = createAbsoluteOutput(MOD_OUTPUT, "Mod");
+    mod->setSlew(0.01f);
 
-    touch = new AbsoluteParam(&outputs[TOUCH_OUTPUT]);
+    touch = createAbsoluteOutput(TOUCH_OUTPUT, "Touch");
+    touch->setSlew(0.5f);
+    touch->setVoltageMode(VoltageMode::UNIPOLAR_10);
 
     for (int i = 0; i < 8; i++) {
-        knobs[i] = new RelativeParam(&outputs[KNOB1_OUTPUT + i]);
+        knobs[i] = createRelativeOutput(
+            KNOB1_OUTPUT + i, "Knob " + std::to_string(i + 1)
+        );
         knobs[i]->setVoltageMode(VoltageMode::BIPOLAR_5);
     }
 
     padBinder = new PadBinder(&midiInput);
-    padMidi = new PadMidi(0);
+    padMidi = new MidiRouter(0);
 
     padMidi->onGateOpen([this]() {
-        outputs[GATE_OUTPUT].setVoltage(10.0f);
-        //        outputs[VELOCITY_OUTPUT].setVoltage(e.velocity / 127.0f * 10.0f);
+        gate->send(1);
         lights[GATE_LIGHT].setBrightness(1.0);
     });
 
     padMidi->onGateClose([this]() {
-        outputs[GATE_OUTPUT].setVoltage(0.0f);
-        lights[GATE_LIGHT].setBrightness(0.0);
-
+        gate->send(0);
         bend->send(64);
         touch->send(0);
+        lights[GATE_LIGHT].setBrightness(0.0);
     });
 
     padMidi->onAftertouch([this](AftertouchEvent e) {
@@ -99,6 +99,8 @@ json_t* G8Pad::dataToJson() {
     json_t* rootJ = json_object();
     json_object_set_new(rootJ, "midiInput", midiInput.toJson());
     json_object_set_new(rootJ, "padMidi", padMidi->toJson());
+    json_object_set_new(rootJ, "gate", gate->toJson());
+    json_object_set_new(rootJ, "velocity", velocity->toJson());
     json_object_set_new(rootJ, "bend", bend->toJson());
     json_object_set_new(rootJ, "mod", mod->toJson());
     json_object_set_new(rootJ, "touch", touch->toJson());
@@ -108,6 +110,7 @@ json_t* G8Pad::dataToJson() {
         json_t* knobJ = knobs[i]->toJson();
         json_array_append_new(knobsJ, knobJ);
     }
+    json_object_set_new(rootJ, "knobs", knobsJ);
 
     return rootJ;
 }
@@ -116,6 +119,16 @@ void G8Pad::dataFromJson(json_t* rootJ) {
     json_t* bendJ = json_object_get(rootJ, "bend");
     if (bendJ) {
         bend->fromJson(bendJ);
+    }
+
+    json_t* gateJ = json_object_get(rootJ, "gate");
+    if (gateJ) {
+        gate->fromJson(gateJ);
+    }
+
+    json_t* velocityJ = json_object_get(rootJ, "velocity");
+    if (velocityJ) {
+        velocity->fromJson(velocityJ);
     }
 
     json_t* modJ = json_object_get(rootJ, "mod");

@@ -3,17 +3,16 @@
 #include <experimental/memory>
 #include <rack.hpp>
 #include "MiniLab3.hpp"
-#include "utils/AbsoluteParam.hpp"
+#include "params/AbsoluteParam.hpp"
+#include "params/RelativeParam.hpp"
 #include "utils/PadBinder.hpp"
-#include "utils/PadMidi.hpp"
-#include "utils/RelativeParam.hpp"
 #include "widgets/BaseWidget.hpp"
 
 using namespace std::experimental;
 
 using namespace rack::dsp;
 
-struct G8Pad : Module {
+struct G8Pad : BaseModule {
     enum ParamId { PARAMS_LEN };
     enum InputId { INPUTS_LEN };
     enum OutputId {
@@ -37,8 +36,10 @@ struct G8Pad : Module {
     midi::InputQueue midiInput;
     dsp::ClockDivider divider;
     PadBinder* padBinder;
-    PadMidi* padMidi;
+    MidiRouter* padMidi;
 
+    AbsoluteParam* gate;
+    AbsoluteParam* velocity;
     AbsoluteParam* bend;
     AbsoluteParam* mod;
     AbsoluteParam* touch;

@@ -21,28 +21,28 @@ Pile::Pile(int strength, int decCode, int incCode) {
     this->strength = strength;
 }
 
-void Pile::setDecCode(int decCode) {
-    this->decCode = decCode;
+void Pile::setDecCode(int newDecCode) {
+    decCode = newDecCode;
 }
 
-void Pile::setIncCode(int incCode) {
-    this->incCode = incCode;
+void Pile::setIncCode(int newIncCode) {
+    incCode = newIncCode;
 }
 
 int Pile::getStrength() {
-    return this->strength;
+    return strength;
 }
 
-void Pile::setStrength(int strength) {
-    this->strength = strength;
+void Pile::setStrength(int newStrength) {
+    strength = newStrength;
 }
 
 int Pile::getValue() {
     return this->value;
 }
 
-void Pile::setValue(int value) {
-    this->value = value;
+void Pile::setValue(int newValue) {
+    value = newValue;
 }
 
 int Pile::inc() {

@@ -4,9 +4,8 @@
 
 using namespace rack;
 
-#include "../slew/SlewVoltage.hpp"
-#include "../utils/AbsoluteParam.hpp"
 #include "ModularContextMenuItem.hpp"
+#include "params/AbsoluteParam.hpp"
 
 struct AbsoluteParamMenu : ModularContextMenuItem {
 

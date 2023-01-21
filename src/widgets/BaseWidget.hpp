@@ -3,9 +3,9 @@
 #include <rack.hpp>
 #include "menu/AbsoluteParamMenu.hpp"
 #include "menu/RelativeParamMenu.hpp"
+#include "params/AbsoluteParam.hpp"
+#include "params/RelativeParam.hpp"
 #include "ui/OutputPort.hpp"
-#include "utils/AbsoluteParam.hpp"
-#include "utils/RelativeParam.hpp"
 
 using namespace rack;
 
@@ -39,6 +39,7 @@ OutputPort* BaseWidget<T>::createAbsolutePort(
     if (module) {
         auto* param = getParam(module);
         port->contextMenus.push_back(new AbsoluteParamMenu(param));
+        port->setParam(param);
     }
 
     addOutput(port);
@@ -55,8 +56,9 @@ OutputPort* BaseWidget<T>::createRelativePort(
     auto* port = createOutputCentered<OutputPort>(mm2px(pos), module, outputId);
 
     if (module) {
-        auto* param = getParam(module);
+        RelativeParam* param = getParam(module);
         port->contextMenus.push_back(new RelativeParamMenu(param));
+        port->setParam(param);
     }
 
     addOutput(port);

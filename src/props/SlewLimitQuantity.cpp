@@ -1,5 +1,3 @@
-#pragma once
-
 #include "SlewLimitQuantity.hpp"
 
 SlewLimitQuantity::SlewLimitQuantity(std::string label) {

@@ -2,11 +2,9 @@
 
 #include <rack.hpp>
 
-
 using namespace rack::dsp;
 
-
-template<typename T>
+template <typename T>
 struct Clamp {
 
     T min;
@@ -20,9 +18,9 @@ struct Clamp {
     T getMin();
     T getMax();
 
-    void setMin(T min);
-    void setMax(T max);
+    void setMin(T newMin);
+    void setMax(T newMax);
 
-    json_t *toJson();
-    void fromJson(json_t *rootJ);
+    json_t* toJson();
+    void fromJson(json_t* rootJ);
 };
