@@ -41,7 +41,7 @@ The Aturia Minilab3 has 8 pads, so that's already 64 logical knobs.
   <img src="https://github.com/dustinlacewell/vcv-minilab3/blob/master/8-pads.png?raw=true" alt="Minilab3 module"/>
 </p>
 
-*Buuuut*, it has *two banks* of pad making for 16 pads, or 128 logical knobs!
+*Buuuut*, it has *two banks* of pads making for 16 pads, or **128 logical knobs**!
 
 <p align="center">
   <img src="https://github.com/dustinlacewell/vcv-minilab3/blob/master/16-pads.png?raw=true" alt="Minilab3 module"/>
@@ -54,4 +54,4 @@ And *technically*, there's 15 available channels so you *could* take it to *1,92
   <img src="https://github.com/dustinlacewell/vcv-minilab3/blob/master/15-channels.png?raw=true" alt="Minilab3 module"/>
 </p>
 
-...but your computer will probably leave you.
+...but your computer will give up first lol.
