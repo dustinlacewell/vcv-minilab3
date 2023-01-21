@@ -23,13 +23,13 @@ Imagine you had *hundreds* of MIDI knobs and mod wheels.
 
 For each pad on the Minilab3, pressing it will get you a whole new set of the non-pad surfaces.
 
-As example, say if I just twist the Minilab3's first knob we get blue activity:
+As an example, say I just twist the Minilab3's first knob. We get blue activity:
 
 <p align="center">
   <img src="https://github.com/dustinlacewell/vcv-minilab3/blob/master/main-knob.png?raw=true" alt="Minilab3 module"/>
 </p>
 
-But if I hold down the first pad, an independently tracked knob value comes out of the expander module:
+But if I hold down the first pad, an independently tracked red knob value comes out of the expander module:
 
 <p align="center">
   <img src="https://github.com/dustinlacewell/vcv-minilab3/blob/master/pad-knob.png?raw=true" alt="Minilab3 module"/>
