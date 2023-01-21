@@ -227,10 +227,27 @@ void OutputPort::step() {
         return;
     }
 
-    //    float newValue = this->param->getNormalizedValue();
-    //    VoltageMode newMode = this->param->getVoltageMode();
     if (this->updateDivider.process()) {
         bwValue->dirty = true;
         bwSlew->dirty = true;
+    }
+}
+
+void OutputPort::onDoubleClick(const event::DoubleClick& e) {
+    if (param == nullptr) {
+        return;
+    }
+
+    switch (param->getVoltageMode()) {
+        case VoltageMode::BIPOLAR_1:
+        case VoltageMode::BIPOLAR_5:
+        case VoltageMode::BIPOLAR_10:
+            param->setValue(64);
+            break;
+        case VoltageMode::UNIPOLAR_1:
+        case VoltageMode::UNIPOLAR_5:
+        case VoltageMode::UNIPOLAR_10:
+            param->setValue(0);
+            break;
     }
 }

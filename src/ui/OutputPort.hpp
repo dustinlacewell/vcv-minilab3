@@ -69,4 +69,6 @@ struct OutputPort : SvgPort {
     //    void drawValueCap(NVGcontext* vg);
     void setupWidgets();
     void setValue(float v);
+
+    void onDoubleClick(const event::DoubleClick& e) override;
 };

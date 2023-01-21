@@ -150,6 +150,14 @@ json_t* BaseParam::toJson() {
 }
 
 void BaseParam::fromJson(json_t* rootJ) {
+    json_t* slewLimitJ = json_object_get(rootJ, "slewLimit");
+    if (slewLimitJ) {
+        slewLimitQuantity->fromJson(slewLimitJ);
+    }
+    json_t* voltageModeJ = json_object_get(rootJ, "voltageMode");
+    if (voltageModeJ) {
+        voltageModeChoice->fromJson(voltageModeJ);
+    }
     json_t* pileJ = json_object_get(rootJ, "pile");
     if (pileJ) {
         pile->fromJson(pileJ);
@@ -165,17 +173,5 @@ void BaseParam::fromJson(json_t* rootJ) {
     json_t* slewJ = json_object_get(rootJ, "slew");
     if (slewJ) {
         slew->fromJson(slewJ);
-    }
-
-    // Update slew limit quantity
-    json_t* slewLimitJ = json_object_get(rootJ, "slewLimit");
-    if (slewLimitJ) {
-        slewLimitQuantity->fromJson(slewLimitJ);
-    }
-
-    // Update voltage mode choice
-    json_t* voltageModeJ = json_object_get(rootJ, "voltageMode");
-    if (voltageModeJ) {
-        voltageModeChoice->fromJson(voltageModeJ);
     }
 }
