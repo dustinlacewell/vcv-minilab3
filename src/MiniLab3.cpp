@@ -88,6 +88,7 @@ json_t* MiniLab3::dataToJson() {
     json_t* rootJ = json_object();
     json_object_set_new(rootJ, "midiInput", midiInput.toJson());
     json_object_set_new(rootJ, "note", noteParam->toJson());
+    json_object_set_new(rootJ, "velocity", velocityParam->toJson());
     json_object_set_new(rootJ, "bend", bendParam->toJson());
     json_object_set_new(rootJ, "mod", modParam->toJson());
     json_t* knobsJ = json_array();
@@ -107,7 +108,6 @@ json_t* MiniLab3::dataToJson() {
 }
 
 void MiniLab3::dataFromJson(json_t* rootJ) {
-    // midi input
     json_t* midiInputJ = json_object_get(rootJ, "midiInput");
     if (midiInputJ) {
         midiInput.fromJson(midiInputJ);
@@ -115,6 +115,10 @@ void MiniLab3::dataFromJson(json_t* rootJ) {
     json_t* noteJ = json_object_get(rootJ, "note");
     if (noteJ) {
         noteParam->fromJson(noteJ);
+    }
+    json_t* velocityJ = json_object_get(rootJ, "velocity");
+    if (velocityJ) {
+        velocityParam->fromJson(velocityJ);
     }
     json_t* bendJ = json_object_get(rootJ, "bend");
     if (bendJ) {
