@@ -123,6 +123,7 @@ void MidiRouter::processNoteOn(midi::Message& msg) {
 
     if (channel == 15) {
         processGateNoteOn(msg);
+        return;
     }
 
     if (padId == -1 || note == noteForPad(this->padId)) {
@@ -140,6 +141,7 @@ void MidiRouter::processNoteOff(midi::Message& msg) {
 
     if (channel == 15) {
         processGateNoteOff(msg);
+        return;
     }
 
     if (padId == -1) {
