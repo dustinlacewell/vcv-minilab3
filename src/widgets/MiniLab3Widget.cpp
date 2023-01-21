@@ -32,35 +32,35 @@ MiniLab3Widget::MiniLab3Widget(MiniLab3* module) {
         Vec(30.48, 51.645),
         module,
         MiniLab3::GATE_OUTPUT,
-        [](MiniLab3* lab) { return lab->gateParam; }
+        [](MiniLab3* lab) { return lab->gate; }
     );
 
     createAbsolutePort(
         Vec(51.577, 51.645),
         module,
         MiniLab3::VELOCITY_OUTPUT,
-        [](MiniLab3* lab) { return lab->velocityParam; }
+        [](MiniLab3* lab) { return lab->velocity; }
     );
 
     createAbsolutePort(
         Vec(9.382, 51.645),
         module,
         MiniLab3::NOTE_OUTPUT,
-        [](MiniLab3* lab) { return lab->noteParam; }
+        [](MiniLab3* lab) { return lab->note; }
     );
 
     createAbsolutePort(
         Vec(18.282, 66.756),
         module,
         MiniLab3::BEND_OUTPUT,
-        [](MiniLab3* lab) { return lab->bendParam; }
+        [](MiniLab3* lab) { return lab->bend; }
     );
 
     createAbsolutePort(
         Vec(41.677, 66.756),
         module,
         MiniLab3::MOD_OUTPUT,
-        [](MiniLab3* lab) { return lab->modParam; }
+        [](MiniLab3* lab) { return lab->mod; }
     );
 
     std::vector<Vec> knobPositions = {
@@ -78,7 +78,7 @@ MiniLab3Widget::MiniLab3Widget(MiniLab3* module) {
             knobPositions[i],
             module,
             MiniLab3::KNOB1_OUTPUT + i,
-            [&i](MiniLab3* lab) { return lab->knobParams[i]; }
+            [&i](MiniLab3* lab) { return lab->knobs[i]; }
         );
     }
 
@@ -94,7 +94,7 @@ MiniLab3Widget::MiniLab3Widget(MiniLab3* module) {
             sliderPositions[i],
             module,
             MiniLab3::SLIDER1_OUTPUT + i,
-            [&i](MiniLab3* lab) { return lab->sliderParams[i]; }
+            [&i](MiniLab3* lab) { return lab->sliders[i]; }
         );
     }
 }

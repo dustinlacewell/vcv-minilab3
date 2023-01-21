@@ -1,6 +1,7 @@
 #include <rack.hpp>
 
 #include "MiniLab3.hpp"
+#include "params/helpers.hpp"
 #include "widgets/MiniLab3Widget.hpp"
 
 using namespace rack::dsp;
@@ -11,99 +12,112 @@ MiniLab3::MiniLab3() {
 
     lights[GATE_LIGHT].setBrightness(1.0f);
 
-    gateParam = createAbsoluteOutput(GATE_OUTPUT, "Gate");
-    gateParam->setSlew(0.0f);
-    gateParam->setRange(0, 1);
-    gateParam->setVoltageMode(VoltageMode::UNIPOLAR_10);
+    gate = createAbsoluteOutput(GATE_OUTPUT, "Gate", [](auto p) {
+        p->setSlew(0.0f);
+        p->setRange(0, 1);
+        p->setVoltageMode(VoltageMode::UNIPOLAR_10);
+        p->setValue(0);
+    });
 
-    velocityParam = createAbsoluteOutput(VELOCITY_OUTPUT, "Velocity");
-    velocityParam->setVoltageMode(VoltageMode::UNIPOLAR_10);
-    velocityParam->setSlew(0.1f);
+    velocity = createAbsoluteOutput(VELOCITY_OUTPUT, "Velocity", [](auto p) {
+        p->setVoltageMode(VoltageMode::UNIPOLAR_10);
+        p->setSlew(0.25f);
+        p->setValue(0);
+    });
 
-    noteParam = createAbsoluteOutput(NOTE_OUTPUT, "Note");
-    noteParam->setRange(0, 120);
-    noteParam->setVoltageMode(VoltageMode::BIPOLAR_5);
-    noteParam->setSlew(0.0f);
+    note = createAbsoluteOutput(NOTE_OUTPUT, "Note", [](auto p) {
+        p->setVoltageMode(VoltageMode::UNIPOLAR_10);
+        p->setRange(0, 120);
+        p->setSlew(0.0f);
+        p->setValue(0);
+    });
 
-    bendParam = createAbsoluteOutput(BEND_OUTPUT, "Bend");
-    bendParam->setSlew(0.01f);
+    bend = createAbsoluteOutput(BEND_OUTPUT, "Bend", [](auto p) {
+        p->setSlew(0.25f);
+        p->setVoltageMode(VoltageMode::BIPOLAR_5);
+        p->setValue(64);
+    });
 
-    modParam = createAbsoluteOutput(MOD_OUTPUT, "Mod");
-    modParam->setSlew(0.01f);
+    mod = createAbsoluteOutput(MOD_OUTPUT, "Mod", [](auto p) {
+        p->setSlew(0.25f);
+        p->setVoltageMode(VoltageMode::UNIPOLAR_10);
+        p->setValue(0);
+    });
 
     for (int i = 0; i < 8; i++) {
-        knobParams[i] = createRelativeOutput(
-            KNOB1_OUTPUT + i, "Knob " + std::to_string(i + 1)
-        );
-        knobParams[i]->setSlew(0.01f);
-        knobParams[i]->send(0);
+        knobs[i] = makeKnob(KNOB1_OUTPUT, i, this);
     }
 
     for (int i = 0; i < 4; i++) {
-        sliderParams[i] = createAbsoluteOutput(
-            SLIDER1_OUTPUT + i, "Slider " + std::to_string(i + 1)
-        );
-        sliderParams[i]->setSlew(0.01f);
-        sliderParams[i]->send(0);
+        sliders[i] = makeSlider(SLIDER1_OUTPUT, i, this);
     }
 
-    midiRouter = new MidiRouter(-1);
+    router = new MidiRouter(-1);
+    router->onGateOpen([this]() { onGateOpen(); });
+    router->onGateClose([this]() { onGateClose(); });
+    router->onNoteOn([this](auto event) { onNoteOn(event); });
+    router->onNoteOff([this](auto e) { onNoteOff(e); });
+    router->onPitchBend([this](auto e) { onPitchBend(e); });
+    router->onModWheel([this](auto e) { onModWheel(e); });
+    router->onKnob([this](auto e) { onKnob(e); });
+    router->onSlider([this](auto e) { onSlider(e); });
+}
 
-    midiRouter->onGateOpen([this]() { lights[GATE_LIGHT].setBrightness(1.0); });
-    midiRouter->onGateClose([this]() { lights[GATE_LIGHT].setBrightness(0.0); }
-    );
+void MiniLab3::onGateOpen() {
+    lights[GATE_LIGHT].setBrightness(1.0);
+}
 
-    midiRouter->onNoteOn([this](NoteOnEvent e) {
-        noteParam->send(e.note);
-        velocityParam->send(e.velocity);
-        gateParam->send(1);
-        notesOn++;
-    });
+void MiniLab3::onGateClose() {
+    lights[GATE_LIGHT].setBrightness(0.0);
+}
 
-    midiRouter->onNoteOff([this](NoteOffEvent e) {
-        notesOn--;
-        if (notesOn == 0) {
-            gateParam->send(0);
-        }
-    });
+void MiniLab3::onNoteOn(NoteOnEvent event) {
+    note->send(event.note);
+    velocity->send(event.velocity);
+    gate->send(1);
+    notesOn++;
+}
 
-    midiRouter->onPitchBend([this](PitchBendEvent e) {
-        bendParam->send(e.pitchBend);
-    });
+void MiniLab3::onNoteOff(NoteOffEvent event) {
+    notesOn--;
+    if (notesOn == 0) {
+        gate->send(0);
+    }
+}
 
-    midiRouter->onModWheel([this](ModWheelEvent e) {
-        modParam->send(e.modWheel);
-    });
+void MiniLab3::onPitchBend(PitchBendEvent event) {
+    bend->send(event.pitchBend);
+}
 
-    midiRouter->onKnob([this](KnobEvent e) {
-        knobParams[e.knob]->send(e.value);
-    });
+void MiniLab3::onModWheel(ModWheelEvent event) {
+    mod->send(event.modWheel);
+}
 
-    midiRouter->onSlider([this](SliderEvent e) {
-        sliderParams[e.slider]->send(e.value);
-    });
+void MiniLab3::onKnob(KnobEvent event) {
+    knobs[event.knob]->send(event.value);
+}
+
+void MiniLab3::onSlider(SliderEvent event) {
+    sliders[event.slider]->send(event.value);
+}
+
+void MiniLab3::processMidi(int frame) {
+    midi::Message msg;
+    while (midiInput.tryPop(&msg, frame)) {
+        router->processMessage(msg);
+    }
+}
+
+void MiniLab3::process(const ProcessArgs& args) {
+    processMidi(args.frame);
+    processParams();
 }
 
 json_t* MiniLab3::dataToJson() {
     json_t* rootJ = json_object();
     json_object_set_new(rootJ, "midiInput", midiInput.toJson());
-    json_object_set_new(rootJ, "note", noteParam->toJson());
-    json_object_set_new(rootJ, "velocity", velocityParam->toJson());
-    json_object_set_new(rootJ, "bend", bendParam->toJson());
-    json_object_set_new(rootJ, "mod", modParam->toJson());
-    json_t* knobsJ = json_array();
-    for (int i = 0; i < 8; i++) {
-        json_t* knobJ = knobParams[i]->toJson();
-        json_array_append_new(knobsJ, knobJ);
-    }
-    json_object_set_new(rootJ, "knobs", knobsJ);
-    json_t* slidersJ = json_array();
-    for (int i = 0; i < 4; i++) {
-        json_t* sliderJ = sliderParams[i]->toJson();
-        json_array_append_new(slidersJ, sliderJ);
-    }
-    json_object_set_new(rootJ, "sliders", slidersJ);
-    json_object_set_new(rootJ, "midiRouter", midiRouter->toJson());
+    json_object_set_new(rootJ, "router", router->toJson());
+    outputsToJson(rootJ);
     return rootJ;
 }
 
@@ -112,49 +126,11 @@ void MiniLab3::dataFromJson(json_t* rootJ) {
     if (midiInputJ) {
         midiInput.fromJson(midiInputJ);
     }
-    json_t* noteJ = json_object_get(rootJ, "note");
-    if (noteJ) {
-        noteParam->fromJson(noteJ);
+    json_t* routerJ = json_object_get(rootJ, "router");
+    if (routerJ) {
+        router->fromJson(routerJ);
     }
-    json_t* velocityJ = json_object_get(rootJ, "velocity");
-    if (velocityJ) {
-        velocityParam->fromJson(velocityJ);
-    }
-    json_t* bendJ = json_object_get(rootJ, "bend");
-    if (bendJ) {
-        bendParam->fromJson(bendJ);
-    }
-    json_t* modJ = json_object_get(rootJ, "mod");
-    if (modJ) {
-        modParam->fromJson(modJ);
-    }
-    json_t* knobsJ = json_object_get(rootJ, "knobs");
-    if (knobsJ) {
-        for (int i = 0; i < 8; i++) {
-            json_t* knobJ = json_array_get(knobsJ, i);
-            if (knobJ) {
-                knobParams[i]->fromJson(knobJ);
-            }
-        }
-    }
-    json_t* slidersJ = json_object_get(rootJ, "sliders");
-    if (slidersJ) {
-        for (int i = 0; i < 4; i++) {
-            json_t* sliderJ = json_array_get(slidersJ, i);
-            if (sliderJ) {
-                sliderParams[i]->fromJson(sliderJ);
-            }
-        }
-    }
-}
-
-void MiniLab3::process(const ProcessArgs& args) {
-    midi::Message msg;
-    while (midiInput.tryPop(&msg, args.frame)) {
-        midiRouter->processMessage(msg);
-    }
-
-    BaseModule::process(args);
+    outputsFromJson(rootJ);
 }
 
 Model* modelMiniLab3 = createModel<MiniLab3, MiniLab3Widget>("MiniLab3");

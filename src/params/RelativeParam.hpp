@@ -13,7 +13,7 @@ struct RelativeParam : BaseParam {
 
     StrengthChoice* strengthChoice;
 
-    RelativeParam(engine::Output* output);
+    RelativeParam(std::string name, engine::Output* output);
 
     void send(int value) override;
 

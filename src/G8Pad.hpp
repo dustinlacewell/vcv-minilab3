@@ -35,8 +35,8 @@ struct G8Pad : BaseModule {
 
     midi::InputQueue midiInput;
     dsp::ClockDivider divider;
-    PadBinder* padBinder;
-    MidiRouter* padMidi;
+    PadBinder* binder;
+    MidiRouter* router;
 
     AbsoluteParam* gate;
     AbsoluteParam* velocity;
@@ -53,6 +53,13 @@ struct G8Pad : BaseModule {
     int getId() const;
     void process(const ProcessArgs& args) override;
     void processBinder();
-    void processParams();
     void processMidi(int frame);
+    void onGateOpen();
+    void onGateClose();
+    void onNoteOn(NoteOnEvent event);
+    void onNoteOff(NoteOffEvent event);
+    void onPitchBend(PitchBendEvent event);
+    void onModWheel(ModWheelEvent event);
+    void onAftertouch(AftertouchEvent event);
+    void onKnob(KnobEvent event);
 };

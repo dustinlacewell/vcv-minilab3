@@ -14,6 +14,8 @@ using namespace rack;
 
 struct BaseParam {
    protected:
+    json_t* resetData;
+    std::string name;
     engine::Output* output;
     Pile* pile;
     Clamp<int>* clamp;
@@ -26,15 +28,20 @@ struct BaseParam {
     CallbackQuantity* slewLimitQuantity;
     VoltageModeChoice* voltageModeChoice;
 
-    BaseParam(engine::Output* output);
+    BaseParam(std::string name, engine::Output* output);
     ~BaseParam();
 
+    void save();
+
+    virtual void load();
     virtual void resend();
     virtual void send(int value);
     virtual void process();
     virtual void sendCallbacks(float value);
 
     void whenValueChanges(std::function<void(float)> callback);
+
+    std::string getName();
 
     void setValue(int newValue);
     float getValue();

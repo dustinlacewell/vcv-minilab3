@@ -97,6 +97,11 @@ void MidiRouter::processGateNoteOn(midi::Message& msg) {
 
     if (note == noteForPad(this->padId)) {
         open();
+        auto velocity = msg.getValue();
+        NoteOnEvent noteEvent = {note, velocity};
+        for (const auto& noteOnCallback : this->noteOnCallbacks) {
+            noteOnCallback(noteEvent);
+        }
     }
 }
 
@@ -113,6 +118,10 @@ void MidiRouter::processGateNoteOff(midi::Message& msg) {
 
     if (note == noteForPad(this->padId)) {
         close();
+        NoteOffEvent noteEvent = {note};
+        for (const auto& noteOffCallback : this->noteOffCallbacks) {
+            noteOffCallback(noteEvent);
+        }
     }
 }
 
@@ -126,7 +135,7 @@ void MidiRouter::processNoteOn(midi::Message& msg) {
         return;
     }
 
-    if (padId == -1 || note == noteForPad(this->padId)) {
+    if (padId == -1) {
         NoteOnEvent noteEvent{note, velocity};
 
         for (const auto& noteOnCallback : this->noteOnCallbacks) {
@@ -154,9 +163,17 @@ void MidiRouter::processNoteOff(midi::Message& msg) {
 }
 
 void MidiRouter::processAftertouch(midi::Message& msg) {
-    if (!this->gateOpen) {
+    auto note = msg.getNote();
+    auto channel = msg.getChannel();
+
+    if (channel < 15) {  // only pads have aftertouch
         return;
     }
+
+    if (note != noteForPad(this->padId)) {  // separate aftertouch for each pad
+        return;
+    }
+
     int aftertouch = msg.getValue();
     AftertouchEvent event{aftertouch};
     for (const auto& callback : this->aftertouchCallbacks) {

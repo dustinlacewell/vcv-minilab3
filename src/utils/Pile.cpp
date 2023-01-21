@@ -2,15 +2,15 @@
 
 Pile::Pile() {
     this->value = 0;
-    this->decCode = 63;
-    this->incCode = 66;
+    this->decCode = 64;
+    this->incCode = 65;
     this->strength = 1;
 }
 
 Pile::Pile(int strength) {
     this->value = 0;
-    this->decCode = 63;
-    this->incCode = 66;
+    this->decCode = 64;
+    this->incCode = 65;
     this->strength = strength;
 }
 
@@ -56,33 +56,27 @@ int Pile::dec() {
 }
 
 int Pile::send(int code) {
+    if (code == -1) {
+        return value;
+    }
+
     if (code <= this->decCode) {
         return this->dec();
     } else if (code >= this->incCode) {
         return this->inc();
-    } else {
-        return value;
     }
+
+    return value;
 }
 
 json_t* Pile::toJson() {
     json_t* rootJ = json_object();
-    json_object_set_new(rootJ, "decCode", json_integer(this->decCode));
-    json_object_set_new(rootJ, "incCode", json_integer(this->incCode));
     json_object_set_new(rootJ, "strength", json_integer(this->strength));
     json_object_set_new(rootJ, "value", json_integer(this->value));
     return rootJ;
 }
 
 void Pile::fromJson(json_t* rootJ) {
-    json_t* decCodeJ = json_object_get(rootJ, "decCode");
-    if (decCodeJ) {
-        this->decCode = json_integer_value(decCodeJ);
-    }
-    json_t* incCodeJ = json_object_get(rootJ, "incCode");
-    if (incCodeJ) {
-        this->incCode = json_integer_value(incCodeJ);
-    }
     json_t* strengthJ = json_object_get(rootJ, "strength");
     if (strengthJ) {
         this->strength = json_integer_value(strengthJ);

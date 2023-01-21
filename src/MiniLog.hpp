@@ -16,7 +16,7 @@ struct MiniLog : Module {
     enum OutputId { OUTPUTS_LEN };
     enum LightId { CONNECTED_LIGHT, LIGHTS_LEN };
 
-    PadBinder* padBinder;
+    PadBinder* binder;
     midi::InputQueue midiInput;
     ClockDivider expanderDivider;
 

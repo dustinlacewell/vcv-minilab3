@@ -4,7 +4,8 @@
 
 using namespace rack;
 
-BaseParam::BaseParam(engine::Output* output) {
+BaseParam::BaseParam(std::string name, engine::Output* output) {
+    this->name = name;
     this->output = output;
     this->pile = new Pile();
     this->clamp = new Clamp<int>(0, 127);
@@ -20,6 +21,8 @@ BaseParam::BaseParam(engine::Output* output) {
             this->rescaler->setVoltageMode(voltageMode);
             this->send(this->pile->getValue());
         });
+
+    this->resetData = BaseParam::toJson();
 }
 
 BaseParam::~BaseParam() {
@@ -31,8 +34,23 @@ BaseParam::~BaseParam() {
     delete this->voltageModeChoice;
 }
 
+void BaseParam::save() {
+    this->resetData = BaseParam::toJson();
+}
+
+void BaseParam::load() {
+    this->fromJson(this->resetData);
+}
+
+std::string BaseParam::getName() {
+    return this->name;
+}
+
 void BaseParam::setValue(int newValue) {
     pile->setValue(newValue);
+    auto normal = clamp->normalized(pile->getValue());
+    this->slew->setTarget(normal);
+    this->slew->slewLimiter.out = normal;
 }
 
 float BaseParam::getValue() {

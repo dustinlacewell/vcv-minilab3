@@ -1,11 +1,14 @@
 #include "RelativeParam.hpp"
 #include "props/CallbackQuantity.hpp"
 
-RelativeParam::RelativeParam(Output* output) : BaseParam(output) {
+RelativeParam::RelativeParam(std::string name, Output* output)
+    : BaseParam(name, output) {
     this->strengthChoice =
         new StrengthChoice("Relative Strength", [this](int choice) {
             this->pile->setStrength(choice);
         });
+
+    this->resetData = RelativeParam::toJson();
 }
 
 void RelativeParam::send(int value) {
@@ -13,7 +16,6 @@ void RelativeParam::send(int value) {
     auto clamped = clamp->clamped(piled);
     pile->setValue(clamped);
     auto normalized = clamp->normalized(clamped);
-    //    auto scaled = rescaler->rescale(normalized);
     if (slew->getLimit() > 0.0f) {
         slew->setTarget(normalized);
         auto slewed = slew->getSlewed(APP->engine->getSampleTime());

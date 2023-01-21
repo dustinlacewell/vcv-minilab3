@@ -13,7 +13,7 @@ MiniLog::MiniLog() {
     config(PARAMS_LEN, INPUTS_LEN, OUTPUTS_LEN, LIGHTS_LEN);
     configLight(CONNECTED_LIGHT, "Connected");
 
-    padBinder = new PadBinder(&midiInput);
+    binder = new PadBinder(&midiInput);
 
     expanderDivider.setDivision(1024);
 
@@ -26,7 +26,7 @@ void MiniLog::whenReinit(std::function<void()> callback) {
 
 void MiniLog::process(const ProcessArgs& args) {
     if (expanderDivider.process()) {
-        padBinder->process(rightExpander.module);
+        binder->process(rightExpander.module);
         if (midiInput.driverId >= 0 && midiInput.deviceId >= 0) {
             adjustLight(true);
         } else {

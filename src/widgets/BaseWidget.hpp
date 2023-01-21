@@ -25,6 +25,8 @@ struct BaseWidget : ModuleWidget {
         int outputId,
         const std::function<RelativeParam*(T*)>& getParam
     );
+
+    void onReset();
 };
 
 template <typename T>

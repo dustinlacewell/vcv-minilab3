@@ -1,6 +1,7 @@
 #include <rack.hpp>
 
 #include "G8Pad.hpp"
+#include "params/helpers.hpp"
 #include "widgets/G8PadWidget.hpp"
 
 using namespace rack;
@@ -13,79 +14,99 @@ G8Pad::G8Pad() : knobs{} {
 
     divider.setDivision(1024 * 4);
 
-    gate = createAbsoluteOutput(GATE_OUTPUT, "Gate");
-    gate->setSlew(0.0f);
-    gate->setRange(0, 1);
-    gate->setVoltageMode(VoltageMode::UNIPOLAR_10);
+    gate = createAbsoluteOutput(GATE_OUTPUT, "Gate", [](auto p) {
+        p->setSlew(0.0f);
+        p->setRange(0, 1);
+        p->setVoltageMode(VoltageMode::UNIPOLAR_10);
+        p->setValue(0);
+    });
 
-    velocity = createAbsoluteOutput(VELOCITY_OUTPUT, "Velocity");
-    velocity->setVoltageMode(VoltageMode::UNIPOLAR_10);
-    velocity->setSlew(0.1f);
+    velocity = createAbsoluteOutput(VELOCITY_OUTPUT, "Velocity", [](auto p) {
+        p->setVoltageMode(VoltageMode::UNIPOLAR_10);
+        p->setSlew(0.25f);
+        p->setValue(0);
+    });
 
-    bend = createAbsoluteOutput(BEND_OUTPUT, "Bend");
-    bend->setVoltageMode(VoltageMode::BIPOLAR_5);
-    bend->setSlew(0.01f);
+    bend = createAbsoluteOutput(BEND_OUTPUT, "Bend", [](auto p) {
+        p->setSlew(0.25f);
+        p->setVoltageMode(VoltageMode::BIPOLAR_5);
+        p->setValue(64);
+    });
 
-    mod = createAbsoluteOutput(MOD_OUTPUT, "Mod");
-    mod->setSlew(0.01f);
+    mod = createAbsoluteOutput(MOD_OUTPUT, "Mod", [](auto p) {
+        p->setSlew(0.25f);
+        p->setVoltageMode(VoltageMode::UNIPOLAR_10);
+        p->setValue(0);
+    });
 
-    touch = createAbsoluteOutput(TOUCH_OUTPUT, "Touch");
-    touch->setSlew(0.5f);
-    touch->setVoltageMode(VoltageMode::UNIPOLAR_10);
+    touch = createAbsoluteOutput(TOUCH_OUTPUT, "Touch", [](auto p) {
+        p->setSlew(0.25f);
+        p->setVoltageMode(VoltageMode::UNIPOLAR_10);
+        p->setValue(0);
+    });
 
     for (int i = 0; i < 8; i++) {
-        knobs[i] = createRelativeOutput(
-            KNOB1_OUTPUT + i, "Knob " + std::to_string(i + 1)
-        );
-        knobs[i]->setVoltageMode(VoltageMode::BIPOLAR_5);
+        knobs[i] = makeKnob(KNOB1_OUTPUT, i, this);
     }
 
-    padBinder = new PadBinder(&midiInput);
-    padMidi = new MidiRouter(0);
+    binder = new PadBinder(&midiInput);
+    router = new MidiRouter(0);
 
-    padMidi->onGateOpen([this]() {
-        gate->send(1);
-        lights[GATE_LIGHT].setBrightness(1.0);
-    });
+    router->onGateOpen([this]() { onGateOpen(); });
+    router->onGateClose([this]() { onGateClose(); });
+    router->onNoteOn([this](auto event) { onNoteOn(event); });
+    router->onAftertouch([this](auto e) { onAftertouch(e); });
+    router->onPitchBend([this](auto e) { onPitchBend(e); });
+    router->onModWheel([this](auto e) { onModWheel(e); });
+    router->onKnob([this](auto e) { onKnob(e); });
+}
 
-    padMidi->onGateClose([this]() {
-        gate->send(0);
-        bend->send(64);
-        touch->send(0);
-        lights[GATE_LIGHT].setBrightness(0.0);
-    });
+void G8Pad::onGateOpen() {
+    gate->send(1);
+    lights[GATE_LIGHT].setBrightness(1.0);
+}
 
-    padMidi->onAftertouch([this](AftertouchEvent e) {
-        touch->send(e.aftertouch);
-    });
-    padMidi->onPitchBend([this](PitchBendEvent e) { bend->send(e.pitchBend); });
-    padMidi->onModWheel([this](ModWheelEvent e) { mod->send(e.modWheel); });
-    padMidi->onKnob([this](KnobEvent e) { knobs[e.knob]->send(e.value); });
+void G8Pad::onGateClose() {
+    gate->send(0);
+    bend->send(64);
+    touch->send(0);
+    lights[GATE_LIGHT].setBrightness(0.0);
+}
+
+void G8Pad::onNoteOn(NoteOnEvent event) {
+    velocity->send(event.velocity);
+}
+
+void G8Pad::onPitchBend(PitchBendEvent event) {
+    bend->send(event.pitchBend);
+}
+
+void G8Pad::onModWheel(ModWheelEvent event) {
+    mod->send(event.modWheel);
+}
+
+void G8Pad::onAftertouch(AftertouchEvent event) {
+    touch->send(event.aftertouch);
+}
+
+void G8Pad::onKnob(KnobEvent event) {
+    knobs[event.knob]->send(event.value);
 }
 
 int G8Pad::getId() const {
-    return padMidi->padId;
-}
-
-void G8Pad::processParams() {
-    touch->process();
-    bend->process();
-    mod->process();
-    for (auto& knob : knobs) {
-        knob->process();
-    }
+    return router->padId;
 }
 
 void G8Pad::processMidi(int frame) {
     midi::Message msg;
     while (midiInput.tryPop(&msg, frame)) {
-        padMidi->processMessage(msg);
+        router->processMessage(msg);
     }
 }
 
 void G8Pad::processBinder() {
     if (divider.process()) {
-        padMidi->padId = padBinder->process(leftExpander.module);
+        router->padId = binder->process(leftExpander.module);
     }
 }
 
@@ -98,7 +119,7 @@ void G8Pad::process(const ProcessArgs& args) {
 json_t* G8Pad::dataToJson() {
     json_t* rootJ = json_object();
     json_object_set_new(rootJ, "midiInput", midiInput.toJson());
-    json_object_set_new(rootJ, "padMidi", padMidi->toJson());
+    json_object_set_new(rootJ, "router", router->toJson());
     json_object_set_new(rootJ, "gate", gate->toJson());
     json_object_set_new(rootJ, "velocity", velocity->toJson());
     json_object_set_new(rootJ, "bend", bend->toJson());

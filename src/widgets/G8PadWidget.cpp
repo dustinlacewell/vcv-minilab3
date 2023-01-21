@@ -45,9 +45,12 @@ G8PadWidget::G8PadWidget(G8Pad* module) {
         [](G8Pad* pad) { return pad->bend; }
     );
 
-    addOutput(createOutputCentered<PJ301MPort>(
-        mm2px(Vec(20.677, 41.619)), module, G8Pad::VELOCITY_OUTPUT
-    ));
+    createAbsolutePort(
+        Vec(20.677, 41.619),
+        module,
+        G8Pad::VELOCITY_OUTPUT,
+        [](G8Pad* pad) { return pad->velocity; }
+    );
 
     createRelativePort(
         Vec(9.847, 78.694),
