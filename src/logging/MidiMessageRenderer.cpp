@@ -1,6 +1,7 @@
 #include "MidiMessageRenderer.hpp"
 #include <iomanip>
 #include <rack.hpp>
+#include "consts/midi.hpp"
 
 using namespace rack;
 
@@ -141,19 +142,19 @@ MidiMessageRenderer::renderPitchWheel(midi::Message& msg, std::string chan) {
 
 std::string MidiMessageRenderer::renderSystemMessage(midi::Message& msg) {
     switch (msg.getChannel()) {
-        case 0x0:  // sysex
+        case SysEx:  // sysex
             return renderSysexMessage(msg);
-        case 0x2:  // song pointer
+        case SongPositionPointer:  // song pointer
             return renderSongPointerMessage(msg);
-        case 0x3:  // song select
+        case SongSelect:  // song select
             return renderSongSelectMessage(msg);
-        case 0x8:  // timing clock
+        case TimingClock:  // timing clock
             return renderTimingClockMessage(msg);
-        case 0xa:  // start
+        case Start:  // start
             return renderStartMessage(msg);
-        case 0xb:  // continue
+        case Continue:  // continue
             return renderContinueMessage(msg);
-        case 0xc:  // stop
+        case Stop:  // stop
             return renderStopMessage(msg);
         default:
             return "UNKOWN SYSTEM MSG";
@@ -161,27 +162,27 @@ std::string MidiMessageRenderer::renderSystemMessage(midi::Message& msg) {
 }
 
 std::string MidiMessageRenderer::render(midi::Message& msg) {
-    // render channel as two digit number
+    // render channel as two-digit number
     std::string chan = padi(2, msg.getChannel() + 1);
-    // render note as a three digit number, without leading zeros
+    // render note as a three-digit number, without leading zeros
     std::string note = padi(3, msg.getNote());
 
     switch (msg.getStatus()) {
-        case 0x9:  // note on
+        case NoteOn:
             return renderNoteOn(msg, chan, note);
-        case 0x8:  // note off
+        case NoteOff:
             return renderNoteOff(msg, chan, note);
-        case 0xa:  // key pressure
+        case KeyPressure:
             return renderKeyPressure(msg, chan, note);
-        case 0xb:  // cc
+        case ControlChange:
             return renderCC(msg, chan, note);
-        case 0xc:  // program change
+        case ProgramChange:
             return renderProgramChange(msg, chan);
-        case 0xd:  // channel pressure
+        case ChannelPressure:
             return renderChannelPressure(msg, chan);
-        case 0xe:  // pitch wheel
+        case PitchBend:
             return renderPitchWheel(msg, chan);
-        case 0xf:  // system
+        case System:
             return renderSystemMessage(msg);
         default:
             return "UNKOWN MSG";

@@ -13,7 +13,7 @@ void MidiMessageFilter::reset() {
     showChannelPressurelMsg = true;
     showPitchWheelMsg = true;
 
-    showSysExMsg = false;
+    showSysExMsg = true;
     showSysExData = false;
     showClockMsg = false;
     showSystemMsg = true;

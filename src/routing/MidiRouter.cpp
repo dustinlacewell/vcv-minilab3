@@ -1,4 +1,5 @@
 #include "MidiRouter.hpp"
+#include "consts/midi.hpp"
 #include "padNotes.hpp"
 
 MidiRouter::MidiRouter(int padId) {
@@ -130,7 +131,7 @@ void MidiRouter::processNoteOn(midi::Message& msg) {
     int velocity = msg.getValue();
     int channel = msg.getChannel();
 
-    if (channel == 15) {
+    if (channel == ControlChannel) {
         processGateNoteOn(msg);
         return;
     }
@@ -148,7 +149,7 @@ void MidiRouter::processNoteOff(midi::Message& msg) {
     int note = msg.getNote();
     int channel = msg.getChannel();
 
-    if (channel == 15) {
+    if (channel == ControlChannel) {
         processGateNoteOff(msg);
         return;
     }
@@ -166,7 +167,7 @@ void MidiRouter::processAftertouch(midi::Message& msg) {
     auto note = msg.getNote();
     auto channel = msg.getChannel();
 
-    if (channel < 15) {  // only pads have aftertouch
+    if (channel != ControlChannel) {  // only pads have aftertouch
         return;
     }
 
@@ -207,7 +208,7 @@ void MidiRouter::processKnob(midi::Message& msg) {
     if (!this->gateOpen) {
         return;
     }
-    int knob = msg.getNote() - 102;
+    int knob = msg.getNote() - FirstKnob;
     int value = msg.getValue();
     KnobEvent event = {knob, value};
     for (const auto& callback : this->knobCallbacks) {
@@ -216,7 +217,7 @@ void MidiRouter::processKnob(midi::Message& msg) {
 }
 
 void MidiRouter::processSlider(midi::Message& msg) {
-    int slider = msg.getNote() - 80;
+    int slider = msg.getNote() - FirstSlider;
     int value = msg.getValue();
     SliderEvent event = {slider, value};
     for (const auto& callback : this->sliderCallbacks) {
@@ -227,23 +228,23 @@ void MidiRouter::processSlider(midi::Message& msg) {
 void MidiRouter::processControlChange(midi::Message& msg) {
     int note = msg.getNote();
     switch (note) {
-        case 0x01:
+        case ModWheel:
             processModWheel(msg);
             break;
-        case 80:
-        case 81:
-        case 82:
-        case 83:
+        case FirstSlider:
+        case FirstSlider + 1:
+        case FirstSlider + 2:
+        case FirstSlider + 3:
             processSlider(msg);
             break;
-        case 102:
-        case 103:
-        case 104:
-        case 105:
-        case 106:
-        case 107:
-        case 108:
-        case 109:
+        case FirstKnob:
+        case FirstKnob + 1:
+        case FirstKnob + 2:
+        case FirstKnob + 3:
+        case FirstKnob + 4:
+        case FirstKnob + 5:
+        case FirstKnob + 6:
+        case FirstKnob + 7:
             processKnob(msg);
             break;
     }
@@ -251,19 +252,19 @@ void MidiRouter::processControlChange(midi::Message& msg) {
 
 void MidiRouter::processMessage(midi::Message& msg) {
     switch (msg.getStatus()) {
-        case 0x9:
+        case NoteOn:
             processNoteOn(msg);
             break;
-        case 0x8:
+        case NoteOff:
             processNoteOff(msg);
             break;
-        case 0xa:
+        case KeyPressure:
             processAftertouch(msg);
             break;
-        case 0xe:
+        case PitchBend:
             processPitchBend(msg);
             break;
-        case 0xb:
+        case ControlChange:
             processControlChange(msg);
             break;
     }
