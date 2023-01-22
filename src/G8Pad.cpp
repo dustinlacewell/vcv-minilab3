@@ -17,7 +17,7 @@ G8Pad::G8Pad() : knobs{} {
     gate = createAbsoluteOutput(GATE_OUTPUT, "Gate", [](auto p) {
         p->setSlew(0.0f);
         p->setRange(0, 1);
-        p->setVoltageMode(VoltageMode::UNIPOLAR_10);
+        p->setVoltageMode(VoltageMode::UNIPOLAR_5);
         p->setValue(0);
     });
 
