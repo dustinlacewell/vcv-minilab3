@@ -1,6 +1,8 @@
 #include "MidiMessageFilter.hpp"
 #include <rack.hpp>
 
+#include "consts/midi.hpp"
+
 using namespace rack;
 
 void MidiMessageFilter::reset() {
@@ -19,35 +21,35 @@ void MidiMessageFilter::reset() {
 
 bool MidiMessageFilter::shouldHandle(midi::Message msg) {
     switch (msg.getStatus()) {
-        case 0x8:  // Note Off
-        case 0x9:  // Note On
+        case NoteOff:
+        case NoteOn:
             return true;
-        case 0xa:  // Key Pressure
+        case KeyPressure:
             return showKeyPressure;
-        case 0xb:  // Control Change
+        case ControlChange:
             return showCcMsg;
-        case 0xc:  // Program Change
+        case ProgramChange:
             return showProgChangeMsg;
-        case 0xd:  // Channel Pressure
+        case ChannelPressure:
             return showChannelPressurelMsg;
-        case 0xe:  // Pitch Wheel
+        case PitchBend:
             return showPitchWheelMsg;
-        case 0xf:  // System
+        case System:
             switch (msg.getChannel()) {
-                case 0xF0:  // SysEx
+                case SysEx:
                     return showSysExMsg;
-                case 0xF1:  // MTC Quarter Frame
-                case 0xF2:  // Song Position Pointer
-                case 0xF3:  // Song Select
-                case 0xF6:  // Tune Request
+                case MTCQuarterFrame:
+                case SongPositionPointer:
+                case SongSelect:
+                case TuneRequest:
                     return showSystemMsg;
-                case 0xF8:  // Timing Clock
+                case TimingClock:
                     return showClockMsg;
-                case 0xFA:  // Start
-                case 0xFB:  // Continue
-                case 0xFC:  // Stop
-                case 0xFE:  // Active Sensing
-                case 0xFF:  // System Reset
+                case Start:
+                case Continue:
+                case Stop:
+                case ActiveSensing:
+                case SystemReset:
                     return showSystemMsg;
             }
             break;
