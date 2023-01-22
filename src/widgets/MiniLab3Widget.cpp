@@ -7,7 +7,7 @@
 
 MiniLab3Widget::MiniLab3Widget(MiniLab3* module) {
     setModule(module);
-    setPanel(createPanel(asset::plugin(pluginInstance, "res/MiniLab3.svg")));
+    setPanel(createPanel(asset::plugin(pluginInstance, "res/Lab.svg")));
 
     addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
     addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0))
@@ -29,49 +29,36 @@ MiniLab3Widget::MiniLab3Widget(MiniLab3* module) {
     ));
 
     createAbsolutePort(
-        Vec(30.48, 51.645),
+        Vec(22.179, 49.891),
         module,
         MiniLab3::GATE_OUTPUT,
         [](MiniLab3* lab) { return lab->gate; }
     );
 
     createAbsolutePort(
-        Vec(51.577, 51.645),
-        module,
-        MiniLab3::VELOCITY_OUTPUT,
-        [](MiniLab3* lab) { return lab->velocity; }
-    );
-
-    createAbsolutePort(
-        Vec(9.382, 51.645),
-        module,
-        MiniLab3::NOTE_OUTPUT,
-        [](MiniLab3* lab) { return lab->note; }
-    );
-
-    createAbsolutePort(
-        Vec(18.282, 66.756),
+        Vec(6.149, 49.891),
         module,
         MiniLab3::BEND_OUTPUT,
         [](MiniLab3* lab) { return lab->bend; }
     );
 
     createAbsolutePort(
-        Vec(41.677, 66.756),
+        Vec(38.771, 49.891),
         module,
         MiniLab3::MOD_OUTPUT,
         [](MiniLab3* lab) { return lab->mod; }
     );
 
     std::vector<Vec> knobPositions = {
-        Vec(6.445, 84.75),
-        Vec(22.119, 84.75),
-        Vec(38.768, 84.75),
-        Vec(56.03, 84.75),
-        Vec(6.445, 97.364),
-        Vec(22.119, 97.364),
-        Vec(38.768, 97.364),
-        Vec(55.428, 97.364)};
+        Vec(6.149, 102.393),
+        Vec(17.023, 102.393),
+        Vec(27.897, 102.393),
+        Vec(38.771, 102.393),
+        Vec(6.149, 113.266),
+        Vec(17.023, 113.266),
+        Vec(27.897, 113.266),
+        Vec(38.771, 113.266),
+    };
 
     for (int i = 0; i < knobPositions.size(); i++) {
         createRelativePort(
@@ -83,10 +70,10 @@ MiniLab3Widget::MiniLab3Widget(MiniLab3* module) {
     }
 
     std::vector<Vec> sliderPositions = {
-        Vec(6.445, 115.842),
-        Vec(22.119, 115.842),
-        Vec(38.768, 115.842),
-        Vec(55.729, 115.842),
+        Vec(6.149, 78.392),
+        Vec(17.023, 78.392),
+        Vec(27.897, 78.392),
+        Vec(38.771, 78.392),
     };
 
     for (int i = 0; i < sliderPositions.size(); i++) {

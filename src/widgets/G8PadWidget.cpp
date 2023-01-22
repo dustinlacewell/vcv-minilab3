@@ -39,7 +39,7 @@ G8PadWidget::G8PadWidget(G8Pad* module) {
     );
 
     createAbsolutePort(
-        Vec(9.875, 58.734),
+        Vec(9.847, 58.734),
         module,
         G8Pad::BEND_OUTPUT,
         [](G8Pad* pad) { return pad->bend; }
@@ -53,49 +53,49 @@ G8PadWidget::G8PadWidget(G8Pad* module) {
     );
 
     createRelativePort(
-        Vec(9.847, 78.694),
+        Vec(9.847, 78.392),
         module,
         G8Pad::KNOB1_OUTPUT,
         [](G8Pad* pad) { return pad->knobs[0]; }
     );
     createRelativePort(
-        Vec(20.72, 78.694),
+        Vec(20.72, 78.392),
         module,
         G8Pad::KNOB2_OUTPUT,
         [](G8Pad* pad) { return pad->knobs[1]; }
     );
     createRelativePort(
-        Vec(9.76, 91.276),
+        Vec(9.76, 90.017),
         module,
         G8Pad::KNOB3_OUTPUT,
         [](G8Pad* pad) { return pad->knobs[2]; }
     );
     createRelativePort(
-        Vec(20.633, 91.276),
+        Vec(20.633, 90.017),
         module,
         G8Pad::KNOB4_OUTPUT,
         [](G8Pad* pad) { return pad->knobs[3]; }
     );
     createRelativePort(
-        Vec(9.76, 103.857),
+        Vec(9.76, 101.642),
         module,
         G8Pad::KNOB5_OUTPUT,
         [](G8Pad* pad) { return pad->knobs[4]; }
     );
     createRelativePort(
-        Vec(20.633, 103.857),
+        Vec(20.633, 101.642),
         module,
         G8Pad::KNOB6_OUTPUT,
         [](G8Pad* pad) { return pad->knobs[5]; }
     );
     createRelativePort(
-        Vec(9.76, 116.438),
+        Vec(9.76, 113.266),
         module,
         G8Pad::KNOB7_OUTPUT,
         [](G8Pad* pad) { return pad->knobs[6]; }
     );
     createRelativePort(
-        Vec(20.633, 116.439),
+        Vec(20.633, 113.267),
         module,
         G8Pad::KNOBS8_OUTPUT,
         [](G8Pad* pad) { return pad->knobs[7]; }

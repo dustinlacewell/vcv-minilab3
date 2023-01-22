@@ -119,6 +119,8 @@ add_custom_target(${STABLE_PLUGIN_BUILD_TARGET}_quick_install
         # make sure that ${CMAKE_INSTALL_PREFIX}/${PLUGIN_NAME} exists
         COMMAND cmake -E make_directory ${CMAKE_INSTALL_PREFIX}/${PLUGIN_NAME}
         COMMAND cmake -E copy_directory ${PROJECT_BINARY_DIR}/${PLUGIN_NAME} ${CMAKE_INSTALL_PREFIX}/${PLUGIN_NAME}
+        COMMAND cmake -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/res ${CMAKE_INSTALL_PREFIX}/${PLUGIN_NAME}/res
+        COMMAND cmake -E copy ${CMAKE_CURRENT_SOURCE_DIR}/plugin.json ${CMAKE_INSTALL_PREFIX}/${PLUGIN_NAME}/
         COMMAND cmake -E copy $<TARGET_FILE:${RACK_PLUGIN_LIB}> ${CMAKE_INSTALL_PREFIX}/${PLUGIN_NAME}/
         )
 add_dependencies(${STABLE_PLUGIN_BUILD_TARGET}_quick_install ${RACK_PLUGIN_LIB})
