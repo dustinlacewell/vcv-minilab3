@@ -1,26 +1,31 @@
 
 
 enum MidiStatus {
-    NoteOff = 0x80,
-    NoteOn = 0x90,
-    KeyPressure = 0xA0,
-    ControlChange = 0xB0,
-    ProgramChange = 0xC0,
-    ChannelPressure = 0xD0,
-    PitchBend = 0xE0,
-    System = 0xF0,
+    NoteOff = 0x8,
+    NoteOn = 0x9,
+    KeyPressure = 0xa,
+    ControlChange = 0xb,
+    ProgramChange = 0xc,
+    ChannelPressure = 0xd,
+    PitchBend = 0xe,
+    System = 0xf,
 };
 
 enum SystemChannel {
-    SysEx = 0xF0,
-    MTCQuarterFrame = 0xF1,
-    SongPositionPointer = 0xF2,
-    SongSelect = 0xF3,
-    TuneRequest = 0xF6,
-    TimingClock = 0xF8,
-    Start = 0xFA,
-    Continue = 0xFB,
-    Stop = 0xFC,
-    ActiveSensing = 0xFE,
+    SysEx = 0x0,
+    MTCQuarterFrame = 0x1,
+    SongPositionPointer = 0x2,
+    SongSelect = 0x3,
+    TuneRequest = 0x6,
+    TimingClock = 0x8,
+    Start = 0xA,
+    Continue = 0xB,
+    Stop = 0xC,
+    ActiveSensing = 0xE,
     SystemReset = 0xFF,
 };
+
+constexpr int ModWheel = 1;
+constexpr int ControlChannel = 15;
+constexpr int FirstSlider = 80;
+constexpr int FirstKnob = 102;
