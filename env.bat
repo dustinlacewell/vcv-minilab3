@@ -1,1 +1,1 @@
-SET RACK_DIR=/b/installed/Rack2Free/Rack-SDK
+SET RACK_DIR=/d/ext/vcv/Rack-SDK

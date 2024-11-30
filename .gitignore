@@ -5,3 +5,6 @@
 /*.dll
 .DS_Store
 cmake-build-debug
+
+/dep
+/dist

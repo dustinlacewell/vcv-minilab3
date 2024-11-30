@@ -2,8 +2,8 @@
 
 #include <rack.hpp>
 
-#include "Clamp.hpp"
-#include "VoltageMode.hpp"
+#include "./Clamp.hpp"
+#include "./VoltageMode.hpp"
 
 using namespace rack::dsp;
 

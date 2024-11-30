@@ -1,24 +1,22 @@
 {
-  "configurations": [
-    {
-      "name": "Win32",
-      "includePath": [
-        "${workspaceFolder}/include/**",
-        "${workspaceFolder}/src/**",
-        "${workspaceFolder/../../../Rack-SDK/include/",
-        "${workspaceFolder/../../../Rack-SDK/dep/include/"
-      ],
-      "defines": [
-        "_DEBUG",
-        "UNICODE",
-        "_UNICODE"
-      ],
-      "windowsSdkVersion": "10.0.19041.0",
-      "compilerPath": "B:/msys64/mingw64/bin/g++.exe",
-      "cStandard": "c11",
-      "cppStandard": "c++11",
-      "intelliSenseMode": "windows-gcc-x64"
-    }
-  ],
-  "version": 4
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "${workspaceFolder}/src/**",
+                "${config:rack_sdk_path}/dep/include/**",
+                "${config:rack_sdk_path}/include/**"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "windowsSdkVersion": "10.0.17763.0",
+            "compilerPath": "${config:mingw_bin_path}/g++.exe",
+            "cStandard": "c17",
+            "cppStandard": "c++17"
+        }
+    ],
+    "version": 4
 }

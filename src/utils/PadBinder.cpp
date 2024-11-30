@@ -1,6 +1,6 @@
 #include "PadBinder.hpp"
-#include "../G8Pad.hpp"
 
+#include "../G8Pad.hpp"
 #include "../plugin.hpp"
 
 int PadBinder::process(Module* module) {

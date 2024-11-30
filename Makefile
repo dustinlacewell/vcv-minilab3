@@ -1,50 +1,27 @@
 # If RACK_DIR is not defined when calling the Makefile, default to two directories above
-RACK_DIR ?= ../..
-include $(RACK_DIR)/arch.mk
+RACK_DIR ?= /d/ext/vcv/Rack-SDK
 
-EXTRA_CMAKE :=
-RACK_PLUGIN_NAME := plugin
-RACK_PLUGIN_ARCH :=
-RACK_PLUGIN_EXT := so
+# FLAGS will be passed to both the C and C++ compiler
+FLAGS +=
+CFLAGS +=
+CXXFLAGS += -ID:/ext/vcv/vcv-minilab3/src
 
-ifdef ARCH_WIN
-  RACK_PLUGIN_EXT := dll
-endif
+# Careful about linking to shared libraries, since you can't assume much about the user's environment and library search path.
+# Static libraries are fine, but they should be added to this plugin's build system.
+LDFLAGS +=
 
-ifdef ARCH_MAC
-  EXTRA_CMAKE := -DCMAKE_OSX_ARCHITECTURES="x86_64"
-  RACK_PLUGIN_EXT := dylib
-  ifdef ARCH_ARM64
-    EXTRA_CMAKE := -DCMAKE_OSX_ARCHITECTURES="arm64"
-    RACK_PLUGIN_ARCH := -arm64
-  endif
-endif
+# Add .cpp files to the build
+SOURCES += $(wildcard src/**/*.cpp) src/BaseModule.cpp src/G8Pad.cpp src/MiniLog.cpp src/MiniLab3.cpp src/plugin.cpp
 
-RACK_PLUGIN := $(RACK_PLUGIN_NAME)$(RACK_PLUGIN_ARCH).$(RACK_PLUGIN_EXT)
+$(info SOURCES = $(SOURCES))
 
-CMAKE_BUILD ?= dep/cmake-build
-cmake_rack_plugin := $(CMAKE_BUILD)/$(RACK_PLUGIN)
-
-# create empty plugin lib to skip the make target execution
-$(shell touch $(RACK_PLUGIN))
-$(info cmake_rack_plugin target is '$(cmake_rack_plugin)')
-
-# trigger CMake build when running `make dep`
-DEPS += $(cmake_rack_plugin)
-
-$(cmake_rack_plugin): CMakeLists.txt
-	$(CMAKE) -B $(CMAKE_BUILD) -DRACK_SDK_DIR=$(RACK_DIR) -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$(CMAKE_BUILD)/dist $(EXTRA_CMAKE)
-	cmake --build $(CMAKE_BUILD) -- -j $(shell getconf _NPROCESSORS_ONLN)
-	cmake --install $(CMAKE_BUILD)
-
-rack_plugin: $(cmake_rack_plugin)
-	cp -vf $(cmake_rack_plugin) .
-
-dist: rack_plugin res
-
+# Add files to the ZIP package when running `make dist`
 # The compiled plugin and "plugin.json" are automatically added.
 DISTRIBUTABLES += res
 DISTRIBUTABLES += $(wildcard LICENSE*)
+DISTRIBUTABLES += $(wildcard presets)
 
 # Include the Rack plugin Makefile framework
 include $(RACK_DIR)/plugin.mk
+
+CXXFLAGS += -std=c++20
