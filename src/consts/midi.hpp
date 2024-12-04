@@ -29,3 +29,19 @@ constexpr int ModWheel = 1;
 constexpr int ControlChannel = 15;
 constexpr int FirstSlider = 80;
 constexpr int FirstKnob = 102;
+
+inline bool isKnob(int note) {
+    return note >= FirstKnob && note <= FirstKnob + 7;
+}
+
+inline int knobIndex(int note) {
+    return note - FirstKnob;
+}
+
+inline bool isSlider(int note) {
+    return note >= FirstSlider && note <= FirstSlider + 3;
+}
+
+inline int sliderIndex(int note) {
+    return note - FirstSlider;
+}

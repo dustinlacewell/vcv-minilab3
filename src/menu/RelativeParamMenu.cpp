@@ -13,10 +13,10 @@ RelativeParamMenu::RelativeParamMenu(RelativeParam* param) {
 }
 
 void RelativeParamMenu::appendContextMenu(Menu* menu) {
-    menu->addChild(new MenuSlider(this->param->slewLimitQuantity));
+    menu->addChild(new MenuSlider(this->param->slewLimitQuantity.get()));
     auto voltageSelector =
-        new VoltageModeSelector(this->param->voltageModeChoice);
+        new VoltageModeSelector(this->param->voltageModeChoice.get());
     voltageSelector->appendContextMenu(menu);
-    auto strengthSelector = new StrengthSelector(this->param->strengthChoice);
+    auto strengthSelector = new StrengthSelector(this->param->strengthChoice.get());
     strengthSelector->appendContextMenu(menu);
 }

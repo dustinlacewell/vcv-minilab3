@@ -1,4 +1,5 @@
 #include <rack.hpp>
+#include <memory>
 
 #include "BaseParam.hpp"
 
@@ -7,57 +8,22 @@ using namespace rack;
 BaseParam::BaseParam(std::string name, engine::Output* output) {
     this->name = name;
     this->output = output;
-    this->pile = new Pile();
-    this->clamp = new Clamp<int>(0, 127);
-    this->rescaler = new VoltageRescaler();
-    this->slew = new Slew(0.0f);
+    this->pile = std::make_unique<Pile>();
+    this->clamp = std::make_unique<Clamp<int>>(0, 127);
+    this->rescaler = std::make_unique<VoltageRescaler>();
+    this->slew = std::make_unique<Slew>(0.0f);
 
-    this->slewLimitQuantity = new CallbackQuantity(
-        "Slew limit", 0.0f, 5.0f, [this](float value) { slew->setLimit(value); }
+    this->slewLimitQuantity = std::make_unique<CallbackQuantity>(
+        "Slew limit", 0.0f, 2.0f, [this](float value) { slew->setLimit(value); }
     );
 
-    this->voltageModeChoice =
-        new VoltageModeChoice("Voltage mode", [this](VoltageMode voltageMode) {
+    this->voltageModeChoice = std::make_unique<VoltageModeChoice>(
+        "Voltage mode", [this](VoltageMode voltageMode) {
             this->rescaler->setVoltageMode(voltageMode);
             this->send(this->pile->getValue());
         });
 
     this->resetData = BaseParam::toJson();
-}
-
-BaseParam::~BaseParam() {
-    DEBUG("BaseParam %p: Starting destructor", this);
-
-    try {
-        if (pile) {
-            DEBUG("BaseParam %p: Deleting pile", this);
-            delete pile;
-        }
-        if (clamp) {
-            DEBUG("BaseParam %p: Deleting clamp", this);
-            delete clamp;
-        }
-        if (rescaler) {
-            DEBUG("BaseParam %p: Deleting rescaler", this);
-            delete rescaler;
-        }
-        if (slew) {
-            DEBUG("BaseParam %p: Deleting slew", this);
-            delete slew;
-        }
-        if (slewLimitQuantity) {
-            DEBUG("BaseParam %p: Deleting slewLimitQuantity", this);
-            delete slewLimitQuantity;
-        }
-        if (voltageModeChoice) {
-            DEBUG("BaseParam %p: Deleting voltageModeChoice", this);
-            delete voltageModeChoice;
-        }
-    } catch (const std::exception& e) {
-        DEBUG("BaseParam %p: Exception in destructor: %s", this, e.what());
-    }
-
-    DEBUG("BaseParam %p: Destructor complete", this);
 }
 
 void BaseParam::save() {
@@ -123,7 +89,7 @@ void BaseParam::setVoltageMode(VoltageMode newVoltageMode) {
 }
 
 void BaseParam::sendCallbacks(float value) {
-    for (auto callback : this->valueChangeCallbacks) {
+    for (auto& callback : this->valueChangeCallbacks) {
         callback(value);
     }
 }

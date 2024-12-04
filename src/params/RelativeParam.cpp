@@ -3,16 +3,12 @@
 
 RelativeParam::RelativeParam(std::string name, Output* output)
     : BaseParam(name, output) {
-    this->strengthChoice =
-        new StrengthChoice("Relative Strength", [this](int choice) {
-            this->pile->setStrength(choice);
-        });
+    this->strengthChoice = std::make_unique<StrengthChoice>(
+        "Relative Strength",
+        [this](int choice) { this->pile->setStrength(choice); }
+    );
 
     this->resetData = RelativeParam::toJson();
-}
-
-RelativeParam::~RelativeParam() {
-    delete strengthChoice;
 }
 
 void RelativeParam::send(int value) {

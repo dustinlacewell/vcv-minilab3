@@ -9,10 +9,9 @@
 using namespace rack::engine;
 
 struct RelativeParam : BaseParam {
-    StrengthChoice* strengthChoice;
+    std::unique_ptr<StrengthChoice> strengthChoice;
 
     RelativeParam(std::string name, engine::Output* output);
-    ~RelativeParam() override;
 
     void send(int value) override;
     int getStrength();

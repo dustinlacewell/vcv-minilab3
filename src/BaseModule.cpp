@@ -1,15 +1,69 @@
-
 #include "BaseModule.hpp"
 
 #include <utility>
 #include "params/AbsoluteParam.hpp"
 #include "params/RelativeParam.hpp"
 
+BaseModule::BaseModule() {
+    config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
+    configInput(MIDI_INPUT, "MIDI");
+    configLight(STATUS_LIGHT, "Status");
+
+    gate = createAbsoluteOutput(GATE_OUTPUT, "Gate", [](AbsoluteParam* p) {
+        p->setSlew(0.0f);
+        p->setRange(0, 1);
+        p->setVoltageMode(VoltageMode::UNIPOLAR_5);
+        p->setValue(0);
+    });
+    velocity =
+        createAbsoluteOutput(VELOCITY_OUTPUT, "Velocity", [](AbsoluteParam* p) {
+            p->setSlew(0.0f);
+            p->setRange(0, 127);
+            p->setVoltageMode(VoltageMode::UNIPOLAR_10);
+            p->setValue(0);
+        });
+    bend =
+        createAbsoluteOutput(BEND_OUTPUT, "Pitch Bend", [](AbsoluteParam* p) {
+            p->setSlew(0.0f);
+            p->setRange(0, 127);
+            p->setVoltageMode(VoltageMode::BIPOLAR_5);
+            p->setValue(64);
+        });
+    mod = createAbsoluteOutput(MOD_OUTPUT, "Modulation", [](AbsoluteParam* p) {
+        p->setSlew(0.0f);
+        p->setRange(0, 127);
+        p->setVoltageMode(VoltageMode::UNIPOLAR_10);
+        p->setValue(0);
+    });
+    touch =
+        createAbsoluteOutput(TOUCH_OUTPUT, "Aftertouch", [](AbsoluteParam* p) {
+            p->setSlew(0.0f);
+            p->setRange(0, 127);
+            p->setVoltageMode(VoltageMode::UNIPOLAR_10);
+            p->setValue(0);
+        });
+
+    for (int i = 0; i < 8; i++) {
+        knobs[i] = createRelativeOutput(
+            KNOB_OUTPUT + i,
+            rack::string::f("Knob %d", i + 1),
+            [i](RelativeParam* p) {
+                p->setStrength(10);
+                p->setSlew(0.0f);
+                p->setRange(0, 1024 * 8);
+                p->setVoltageMode(VoltageMode::UNIPOLAR_10);
+                p->setValue(0);
+            }
+        );
+    }
+}
+
 AbsoluteParam* BaseModule::createAbsoluteOutput(int output, std::string label) {
     configOutput(output, label);
-    auto param = new AbsoluteParam(label, &outputs[output]);
-    params.push_back(param);
-    return param;
+    auto param = std::make_unique<AbsoluteParam>(label, &outputs[output]);
+    auto raw = param.get();
+    params.push_back(std::move(param));
+    return raw;
 }
 
 AbsoluteParam* BaseModule::createAbsoluteOutput(
@@ -25,9 +79,10 @@ AbsoluteParam* BaseModule::createAbsoluteOutput(
 
 RelativeParam* BaseModule::createRelativeOutput(int output, std::string label) {
     auto p = configOutput(output, label);
-    auto param = new RelativeParam(label, &outputs[output]);
-    params.push_back(param);
-    return param;
+    auto param = std::make_unique<RelativeParam>(label, &outputs[output]);
+    auto raw = param.get();
+    params.push_back(std::move(param));
+    return raw;
 }
 
 RelativeParam* BaseModule::createRelativeOutput(
@@ -42,19 +97,19 @@ RelativeParam* BaseModule::createRelativeOutput(
 }
 
 void BaseModule::processParams() {
-    for (auto param : params) {
+    for (const auto& param : params) {
         param->process();
     }
 }
 
 void BaseModule::outputsToJson(json_t* rootJ) {
-    for (auto param : params) {
+    for (const auto& param : params) {
         json_object_set_new(rootJ, param->getName().c_str(), param->toJson());
     }
 }
 
 void BaseModule::outputsFromJson(json_t* rootJ) {
-    for (auto param : params) {
+    for (const auto& param : params) {
         json_t* paramJ = json_object_get(rootJ, param->getName().c_str());
         if (paramJ) {
             param->fromJson(paramJ);
@@ -63,7 +118,44 @@ void BaseModule::outputsFromJson(json_t* rootJ) {
 }
 
 void BaseModule::onReset() {
-    for (auto param : params) {
+    for (const auto& param : params) {
         param->load();
+    }
+}
+
+json_t* BaseModule::dataToJson() {
+    json_t* rootJ = json_object();
+
+    if (!rootJ)
+        return nullptr;
+
+    outputsToJson(rootJ);
+
+    auto driverId = midiInput.getDriverId();
+    auto deviceId = midiInput.getDeviceId();
+    auto channel = midiInput.getChannel();
+
+    json_object_set_new(rootJ, "midiDriver", json_integer(driverId));
+    json_object_set_new(rootJ, "midiDevice", json_integer(deviceId));
+    json_object_set_new(rootJ, "midiChannel", json_integer(channel));
+
+    return rootJ;
+}
+
+void BaseModule::dataFromJson(json_t* rootJ) {
+    outputsFromJson(rootJ);
+
+    // Load midiInput's driver, device, and channel selections
+    if (json_t* midiDriverJ = json_object_get(rootJ, "midiDriver")) {
+        auto driver = (int)json_integer_value(midiDriverJ);
+        midiInput.setDriverId(driver);
+    }
+    if (json_t* midiDeviceJ = json_object_get(rootJ, "midiDevice")) {
+        auto device = (int)json_integer_value(midiDeviceJ);
+        midiInput.setDeviceId(device);
+    }
+    if (json_t* midiChannelJ = json_object_get(rootJ, "midiChannel")) {
+        auto channel = (int)json_integer_value(midiChannelJ);
+        midiInput.setChannel(channel);
     }
 }

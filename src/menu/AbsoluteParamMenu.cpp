@@ -12,8 +12,8 @@ AbsoluteParamMenu::AbsoluteParamMenu(AbsoluteParam* param) {
 }
 
 void AbsoluteParamMenu::appendContextMenu(Menu* menu) {
-    menu->addChild(new MenuSlider(this->param->slewLimitQuantity));
+    menu->addChild(new MenuSlider(this->param->slewLimitQuantity.get()));
     auto voltageSelector =
-        new VoltageModeSelector(this->param->voltageModeChoice);
+        new VoltageModeSelector(this->param->voltageModeChoice.get());
     voltageSelector->appendContextMenu(menu);
 }

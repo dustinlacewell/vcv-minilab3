@@ -16,18 +16,17 @@ protected:
     json_t* resetData;
     std::string name;
     engine::Output* output;
-    Pile* pile;
-    Clamp<int>* clamp;
-    VoltageRescaler* rescaler;
-    Slew* slew;
+    std::unique_ptr<Pile> pile;
+    std::unique_ptr<Clamp<int>> clamp;
+    std::unique_ptr<VoltageRescaler> rescaler;
+    std::unique_ptr<Slew> slew;
     std::vector<std::function<void(float)>> valueChangeCallbacks;
 
 public:
-    CallbackQuantity* slewLimitQuantity;
-    VoltageModeChoice* voltageModeChoice;
+    std::unique_ptr<CallbackQuantity> slewLimitQuantity;
+    std::unique_ptr<VoltageModeChoice> voltageModeChoice;
 
     BaseParam(std::string name, engine::Output* output);
-    virtual ~BaseParam();
 
     void save();
     virtual void load();
