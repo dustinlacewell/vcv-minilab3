@@ -1,3 +1,5 @@
+#define _USE_MATH_DEFINES
+
 #include <rack.hpp>
 
 #include "../G8Pad.hpp"

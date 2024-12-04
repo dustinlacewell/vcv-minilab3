@@ -9,7 +9,7 @@ using namespace rack;
 
 struct CallbackQuantity : Quantity {
     std::string label;
-    float value = 0.5f;
+    float value = 0.0f;
     float min_value = 0.f;
     float max_value = 1.f;
 

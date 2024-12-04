@@ -1,12 +1,12 @@
+#pragma once
 #include <iomanip>
 #include <rack.hpp>
+#include <memory>
 
-#include "MiniLab3.hpp"
 #include "logging/MidiMessageFilter.hpp"
 #include "logging/MidiMessageRenderer.hpp"
 #include "plugin.hpp"
 #include "ui/TextLogWidget.hpp"
-#include "utils/PadBinder.hpp"
 
 const int BUFFERSIZE = 800;
 
@@ -14,12 +14,9 @@ struct MiniLog : Module {
     enum ParamId { PARAMS_LEN };
     enum InputId { INPUTS_LEN };
     enum OutputId { OUTPUTS_LEN };
-    enum LightId { CONNECTED_LIGHT, LIGHTS_LEN };
+    enum LightId { STATUS_LIGHT, LIGHTS_LEN };
 
-    PadBinder* binder;
-    midi::InputQueue midiInput;
-    ClockDivider expanderDivider;
-
+    dsp::ClockDivider lightDivider;
     MidiMessageFilter midiMessageFilter;
     MidiMessageRenderer midiMessageRenderer;
 

@@ -26,12 +26,38 @@ BaseParam::BaseParam(std::string name, engine::Output* output) {
 }
 
 BaseParam::~BaseParam() {
-    delete this->pile;
-    delete this->clamp;
-    delete this->rescaler;
-    delete this->slew;
-    delete this->slewLimitQuantity;
-    delete this->voltageModeChoice;
+    DEBUG("BaseParam %p: Starting destructor", this);
+
+    try {
+        if (pile) {
+            DEBUG("BaseParam %p: Deleting pile", this);
+            delete pile;
+        }
+        if (clamp) {
+            DEBUG("BaseParam %p: Deleting clamp", this);
+            delete clamp;
+        }
+        if (rescaler) {
+            DEBUG("BaseParam %p: Deleting rescaler", this);
+            delete rescaler;
+        }
+        if (slew) {
+            DEBUG("BaseParam %p: Deleting slew", this);
+            delete slew;
+        }
+        if (slewLimitQuantity) {
+            DEBUG("BaseParam %p: Deleting slewLimitQuantity", this);
+            delete slewLimitQuantity;
+        }
+        if (voltageModeChoice) {
+            DEBUG("BaseParam %p: Deleting voltageModeChoice", this);
+            delete voltageModeChoice;
+        }
+    } catch (const std::exception& e) {
+        DEBUG("BaseParam %p: Exception in destructor: %s", this, e.what());
+    }
+
+    DEBUG("BaseParam %p: Destructor complete", this);
 }
 
 void BaseParam::save() {
@@ -47,10 +73,13 @@ std::string BaseParam::getName() {
 }
 
 void BaseParam::setValue(int newValue) {
+    if (newValue == pile->getValue()) {
+        return;
+    }
     pile->setValue(newValue);
     auto normal = clamp->normalized(pile->getValue());
     this->slew->setTarget(normal);
-    this->slew->slewLimiter.out = normal;
+    this->slew->getCurrentOutput() = normal;
 }
 
 float BaseParam::getValue() {
@@ -123,7 +152,7 @@ void BaseParam::send(int value) {
         sendCallbacks(normalized);
     } else {
         slew->setTarget(normalized);
-        slew->slewLimiter.out = normalized;
+        slew->getCurrentOutput() = normalized;
         auto scaled = rescaler->rescale(normalized);
         output->setVoltage(scaled);
         sendCallbacks(normalized);
@@ -131,6 +160,13 @@ void BaseParam::send(int value) {
 }
 
 void BaseParam::process() {
+    auto target = slew->getTarget();
+    auto current = slew->getCurrentOutput();
+
+    if (abs(target - current) < 0.0001f) {
+        return;
+    }
+
     auto slewed = slewEnabled() ? slew->getSlewed(APP->engine->getSampleTime())
                                 : slew->getTarget();
 

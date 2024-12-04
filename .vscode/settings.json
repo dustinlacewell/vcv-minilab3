@@ -1,5 +1,5 @@
 {
-    "rack_sdk_path": "D:/ext/vcv/Rack-SDK",
+    "rack_sdk_path": "D:/ext/vcv/Rack",
     "msys_bin_path": "B:/installs/msys2/usr/bin/",
     "mingw_bin_path": "B:/installs/msys2/mingw64/bin",
     "cmake.generator": "MinGW Makefiles",
@@ -68,6 +68,8 @@
         "text_encoding": "cpp",
         "thread": "cpp",
         "typeinfo": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "bitset": "cpp",
+        "regex": "cpp"
     }
 }

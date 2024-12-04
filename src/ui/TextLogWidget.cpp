@@ -31,7 +31,7 @@ void TextLogWidget::bufferToString() {
 void TextLogWidget::push(std::string text) {
     buffer.push_back(text);
 
-    if (buffer.size() > 26) {
+    if (buffer.size() > 27) {
         buffer.pop_front();
     }
 

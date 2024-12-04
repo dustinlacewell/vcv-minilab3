@@ -22,7 +22,7 @@ float SlewLimitQuantity::getValue() {
 }
 
 float SlewLimitQuantity::getDefaultValue() {
-    return 0.5f;
+    return 0.0f;
 }
 
 std::string SlewLimitQuantity::getLabel() {

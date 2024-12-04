@@ -16,10 +16,8 @@ std::string sliderName(int index) {
 RelativeParam* makeKnob(int baseIndex, int index, BaseModule* module) {
     auto name = knobName(index);
     auto knobIndex = baseIndex + index;
-    auto knob = module->createRelativeOutput(knobIndex, name, [=](auto p) {
+    return module->createRelativeOutput(knobIndex, name, [index](RelativeParam* p) {
         p->setStrength(2);
-        p->setSlew(0.5f);
-
         if (index < 4) {
             p->setVoltageMode(VoltageMode::BIPOLAR_5);
             p->setValue(64);
@@ -28,17 +26,14 @@ RelativeParam* makeKnob(int baseIndex, int index, BaseModule* module) {
             p->setValue(0);
         }
     });
-
-    return knob;
 }
 
 AbsoluteParam* makeSlider(int baseIndex, int index, BaseModule* module) {
     auto name = sliderName(index);
     auto sliderIndex = baseIndex + index;
-    auto slider = module->createAbsoluteOutput(sliderIndex, name, [=](auto p) {
+    return module->createAbsoluteOutput(sliderIndex, name, [](AbsoluteParam* p) {
         p->setSlew(0.0f);
         p->setVoltageMode(VoltageMode::UNIPOLAR_10);
         p->setValue(0);
     });
-    return slider;
 }

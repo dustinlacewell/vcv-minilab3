@@ -1,33 +1,62 @@
 #pragma once
 
 #include <rack.hpp>
-
 #include "VoltageMode.hpp"
 
-#include "props/SlewLimitQuantity.hpp"
-
-using namespace rack::dsp;
-
-struct Slew {
-    TSlewLimiter<float> slewLimiter;
-    float limit;
-    float target;
-    VoltageMode voltageMode;
-
+class Slew {
+public:
+    explicit Slew(float limit);
     Slew(float limit, VoltageMode voltageMode);
-    Slew(float limit);
+    
+    // Prevent implicit copying/moving
+    Slew(const Slew&) = delete;
+    Slew& operator=(const Slew&) = delete;
+    Slew(Slew&&) = delete;
+    Slew& operator=(Slew&&) = delete;
 
-    VoltageMode getVoltageMode();
-    void setVoltageMode(VoltageMode newVoltageMode);
+    // Inline accessors defined in header
+    [[nodiscard]] inline VoltageMode getVoltageMode() const noexcept {
+        return voltageMode;
+    }
+    
+    inline void setVoltageMode(VoltageMode newVoltageMode) noexcept {
+        voltageMode = newVoltageMode;
+    }
+    
+    [[nodiscard]] inline float getLimit() const noexcept {
+        return limit;
+    }
+    
+    inline void setLimit(float newLimit) noexcept {
+        limit = newLimit;
+    }
+    
+    [[nodiscard]] inline float getTarget() const noexcept {
+        return target;
+    }
+    
+    inline void setTarget(float newTarget) noexcept {
+        target = newTarget;
+    }
+    
+    [[nodiscard]] float getSlewed(float sampleTime) noexcept;
+    
+    // Access to current output value
+    [[nodiscard]] inline float getCurrentOutput() const noexcept {
+        return slewLimiter.out;
+    }
+    
+    inline float& getCurrentOutput() noexcept {
+        return slewLimiter.out;
+    }
 
-    float getLimit();
-    void setLimit(float newLimit);
+    // JSON serialization
+    [[nodiscard]] json_t* toJson() const;
+    void fromJson(json_t* const rootJ);
 
-    float getTarget();
-    void setTarget(float newTarget);
-
-    float getSlewed(float sampleTime);
-
-    json_t* toJson();
-    void fromJson(json_t* rootJ);
+private:
+    float limit;
+    float target{0.f};
+    VoltageMode voltageMode;
+    rack::dsp::SlewLimiter slewLimiter;
 };

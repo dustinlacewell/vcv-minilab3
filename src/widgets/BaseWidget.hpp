@@ -16,14 +16,16 @@ struct BaseWidget : ModuleWidget {
         Vec pos,
         T* module,
         int outputId,
-        const std::function<AbsoluteParam*(T*)>& getParam
+        std::function<AbsoluteParam*(T*)> getParam,
+        bool convertToPx = true
     );
 
     OutputPort* createRelativePort(
         Vec pos,
         T* module,
         int outputId,
-        const std::function<RelativeParam*(T*)>& getParam
+        std::function<RelativeParam*(T*)> getParam,
+        bool convertToPx = true
     );
 
     void onReset();
@@ -34,9 +36,11 @@ OutputPort* BaseWidget<T>::createAbsolutePort(
     Vec pos,
     T* module,
     int outputId,
-    const std::function<AbsoluteParam*(T*)>& getParam
+    std::function<AbsoluteParam*(T*)> getParam,
+    // optional boolean of whether to convert to px
+    bool convertToPx
 ) {
-    auto* port = createOutputCentered<OutputPort>(mm2px(pos), module, outputId);
+    auto* port = createOutputCentered<OutputPort>(convertToPx ? mm2px(pos) : pos, module, outputId);
 
     if (module) {
         auto* param = getParam(module);
@@ -53,9 +57,11 @@ OutputPort* BaseWidget<T>::createRelativePort(
     Vec pos,
     T* module,
     int outputId,
-    const std::function<RelativeParam*(T*)>& getParam
+    std::function<RelativeParam*(T*)> getParam,
+    // optional boolean of whether to convert to px
+    bool convertToPx
 ) {
-    auto* port = createOutputCentered<OutputPort>(mm2px(pos), module, outputId);
+    auto* port = createOutputCentered<OutputPort>(convertToPx ? mm2px(pos) : pos, module, outputId);
 
     if (module) {
         RelativeParam* param = getParam(module);

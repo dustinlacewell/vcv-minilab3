@@ -22,7 +22,7 @@ void CallbackQuantity::setValue(float newValue) {
 }
 
 float CallbackQuantity::getDefaultValue() {
-    return 0.5f;
+    return 0.0f;
 }
 
 int CallbackQuantity::getDisplayPrecision() {

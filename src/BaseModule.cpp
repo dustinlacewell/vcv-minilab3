@@ -24,7 +24,7 @@ AbsoluteParam* BaseModule::createAbsoluteOutput(
 }
 
 RelativeParam* BaseModule::createRelativeOutput(int output, std::string label) {
-    configOutput(output, label);
+    auto p = configOutput(output, label);
     auto param = new RelativeParam(label, &outputs[output]);
     params.push_back(param);
     return param;

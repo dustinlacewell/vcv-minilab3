@@ -1,93 +1,69 @@
 #include <rack.hpp>
-
 #include "Slew.hpp"
 #include "VoltageMode.hpp"
 
 using namespace rack::dsp;
 
-Slew::Slew(float limit) {
-    this->limit = limit;
-    this->voltageMode = VoltageMode::UNIPOLAR_1;
+namespace {
+    static constexpr float EPSILON = 0.00001f;
+    static constexpr float VOLTAGE_MODE_SCALES[] = {
+        1.f,  // UNIPOLAR_1/BIPOLAR_1
+        1.f,  // Paired mode
+        5.f,  // UNIPOLAR_5/BIPOLAR_5
+        5.f,  // Paired mode
+        10.f, // UNIPOLAR_10/BIPOLAR_10
+        10.f  // Paired mode
+    };
 }
 
-Slew::Slew(float limit, VoltageMode voltageMode) {
-    this->limit = limit;
-    this->voltageMode = voltageMode;
-}
+Slew::Slew(float limit) : 
+    limit(limit),
+    voltageMode(VoltageMode::UNIPOLAR_1),
+    target(0.f) {}
 
-VoltageMode Slew::getVoltageMode() {
-    return voltageMode;
-}
+Slew::Slew(float limit, VoltageMode voltageMode) :
+    limit(limit),
+    voltageMode(voltageMode),
+    target(0.f) {}
 
-void Slew::setVoltageMode(VoltageMode newVoltageMode) {
-    voltageMode = newVoltageMode;
-}
-
-float Slew::getLimit() {
-    return limit;
-}
-
-void Slew::setLimit(float newLimit) {
-    limit = newLimit;
-}
-
-float Slew::getTarget() {
-    return target;
-}
-
-void Slew::setTarget(float newTarget) {
-    target = newTarget;
-}
-
-float Slew::getSlewed(float sampleTime) {
-    if (this->limit <= 0.00001f) {
-        return this->target;
+float Slew::getSlewed(float sampleTime) noexcept {
+    if (limit <= EPSILON) {
+        return target;
     }
 
-    float limitValue = 1 / this->limit;
-
-    switch (this->voltageMode) {
-        case VoltageMode::UNIPOLAR_1:
-        case VoltageMode::BIPOLAR_1:
-            break;
-        case VoltageMode::UNIPOLAR_5:
-        case VoltageMode::BIPOLAR_5:
-            limitValue *= 5.f;
-            break;
-        case VoltageMode::UNIPOLAR_10:
-        case VoltageMode::BIPOLAR_10:
-            limitValue *= 10.f;
-            break;
-    }
-
+    const float limitValue = (1.f / limit) * VOLTAGE_MODE_SCALES[static_cast<std::size_t>(voltageMode)];
     slewLimiter.setRiseFall(limitValue, limitValue);
-    return slewLimiter.process(sampleTime, this->target);
+    return slewLimiter.process(sampleTime, target);
 }
 
-json_t* Slew::toJson() {
-    json_t* rootJ = json_object();
+json_t* Slew::toJson() const {
+    json_t* const rootJ = json_object();
+    if (!rootJ) return nullptr;
+
     json_object_set_new(rootJ, "limit", json_real(limit));
     json_object_set_new(rootJ, "target", json_real(target));
-    json_object_set_new(rootJ, "voltageMode", json_integer(voltageMode));
+    json_object_set_new(rootJ, "voltageMode", json_integer(static_cast<int>(voltageMode)));
     json_object_set_new(rootJ, "slewLimiterOut", json_real(slewLimiter.out));
+    
     return rootJ;
 }
 
-void Slew::fromJson(json_t* rootJ) {
-    json_t* limitJ = json_object_get(rootJ, "limit");
-    if (limitJ) {
-        setLimit(json_number_value(limitJ));
+void Slew::fromJson(json_t* const rootJ) {
+    if (!rootJ) return;
+
+    if (json_t* const limitJ = json_object_get(rootJ, "limit")) {
+        limit = static_cast<float>(json_number_value(limitJ));
     }
-    json_t* targetJ = json_object_get(rootJ, "target");
-    if (targetJ) {
-        setTarget(json_number_value(targetJ));
+    
+    if (json_t* const targetJ = json_object_get(rootJ, "target")) {
+        target = static_cast<float>(json_number_value(targetJ));
     }
-    json_t* voltageModeJ = json_object_get(rootJ, "voltageMode");
-    if (voltageModeJ) {
-        voltageMode = (VoltageMode)json_integer_value(voltageModeJ);
+    
+    if (json_t* const voltageModeJ = json_object_get(rootJ, "voltageMode")) {
+        voltageMode = static_cast<VoltageMode>(json_integer_value(voltageModeJ));
     }
-    json_t* slewLimiterOutJ = json_object_get(rootJ, "slewLimiterOut");
-    if (slewLimiterOutJ) {
-        slewLimiter.out = json_number_value(slewLimiterOutJ);
+    
+    if (json_t* const slewLimiterOutJ = json_object_get(rootJ, "slewLimiterOut")) {
+        slewLimiter.out = static_cast<float>(json_number_value(slewLimiterOutJ));
     }
 }

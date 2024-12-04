@@ -5,107 +5,86 @@
 
 #include "plugin.hpp"
 
-G8PadWidget::G8PadWidget(G8Pad* module) {
+G8PadWidget::G8PadWidget(G8Pad* module) : BaseWidget<G8Pad>(), SvgHelper<G8PadWidget>() {
 
     setModule(module);
-    setPanel(createPanel(asset::plugin(pluginInstance, "res/G8Pad.svg")));
-
-    addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
-    addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0))
-    );
-    addChild(createWidget<ScrewSilver>(
-        Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)
-    ));
-    addChild(createWidget<ScrewSilver>(Vec(
-        box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH
-    )));
-
-    addOutput(createOutputCentered<PJ301MPort>(
-        mm2px(Vec(15.189, 24.457)), module, G8Pad::GATE_OUTPUT
-    ));
+    loadPanel(asset::plugin(pluginInstance, "res/G8Pad.svg"));
 
     createAbsolutePort(
-        Vec(20.72, 58.734),
+        findNamed("Gate").value(),
         module,
-        G8Pad::MOD_OUTPUT,
-        [](G8Pad* pad) { return pad->mod; }
+        G8Pad::GATE_OUTPUT,
+        [](G8Pad* pad) { return pad->gate; },
+        false
     );
 
     createAbsolutePort(
-        Vec(9.803, 41.619),
+        findNamed("Touch").value(),
         module,
         G8Pad::TOUCH_OUTPUT,
-        [](G8Pad* pad) { return pad->touch; }
+        [](G8Pad* pad) { return pad->touch; },
+        false
     );
 
     createAbsolutePort(
-        Vec(9.847, 58.734),
-        module,
-        G8Pad::BEND_OUTPUT,
-        [](G8Pad* pad) { return pad->bend; }
-    );
-
-    createAbsolutePort(
-        Vec(20.677, 41.619),
+        findNamed("Vel").value(),
         module,
         G8Pad::VELOCITY_OUTPUT,
-        [](G8Pad* pad) { return pad->velocity; }
+        [](G8Pad* pad) { return pad->velocity; },
+        false
     );
 
-    createRelativePort(
-        Vec(9.847, 78.392),
+    createAbsolutePort(
+        findNamed("Bend").value(),
         module,
-        G8Pad::KNOB1_OUTPUT,
-        [](G8Pad* pad) { return pad->knobs[0]; }
+        G8Pad::BEND_OUTPUT,
+        [](G8Pad* pad) { return pad->bend; },
+        false
     );
-    createRelativePort(
-        Vec(20.72, 78.392),
+
+    createAbsolutePort(
+        findNamed("Mod").value(),
         module,
-        G8Pad::KNOB2_OUTPUT,
-        [](G8Pad* pad) { return pad->knobs[1]; }
+        G8Pad::MOD_OUTPUT,
+        [](G8Pad* pad) { return pad->mod; },
+        false
     );
-    createRelativePort(
-        Vec(9.76, 90.017),
-        module,
-        G8Pad::KNOB3_OUTPUT,
-        [](G8Pad* pad) { return pad->knobs[2]; }
-    );
-    createRelativePort(
-        Vec(20.633, 90.017),
-        module,
-        G8Pad::KNOB4_OUTPUT,
-        [](G8Pad* pad) { return pad->knobs[3]; }
-    );
-    createRelativePort(
-        Vec(9.76, 101.642),
-        module,
-        G8Pad::KNOB5_OUTPUT,
-        [](G8Pad* pad) { return pad->knobs[4]; }
-    );
-    createRelativePort(
-        Vec(20.633, 101.642),
-        module,
-        G8Pad::KNOB6_OUTPUT,
-        [](G8Pad* pad) { return pad->knobs[5]; }
-    );
-    createRelativePort(
-        Vec(9.76, 113.266),
-        module,
-        G8Pad::KNOB7_OUTPUT,
-        [](G8Pad* pad) { return pad->knobs[6]; }
-    );
-    createRelativePort(
-        Vec(20.633, 113.267),
-        module,
-        G8Pad::KNOBS8_OUTPUT,
-        [](G8Pad* pad) { return pad->knobs[7]; }
-    );
+
+    std::vector<Vec> knobPositions = {
+        findNamed("Knob1").value(),
+        findNamed("Knob2").value(),
+        findNamed("Knob3").value(),
+        findNamed("Knob4").value(),
+        findNamed("Knob5").value(),
+        findNamed("Knob6").value(),
+        findNamed("Knob7").value(),
+        findNamed("Knob8").value(),
+    };
+
+    for (int i = 0; i < knobPositions.size(); i++) {
+        createRelativePort(
+            knobPositions[i],
+            module,
+            G8Pad::KNOB_OUTPUT + i,
+            [i](G8Pad* pad) { return pad->knobs[i]; },
+            false
+        );
+    }
 
     addChild(createLightCentered<SmallLight<GreenLight>>(
-        mm2px(Vec(5, 8.894)), module, G8Pad::GATE_LIGHT
+        findNamed("Light").value(), 
+        module, 
+        G8Pad::STATUS_LIGHT
     ));
 
-    padIdText = createWidget<LedTextDisplay>(mm2px(Vec(21.5, 5)));
+    auto indexPos = findNamed("Index").value();
+
+    indexPos.x -= 12;
+    indexPos.y -= 12;
+
+    padIdText = createWidget<LedTextDisplay>(
+        indexPos
+    );
     padIdText->text = "--";
     addChild(padIdText);
 }
@@ -113,7 +92,7 @@ G8PadWidget::G8PadWidget(G8Pad* module) {
 void G8PadWidget::step() {
     if (module) {
         auto* pad = dynamic_cast<G8Pad*>(module);
-        int padId = pad->getId();
+        int padId = pad->position;
         if (padId >= 0) {
             padIdText->text = string::f("%02d", padId);
         } else {

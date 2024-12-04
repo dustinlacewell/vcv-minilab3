@@ -5,83 +5,106 @@
 
 #include "plugin.hpp"
 
-MiniLab3Widget::MiniLab3Widget(MiniLab3* module) {
+static const float MY_SVG_DPI = 75.f;
+static const float MY_MM_PER_IN = 25.4f;
+
+inline math::Vec mmm2px(math::Vec mm) {
+	auto result = mm.mult(MY_SVG_DPI / MY_MM_PER_IN);
+    return result;
+}
+
+inline math::Vec px2mm(math::Vec px) {
+    return px.mult(MY_MM_PER_IN / MY_SVG_DPI);
+}
+
+MiniLab3Widget::MiniLab3Widget(MiniLab3* module) 
+    : BaseWidget<MiniLab3>()
+    , SvgHelper<MiniLab3Widget>() 
+{
     setModule(module);
-    setPanel(createPanel(asset::plugin(pluginInstance, "res/Lab.svg")));
+    loadPanel(asset::plugin(pluginInstance, "res/Lab.svg"));
 
-    addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
-    addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0))
-    );
-    addChild(createWidget<ScrewSilver>(
-        Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)
-    ));
-    addChild(createWidget<ScrewSilver>(Vec(
-        box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH
-    )));
-
-    auto* display = createWidget<MidiDisplay>(mm2px(Vec(0.0, 13.f)));
-    display->box.size = mm2px(Vec(60.960, 29.012));
+    // MIDI SELECTOR
+    auto* display = createWidget<MidiDisplay>(mm2px(Vec(0.0, 11.f)));
+    display->box.size = mm2px(Vec(5.08 * 9, 29.012));
     display->setMidiPort(module ? &module->midiInput : nullptr);
     addChild(display);
 
+    // ACTIVITY LIGHT
     addChild(createLightCentered<SmallLight<GreenLight>>(
-        mm2px(Vec(5, 8.894)), module, MiniLab3::GATE_LIGHT
+        findNamed("Light").value(), module, MiniLab3::STATUS_LIGHT
     ));
 
+    auto gatePosMaybe = findNamed("Gate");
+
+    if (!gatePosMaybe.has_value()) {
+        DEBUG("No gate position found");
+        return;
+    }
+
+    auto gatePos = gatePosMaybe.value();
+
     createAbsolutePort(
-        Vec(22.179, 49.891),
+        gatePos,
         module,
         MiniLab3::GATE_OUTPUT,
-        [](MiniLab3* lab) { return lab->gate; }
+        [](MiniLab3* lab) { return lab->gate; },
+        false
     );
 
+    auto bendPos = findNamed("Bend").value();
     createAbsolutePort(
-        Vec(6.149, 49.891),
+        bendPos,
         module,
         MiniLab3::BEND_OUTPUT,
-        [](MiniLab3* lab) { return lab->bend; }
+        [](MiniLab3* lab) { return lab->bend; },
+        false
     );
 
+    auto modPos = findNamed("Mod").value();
     createAbsolutePort(
-        Vec(38.771, 49.891),
+        modPos,
         module,
         MiniLab3::MOD_OUTPUT,
-        [](MiniLab3* lab) { return lab->mod; }
+        [](MiniLab3* lab) { return lab->mod; },
+        false
     );
 
     std::vector<Vec> knobPositions = {
-        Vec(6.149, 102.393),
-        Vec(17.023, 102.393),
-        Vec(27.897, 102.393),
-        Vec(38.771, 102.393),
-        Vec(6.149, 113.266),
-        Vec(17.023, 113.266),
-        Vec(27.897, 113.266),
-        Vec(38.771, 113.266),
+        findNamed("Knob1").value(),
+        findNamed("Knob2").value(),
+        findNamed("Knob3").value(),
+        findNamed("Knob4").value(),
+        findNamed("Knob5").value(),
+        findNamed("Knob6").value(),
+        findNamed("Knob7").value(),
+        findNamed("Knob8").value(),
     };
 
     for (int i = 0; i < knobPositions.size(); i++) {
         createRelativePort(
             knobPositions[i],
             module,
-            MiniLab3::KNOB1_OUTPUT + i,
-            [&i](MiniLab3* lab) { return lab->knobs[i]; }
+            MiniLab3::KNOB_OUTPUT + i,
+            [i](MiniLab3* lab) { return lab->knobs[i]; },
+            false
         );
     }
 
     std::vector<Vec> sliderPositions = {
-        Vec(6.149, 78.392),
-        Vec(17.023, 78.392),
-        Vec(27.897, 78.392),
-        Vec(38.771, 78.392),
+        findNamed("Fader1").value(),
+        findNamed("Fader2").value(),
+        findNamed("Fader3").value(),
+        findNamed("Fader4").value(),
     };
 
     for (int i = 0; i < sliderPositions.size(); i++) {
         createAbsolutePort(
             sliderPositions[i],
             module,
-            MiniLab3::SLIDER1_OUTPUT + i,
-            [&i](MiniLab3* lab) { return lab->sliders[i]; }
+            MiniLab3::SLIDER_OUTPUT + i,
+            [i](MiniLab3* lab) -> AbsoluteParam* { return lab->sliders[i]; },
+            false
         );
     }
 }

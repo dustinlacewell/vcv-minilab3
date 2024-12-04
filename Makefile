@@ -1,5 +1,5 @@
 # If RACK_DIR is not defined when calling the Makefile, default to two directories above
-RACK_DIR ?= /d/ext/vcv/Rack-SDK
+RACK_DIR ?= /d/ext/vcv/Rack
 
 # FLAGS will be passed to both the C and C++ compiler
 FLAGS +=
@@ -14,6 +14,7 @@ LDFLAGS +=
 SOURCES += $(wildcard src/**/*.cpp) src/BaseModule.cpp src/G8Pad.cpp src/MiniLog.cpp src/MiniLab3.cpp src/plugin.cpp
 
 $(info SOURCES = $(SOURCES))
+$(info RACK_DIR = $(RACK_DIR))
 
 # Add files to the ZIP package when running `make dist`
 # The compiled plugin and "plugin.json" are automatically added.

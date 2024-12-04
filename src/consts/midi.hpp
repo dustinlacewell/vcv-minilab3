@@ -1,4 +1,4 @@
-
+#pragma once
 
 enum MidiStatus {
     NoteOff = 0x8,

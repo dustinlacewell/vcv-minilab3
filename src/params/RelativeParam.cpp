@@ -11,6 +11,10 @@ RelativeParam::RelativeParam(std::string name, Output* output)
     this->resetData = RelativeParam::toJson();
 }
 
+RelativeParam::~RelativeParam() {
+    delete strengthChoice;
+}
+
 void RelativeParam::send(int value) {
     auto piled = pile->send(value);
     auto clamped = clamp->clamped(piled);
@@ -24,7 +28,7 @@ void RelativeParam::send(int value) {
         sendCallbacks(normalized);
     } else {
         slew->setTarget(normalized);
-        slew->slewLimiter.out = normalized;
+        slew->getCurrentOutput() = normalized;
         auto scaled = rescaler->rescale(normalized);
         output->setVoltage(scaled);
         sendCallbacks(normalized);

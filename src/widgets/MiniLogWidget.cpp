@@ -1,32 +1,33 @@
 #include "widgets/MiniLogWidget.hpp"
 
-MiniLogWidget::MiniLogWidget(MiniLog* module) {
+MiniLogWidget::MiniLogWidget(MiniLog* module) : SvgHelper<MiniLogWidget>() {
+    DEBUG("MiniLogWidget: Starting construction");
     setModule(module);
-    setPanel(createPanel(asset::plugin(pluginInstance, "res/MiniLog.svg")));
+    DEBUG("MiniLogWidget: Did setModule()");
+    loadPanel(asset::plugin(pluginInstance, "res/MiniLog.svg"));
+    DEBUG("MiniLogWidget: Did loadPanel()");
 
-    addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
-    addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0))
-    );
-    addChild(createWidget<ScrewSilver>(
-        Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)
+    addChild(createLightCentered<SmallLight<GreenLight>>(
+        findNamed("Light").value(), 
+        module, 
+        MiniLog::STATUS_LIGHT
     ));
-    addChild(createWidget<ScrewSilver>(Vec(
-        box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH
-    )));
-    addChild(createLight<SmallLight<GreenLight>>(
-        mm2px(Vec(31.233, 7.894)), module, MiniLog::CONNECTED_LIGHT
-    ));
+    DEBUG("MiniLogWidget: Did createLightCentered()");
 
-    log = createWidget<TextLogWidget>(mm2px(Vec(0, 13.f)));
-    log->box.size = mm2px(Vec(40.64, 128.5f - 13.f - 5.f));
+    log = createWidget<TextLogWidget>(mm2px(Vec(0, 11.f)));
+    log->box.size = mm2px(Vec(40.64, 128.5f - 11.f - 4.f));
     addChild(log);
+    DEBUG("MiniLogWidget: Did createWidget()");
 
     if (module) {
         module->whenReinit([this]() {
             log->clear();
             dirty = true;
         });
+        DEBUG("MiniLogWidget: Did whenReinit()");
     }
+
+    DEBUG("MiniLogWidget: Construction complete");
 }
 
 void MiniLogWidget::step() {
