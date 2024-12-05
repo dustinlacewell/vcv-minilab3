@@ -17,43 +17,66 @@ void StrengthSelector::appendContextMenu(Menu* menu) {
     }
 
     menu->addChild(createIndexSubmenuItem(
-        this->choice->getLabel(),
+        "Turn Speed",
         labels,
         [this]() {
-            switch (this->choice->get()) {
-                case 1:
+            Strength strength = this->choice->get();
+            switch (strength) {
+                case Strength::OneTick:
                     return 0;
-                case 2:
+                case Strength::TwoTicks:
                     return 1;
-                case 5:
+                case Strength::TenTicks:
                     return 2;
-                case 10:
+                case Strength::OnePercent:
                     return 3;
-                case 999:
+                case Strength::TwoPercent:
                     return 4;
+                case Strength::FivePercent:
+                    return 5;
+                case Strength::TenPercent:
+                    return 6;
+                case Strength::TwentyPercent:
+                    return 7;
+                case Strength::FiftyPercent:
+                    return 8;
+                case Strength::Toggle:
+                    return 9;
                 default:
-                    return 0;
+                    return 5;
             }
         },
         [this](int mode) {
             switch (mode) {
                 case 0:
-                    this->choice->set(1);
+                    this->choice->set(Strength::OneTick);
                     break;
                 case 1:
-                    this->choice->set(2);
+                    this->choice->set(Strength::TwoTicks);
                     break;
                 case 2:
-                    this->choice->set(5);
+                    this->choice->set(Strength::TenTicks);
                     break;
                 case 3:
-                    this->choice->set(10);
+                    this->choice->set(Strength::OnePercent);
                     break;
                 case 4:
-                    this->choice->set(999);
+                    this->choice->set(Strength::TwoPercent);
                     break;
-                default:
-                    this->choice->set(5);
+                case 5:
+                    this->choice->set(Strength::FivePercent);
+                    break;
+                case 6:
+                    this->choice->set(Strength::TenPercent);
+                    break;
+                case 7:
+                    this->choice->set(Strength::TwentyPercent);
+                    break;
+                case 8:
+                    this->choice->set(Strength::FiftyPercent);
+                    break;
+                case 9:
+                    this->choice->set(Strength::Toggle);
                     break;
             }
         }

@@ -4,10 +4,9 @@
 
 #include "LedText.hpp"
 
-
 struct TextLogWidget : Widget {
-    LedDisplay *background;
-    LedTextDisplay *ledDisplay;
+    LedDisplay* background;
+    LedTextDisplay* ledDisplay;
     std::list<std::string> buffer;
 
     TextLogWidget();

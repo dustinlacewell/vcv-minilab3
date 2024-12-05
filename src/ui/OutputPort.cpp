@@ -1,6 +1,10 @@
+#ifndef _USE_MATH_DEFINES
 #define _USE_MATH_DEFINES
+#endif
 
 #include <rack.hpp>
+
+#include <math.h>
 
 #include "../G8Pad.hpp"
 #include "OutputPort.hpp"
@@ -61,8 +65,8 @@ void OutputPort::drawValueRing(NVGcontext* vg) {
 
     float angle;
     angle = rack::math::rescale(pv, 0.0f, 1.0f, minAngle, maxAngle);
-    float startAngle;
-    bool isBipolar;
+    float startAngle = 0.0f;
+    bool isBipolar = false;
     switch (this->param->getVoltageMode()) {
         case VoltageMode::BIPOLAR_1:
         case VoltageMode::BIPOLAR_5:
@@ -135,8 +139,8 @@ void OutputPort::drawSlewRing(NVGcontext* vg) {
 
     float angle;
     angle = rack::math::rescale(pv, 0.0f, 1.0f, minAngle, maxAngle);
-    float startAngle;
-    bool isBipolar;
+    float startAngle = 0.0f;
+    bool isBipolar = false;
     switch (this->param->getVoltageMode()) {
         case VoltageMode::BIPOLAR_1:
         case VoltageMode::BIPOLAR_5:

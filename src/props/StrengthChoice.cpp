@@ -1,21 +1,28 @@
 #include <rack.hpp>
 
 #include "StrengthChoice.hpp"
+#include "utils/Strength.hpp"
 
-std::vector<std::tuple<std::string, int>> StrengthChoice::getChoices() {
+std::vector<std::tuple<std::string, Strength>> StrengthChoice::getChoices() {
     return {
-        {"1 Notch", 1},
-        {"2 Notch", 1},
-        {"5 Notches", 5},
-        {"10 Notches", 10},
-        {"Toggle", 999}};
+        {"1", Strength::OneTick},
+        {"2", Strength::TwoTicks},
+        {"10", Strength::TenTicks},
+        {"1%", Strength::OnePercent},
+        {"2%", Strength::TwoPercent},
+        {"5%", Strength::FivePercent},
+        {"10%", Strength::TenPercent},
+        {"25%", Strength::TwentyPercent},
+        {"50%", Strength::FiftyPercent},
+        {"Toggle", Strength::Toggle}
+    };
 }
 
 StrengthChoice::StrengthChoice(
     std::string label,
-    std::function<void(int)> callback
+    std::function<void(Strength)> callback
 ) {
     this->label = label;
     this->callback = callback;
-    this->value = 5;
+    this->value = Strength::FivePercent;
 }

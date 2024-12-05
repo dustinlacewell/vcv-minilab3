@@ -1,4 +1,5 @@
 #pragma once
+
 #include <rack.hpp>
 #include "BaseModule.hpp"
 
@@ -6,6 +7,7 @@ struct G8Pad : BaseModule {
     int driverId = -1;
     int deviceId = -1;
     int channel = -1;
+    bool dirty = false;
 
     G8Pad();
     void process(const ProcessArgs& args) override;

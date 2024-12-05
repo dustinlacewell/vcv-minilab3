@@ -3,9 +3,7 @@
 #include <iomanip>
 #include <rack.hpp>
 
-
 using namespace rack;
-
 
 struct MidiMessageRenderer {
     std::string padi(size_t n, int i);

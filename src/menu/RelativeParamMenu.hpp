@@ -1,11 +1,10 @@
 #pragma once
 
 #include <rack.hpp>
-
-using namespace rack;
-
 #include "ModularContextMenuItem.hpp"
 #include "params/RelativeParam.hpp"
+
+using namespace rack;
 
 struct RelativeParamMenu : ModularContextMenuItem {
 

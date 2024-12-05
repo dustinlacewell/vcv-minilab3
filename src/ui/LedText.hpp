@@ -2,9 +2,7 @@
 
 #include <rack.hpp>
 
-
 using namespace rack;
-
 
 struct LedTextDisplay : OpaqueWidget {
     std::string text;
@@ -14,5 +12,5 @@ struct LedTextDisplay : OpaqueWidget {
     NVGcolor bgColor;
 
     LedTextDisplay();
-    void drawLayer(const DrawArgs &args, int layer) override;
+    void drawLayer(const DrawArgs& args, int layer) override;
 };

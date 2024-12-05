@@ -48,11 +48,11 @@ BaseModule::BaseModule() {
             KNOB_OUTPUT + i,
             rack::string::f("Knob %d", i + 1),
             [i](RelativeParam* p) {
-                p->setStrength(10);
-                p->setSlew(0.0f);
-                p->setRange(0, 1024 * 8);
+                p->setStrength(Strength::FivePercent);
+                p->setResolution(Resolution::Medium);
                 p->setVoltageMode(VoltageMode::UNIPOLAR_10);
                 p->setValue(0);
+                p->setSlew(0.0f);
             }
         );
     }
@@ -145,7 +145,6 @@ json_t* BaseModule::dataToJson() {
 void BaseModule::dataFromJson(json_t* rootJ) {
     outputsFromJson(rootJ);
 
-    // Load midiInput's driver, device, and channel selections
     if (json_t* midiDriverJ = json_object_get(rootJ, "midiDriver")) {
         auto driver = (int)json_integer_value(midiDriverJ);
         midiInput.setDriverId(driver);

@@ -12,7 +12,7 @@
 using namespace rack;
 
 struct BaseParam {
-protected:
+   protected:
     json_t* resetData;
     std::string name;
     engine::Output* output;
@@ -22,7 +22,7 @@ protected:
     std::unique_ptr<Slew> slew;
     std::vector<std::function<void(float)>> valueChangeCallbacks;
 
-public:
+   public:
     std::unique_ptr<CallbackQuantity> slewLimitQuantity;
     std::unique_ptr<VoltageModeChoice> voltageModeChoice;
 
@@ -42,7 +42,7 @@ public:
     float getNormalizedValue();
     int getMin();
     int getMax();
-    void setRange(int newMin, int newMax);
+    virtual void setRange(int newMin, int newMax);
     float getSlew();
     bool slewEnabled();
     void setSlew(float newSlew);

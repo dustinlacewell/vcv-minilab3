@@ -10,17 +10,11 @@ void resetMessages(dsp::RingBuffer<std::string, 512>& messages) {
 }
 
 MiniLog::MiniLog() {
-    DEBUG("MiniLog: Starting construction");
     config(PARAMS_LEN, INPUTS_LEN, OUTPUTS_LEN, LIGHTS_LEN);
-    DEBUG("MiniLog: Did config()");
     configLight(STATUS_LIGHT, "Connected");
-    DEBUG("MiniLog: Did configLight()");
 
     lightDivider.setDivision(1024);
-    DEBUG("MiniLog: Did setDivision()");
     resetMessages(messages);
-    DEBUG("MiniLog: Did resetMessages()");
-    DEBUG("MiniLog: Construction complete");
 }
 
 void MiniLog::whenReinit(std::function<void()> callback) {

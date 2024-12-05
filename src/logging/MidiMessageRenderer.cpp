@@ -23,13 +23,6 @@ std::string MidiMessageRenderer::pads(size_t n, std::string s) {
 std::string MidiMessageRenderer::renderSysexMessage(midi::Message& msg) {
     std::string s = string::f("SYSEX (%i bytes)", msg.getSize());
     return s;
-    //    std::ostringstream ss;
-    //    ss << std::hex;
-    //    for (int i = 0; i < msg.getSize(); i++) {
-    //        ss << std::setw(2) << std::setfill('0')
-    //           << static_cast<int>(msg.bytes[i]) << " ";
-    //    }
-    //    return ss.str();
 }
 
 std::string MidiMessageRenderer::renderSongPointerMessage(midi::Message& msg) {

@@ -1,5 +1,5 @@
-#include <rack.hpp>
 #include <memory>
+#include <rack.hpp>
 
 #include "BaseParam.hpp"
 
@@ -18,10 +18,12 @@ BaseParam::BaseParam(std::string name, engine::Output* output) {
     );
 
     this->voltageModeChoice = std::make_unique<VoltageModeChoice>(
-        "Voltage mode", [this](VoltageMode voltageMode) {
+        "Voltage mode",
+        [this](VoltageMode voltageMode) {
             this->rescaler->setVoltageMode(voltageMode);
             this->send(this->pile->getValue());
-        });
+        }
+    );
 
     this->resetData = BaseParam::toJson();
 }

@@ -1,7 +1,10 @@
 #include "CallbackQuantity.hpp"
 
 CallbackQuantity::CallbackQuantity(
-    std::string label, float min, float max, std::function<void(float)> callback
+    std::string label,
+    float min,
+    float max,
+    std::function<void(float)> callback
 ) {
     this->label = label;
     this->callback = callback;

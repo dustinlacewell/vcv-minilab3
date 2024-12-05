@@ -1,33 +1,19 @@
 #include "widgets/MiniLogWidget.hpp"
+#include "MiniLogWidget.hpp"
 
-MiniLogWidget::MiniLogWidget(MiniLog* module) : SvgHelper<MiniLogWidget>() {
-    DEBUG("MiniLogWidget: Starting construction");
+MiniLogWidget::MiniLogWidget(MiniLog* module) : BaseWidget<MiniLog, MiniLogWidget>() {
     setModule(module);
-    DEBUG("MiniLogWidget: Did setModule()");
     loadPanel(asset::plugin(pluginInstance, "res/MiniLog.svg"));
-    DEBUG("MiniLogWidget: Did loadPanel()");
 
-    addChild(createLightCentered<SmallLight<GreenLight>>(
-        findNamed("Light").value(), 
-        module, 
-        MiniLog::STATUS_LIGHT
-    ));
-    DEBUG("MiniLogWidget: Did createLightCentered()");
-
-    log = createWidget<TextLogWidget>(mm2px(Vec(0, 11.f)));
-    log->box.size = mm2px(Vec(40.64, 128.5f - 11.f - 4.f));
-    addChild(log);
-    DEBUG("MiniLogWidget: Did createWidget()");
+    createStatusLight(module);
+    createLogWidget(module);
 
     if (module) {
         module->whenReinit([this]() {
             log->clear();
             dirty = true;
         });
-        DEBUG("MiniLogWidget: Did whenReinit()");
     }
-
-    DEBUG("MiniLogWidget: Construction complete");
 }
 
 void MiniLogWidget::step() {
@@ -42,4 +28,16 @@ void MiniLogWidget::step() {
         std::string s = miniLog->messages.shift();
         log->push(s);
     }
+}
+
+void MiniLogWidget::createStatusLight(MiniLog* module) {
+    addChild(createLightCentered<SmallLight<GreenLight>>(
+        findNamed("Light").value(), module, MiniLog::STATUS_LIGHT
+    ));
+}
+
+void MiniLogWidget::createLogWidget(MiniLog* module) {
+    log = createWidget<TextLogWidget>(mm2px(Vec(0, 11.f)));
+    log->box.size = mm2px(Vec(40.64, 128.5f - 11.f - 4.f));
+    addChild(log);
 }

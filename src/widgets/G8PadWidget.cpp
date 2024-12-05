@@ -5,88 +5,17 @@
 
 #include "plugin.hpp"
 
-G8PadWidget::G8PadWidget(G8Pad* module) : BaseWidget<G8Pad>(), SvgHelper<G8PadWidget>() {
-
+G8PadWidget::G8PadWidget(G8Pad* module) : BaseWidget<G8Pad, G8PadWidget>() {
     setModule(module);
     loadPanel(asset::plugin(pluginInstance, "res/G8Pad.svg"));
-
-    createAbsolutePort(
-        findNamed("Gate").value(),
-        module,
-        G8Pad::GATE_OUTPUT,
-        [](G8Pad* pad) { return pad->gate; },
-        false
-    );
-
-    createAbsolutePort(
-        findNamed("Touch").value(),
-        module,
-        G8Pad::TOUCH_OUTPUT,
-        [](G8Pad* pad) { return pad->touch; },
-        false
-    );
-
-    createAbsolutePort(
-        findNamed("Vel").value(),
-        module,
-        G8Pad::VELOCITY_OUTPUT,
-        [](G8Pad* pad) { return pad->velocity; },
-        false
-    );
-
-    createAbsolutePort(
-        findNamed("Bend").value(),
-        module,
-        G8Pad::BEND_OUTPUT,
-        [](G8Pad* pad) { return pad->bend; },
-        false
-    );
-
-    createAbsolutePort(
-        findNamed("Mod").value(),
-        module,
-        G8Pad::MOD_OUTPUT,
-        [](G8Pad* pad) { return pad->mod; },
-        false
-    );
-
-    std::vector<Vec> knobPositions = {
-        findNamed("Knob1").value(),
-        findNamed("Knob2").value(),
-        findNamed("Knob3").value(),
-        findNamed("Knob4").value(),
-        findNamed("Knob5").value(),
-        findNamed("Knob6").value(),
-        findNamed("Knob7").value(),
-        findNamed("Knob8").value(),
-    };
-
-    for (int i = 0; i < knobPositions.size(); i++) {
-        createRelativePort(
-            knobPositions[i],
-            module,
-            G8Pad::KNOB_OUTPUT + i,
-            [i](G8Pad* pad) { return pad->knobs[i]; },
-            false
-        );
-    }
-
-    addChild(createLightCentered<SmallLight<GreenLight>>(
-        findNamed("Light").value(), 
-        module, 
-        G8Pad::STATUS_LIGHT
-    ));
-
-    auto indexPos = findNamed("Index").value();
-
-    indexPos.x -= 12;
-    indexPos.y -= 12;
-
-    padIdText = createWidget<LedTextDisplay>(
-        indexPos
-    );
-    padIdText->text = "--";
-    addChild(padIdText);
+    createStatusLight(module);
+    createIndexLabel(module);
+    createGatePort(module);
+    createTouchPort(module);
+    createVelocityPort(module);
+    createBendPort(module);
+    createModPort(module);
+    createKnobPorts(module);
 }
 
 void G8PadWidget::step() {
@@ -106,4 +35,61 @@ void G8PadWidget::appendContextMenu(Menu* menu) {
     ModuleWidget::appendContextMenu(menu);
     auto* module = dynamic_cast<G8Pad*>(this->module);
     assert(module);
+}
+
+void G8PadWidget::createStatusLight(G8Pad* module) {
+    addChild(createLightCentered<SmallLight<GreenLight>>(
+        findNamed("Light").value(), module, G8Pad::STATUS_LIGHT
+    ));
+}
+
+void G8PadWidget::createGatePort(G8Pad* module) {
+    createAbsolutePort("Gate", module, G8Pad::GATE_OUTPUT, [](G8Pad* pad) {
+        return pad->gate;
+    });
+}
+
+void G8PadWidget::createTouchPort(G8Pad* module) {
+    createAbsolutePort("Touch", module, G8Pad::TOUCH_OUTPUT, [](G8Pad* pad) {
+        return pad->touch;
+    });
+}
+
+void G8PadWidget::createVelocityPort(G8Pad* module) {
+    createAbsolutePort("Vel", module, G8Pad::VELOCITY_OUTPUT, [](G8Pad* pad) {
+        return pad->velocity;
+    });
+}
+
+void G8PadWidget::createBendPort(G8Pad* module) {
+    createAbsolutePort("Bend", module, G8Pad::BEND_OUTPUT, [](G8Pad* pad) {
+        return pad->bend;
+    });
+}
+
+void G8PadWidget::createModPort(G8Pad* module) {
+    createAbsolutePort("Mod", module, G8Pad::MOD_OUTPUT, [](G8Pad* pad) {
+        return pad->mod;
+    });
+}
+
+void G8PadWidget::createKnobPorts(G8Pad* module) {
+    for (int i = 0; i < 8; i++) {
+        createRelativePort(
+            "Knob" + std::to_string(i + 1),
+            module,
+            G8Pad::KNOB_OUTPUT + i,
+            [i](G8Pad* pad) { return pad->knobs[i]; }
+        );
+    }
+}
+
+void G8PadWidget::createIndexLabel(G8Pad* module) {
+    auto indexPos = findNamed("Index").value();
+    indexPos.x -= 12;
+    indexPos.y -= 12;
+
+    padIdText = createWidget<LedTextDisplay>(indexPos);
+    padIdText->text = "--";
+    addChild(padIdText);
 }

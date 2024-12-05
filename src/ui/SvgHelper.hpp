@@ -21,6 +21,7 @@ struct SvgHelper {
     void loadPanel(const std::string& filename) {
         if (svg == nullptr) {
             auto panel = createPanel(filename);
+            panel->panelBorder->visible = true;
             svg = panel->svg;
             moduleWidget()->setPanel(panel);
         } else {
@@ -29,7 +30,11 @@ struct SvgHelper {
             try {
                 svg->loadFile(filename);
             } catch (Exception& e) {
-                WARN("Cannot reload panel from %s: %s", filename.c_str(), e.what());
+                WARN(
+                    "Cannot reload panel from %s: %s",
+                    filename.c_str(),
+                    e.what()
+                );
             }
         }
 
@@ -46,7 +51,8 @@ struct SvgHelper {
             // we don't lose the existing panel, nor do we risk crashing VCV Rack.
             // This is quite likely during iterative development, which is why
             // this code exists in the first place!
-            NSVGimage* replacement = nsvgParseFromFile(filename.c_str(), "px", SVG_DPI);
+            NSVGimage* replacement =
+                nsvgParseFromFile(filename.c_str(), "px", SVG_DPI);
             if (replacement == nullptr) {
                 // Leave the existing panel in place, and log why it didn't change.
                 WARN("Cannot load/parse SVG file [%s]", filename.c_str());
@@ -92,7 +98,9 @@ struct SvgHelper {
         forEachShape([&](NSVGshape* shape) {
             if (std::string(shape->id).find(prefix) == 0) {
                 auto bounds = shape->bounds;
-                auto center = Vec((bounds[0] + bounds[2]) / 2, (bounds[1] + bounds[3]) / 2);
+                auto center =
+                    Vec((bounds[0] + bounds[2]) / 2,
+                        (bounds[1] + bounds[3]) / 2);
                 result.push_back(center);
             }
         });
@@ -100,7 +108,9 @@ struct SvgHelper {
         return result;
     }
 
-    std::vector<std::pair<std::vector<std::string>, Vec>> findMatched(const std::string& pattern) {
+    std::vector<std::pair<std::vector<std::string>, Vec>> findMatched(
+        const std::string& pattern
+    ) {
         std::regex regex(pattern);
         std::vector<std::pair<std::vector<std::string>, Vec>> result;
 
@@ -115,7 +125,9 @@ struct SvgHelper {
                     captures.push_back(match[i]);
                 }
                 auto bounds = shape->bounds;
-                auto center = Vec((bounds[0] + bounds[2]) / 2, (bounds[1] + bounds[3]) / 2);
+                auto center =
+                    Vec((bounds[0] + bounds[2]) / 2,
+                        (bounds[1] + bounds[3]) / 2);
                 result.emplace_back(captures, center);
             }
         });
@@ -123,14 +135,20 @@ struct SvgHelper {
         return result;
     }
 
-    void forEachPrefixed(std::string prefix, const std::function<void(unsigned int i, Vec)>& callback) {
+    void forEachPrefixed(
+        std::string prefix,
+        const std::function<void(unsigned int i, Vec)>& callback
+    ) {
         auto positions = findPrefixed(prefix);
         for (unsigned int i = 0; i < positions.size(); i++) {
             callback(i, positions[i]);
         }
     }
 
-    void forEachMatched(const std::string& regex, const std::function<void(std::vector<std::string>, Vec)>& callback) {
+    void forEachMatched(
+        const std::string& regex,
+        const std::function<void(std::vector<std::string>, Vec)>& callback
+    ) {
         auto matches = findMatched(regex);
         for (const auto& match : matches) {
             callback(match.first, match.second);

@@ -2,11 +2,9 @@
 
 #include <rack.hpp>
 
-
 using namespace rack;
 
 // this is a rack::Quantity that takes a callback which is called when the value is set
-
 struct CallbackQuantity : Quantity {
     std::string label;
     float value = 0.0f;
@@ -15,7 +13,12 @@ struct CallbackQuantity : Quantity {
 
     std::function<void(float)> callback;
 
-    CallbackQuantity(std::string label, float min, float max, std::function<void(float)> callback);
+    CallbackQuantity(
+        std::string label,
+        float min,
+        float max,
+        std::function<void(float)> callback
+    );
 
     std::string getLabel() override;
 
@@ -33,7 +36,7 @@ struct CallbackQuantity : Quantity {
 
     void setRange(float min, float max);
 
-    json_t *toJson();
+    json_t* toJson();
 
-    void fromJson(json_t *rootJ);
+    void fromJson(json_t* rootJ);
 };

@@ -1,7 +1,8 @@
 #pragma once
+
 #include <iomanip>
-#include <rack.hpp>
 #include <memory>
+#include <rack.hpp>
 
 #include "logging/MidiMessageFilter.hpp"
 #include "logging/MidiMessageRenderer.hpp"

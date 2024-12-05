@@ -2,10 +2,10 @@
 
 #include <rack.hpp>
 
-using namespace rack;
-
 #include "ModularContextMenuItem.hpp"
 #include "params/AbsoluteParam.hpp"
+
+using namespace rack;
 
 struct AbsoluteParamMenu : ModularContextMenuItem {
 

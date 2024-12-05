@@ -1,11 +1,11 @@
 #pragma once
 
+#include <array>
+#include <memory>
 #include <rack.hpp>
+#include <vector>
 #include "params/AbsoluteParam.hpp"
 #include "params/RelativeParam.hpp"
-#include <memory>
-#include <vector>
-#include <array>
 
 struct BaseModule : rack::Module {
     enum ParamIds { NUM_PARAMS };
@@ -45,7 +45,7 @@ struct BaseModule : rack::Module {
     void dataFromJson(json_t* rootJ) override;
     void onReset() override;
 
-protected:
+   protected:
     void processParams();
     AbsoluteParam* createAbsoluteOutput(int output, std::string label);
     AbsoluteParam* createAbsoluteOutput(
@@ -59,7 +59,8 @@ protected:
         std::string label,
         std::function<void(RelativeParam*)> setupCallback
     );
-private:
+
+   private:
     void outputsToJson(json_t* rootJ);
     void outputsFromJson(json_t* rootJ);
 };

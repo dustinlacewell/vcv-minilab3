@@ -1,11 +1,10 @@
 #pragma once
 
 #include <rack.hpp>
-
-using namespace rack;
-
 #include "ModularContextMenuItem.hpp"
 #include "props/VoltageModeChoice.hpp"
+
+using namespace rack;
 
 struct VoltageModeSelector : ModularContextMenuItem {
     VoltageModeChoice* voltageChoice;

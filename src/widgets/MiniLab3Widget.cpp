@@ -3,38 +3,23 @@
 #include "MiniLab3.hpp"
 #include "MiniLab3Widget.hpp"
 
+#include <G8Pad.hpp>
+#include <MiniLog.hpp>
 #include "plugin.hpp"
 
-static const float MY_SVG_DPI = 75.f;
-static const float MY_MM_PER_IN = 25.4f;
-
-inline math::Vec mmm2px(math::Vec mm) {
-	auto result = mm.mult(MY_SVG_DPI / MY_MM_PER_IN);
-    return result;
-}
-
-inline math::Vec px2mm(math::Vec px) {
-    return px.mult(MY_MM_PER_IN / MY_SVG_DPI);
-}
-
-MiniLab3Widget::MiniLab3Widget(MiniLab3* module) 
-    : BaseWidget<MiniLab3>()
-    , SvgHelper<MiniLab3Widget>() 
-{
+MiniLab3Widget::MiniLab3Widget(MiniLab3* module)
+    : BaseWidget<MiniLab3, MiniLab3Widget>() {
     setModule(module);
     loadPanel(asset::plugin(pluginInstance, "res/Lab.svg"));
+    createMidiSelector(module);
+    createStatusLight(module);
+    createGatePort(module);
+    createBendPort(module);
+    createModPort(module);
+    createKnobPorts(module);
+}
 
-    // MIDI SELECTOR
-    auto* display = createWidget<MidiDisplay>(mm2px(Vec(0.0, 11.f)));
-    display->box.size = mm2px(Vec(5.08 * 9, 29.012));
-    display->setMidiPort(module ? &module->midiInput : nullptr);
-    addChild(display);
-
-    // ACTIVITY LIGHT
-    addChild(createLightCentered<SmallLight<GreenLight>>(
-        findNamed("Light").value(), module, MiniLab3::STATUS_LIGHT
-    ));
-
+void MiniLab3Widget::createGatePort(MiniLab3* module) {
     auto gatePosMaybe = findNamed("Gate");
 
     if (!gatePosMaybe.has_value()) {
@@ -51,8 +36,18 @@ MiniLab3Widget::MiniLab3Widget(MiniLab3* module)
         [](MiniLab3* lab) { return lab->gate; },
         false
     );
+}
 
-    auto bendPos = findNamed("Bend").value();
+void MiniLab3Widget::createBendPort(MiniLab3* module) {
+    auto bendPosMaybe = findNamed("Bend");
+
+    if (!bendPosMaybe.has_value()) {
+        DEBUG("No bend position found");
+        return;
+    }
+
+    auto bendPos = bendPosMaybe.value();
+
     createAbsolutePort(
         bendPos,
         module,
@@ -60,8 +55,18 @@ MiniLab3Widget::MiniLab3Widget(MiniLab3* module)
         [](MiniLab3* lab) { return lab->bend; },
         false
     );
+}
 
-    auto modPos = findNamed("Mod").value();
+void MiniLab3Widget::createModPort(MiniLab3* module) {
+    auto modPosMaybe = findNamed("Mod");
+
+    if (!modPosMaybe.has_value()) {
+        DEBUG("No mod position found");
+        return;
+    }
+
+    auto modPos = modPosMaybe.value();
+
     createAbsolutePort(
         modPos,
         module,
@@ -69,44 +74,61 @@ MiniLab3Widget::MiniLab3Widget(MiniLab3* module)
         [](MiniLab3* lab) { return lab->mod; },
         false
     );
+}
 
-    std::vector<Vec> knobPositions = {
-        findNamed("Knob1").value(),
-        findNamed("Knob2").value(),
-        findNamed("Knob3").value(),
-        findNamed("Knob4").value(),
-        findNamed("Knob5").value(),
-        findNamed("Knob6").value(),
-        findNamed("Knob7").value(),
-        findNamed("Knob8").value(),
-    };
+void MiniLab3Widget::createKnobPorts(MiniLab3* module) {
+    for (int i = 0; i < 8; i++) {
+        auto knobPosMaybe = findNamed("Knob" + std::to_string(i + 1));
 
-    for (int i = 0; i < knobPositions.size(); i++) {
+        if (!knobPosMaybe.has_value()) {
+            DEBUG("No knob %d position found", i + 1);
+            continue;
+        }
+
+        auto knobPos = knobPosMaybe.value();
+
         createRelativePort(
-            knobPositions[i],
+            knobPos,
             module,
             MiniLab3::KNOB_OUTPUT + i,
             [i](MiniLab3* lab) { return lab->knobs[i]; },
             false
         );
     }
+}
 
-    std::vector<Vec> sliderPositions = {
-        findNamed("Fader1").value(),
-        findNamed("Fader2").value(),
-        findNamed("Fader3").value(),
-        findNamed("Fader4").value(),
-    };
+void MiniLab3Widget::createSliderPorts(MiniLab3* module) {
+    for (int i = 0; i < 4; i++) {
+        auto sliderPosMaybe = findNamed("Slider" + std::to_string(i + 1));
 
-    for (int i = 0; i < sliderPositions.size(); i++) {
+        if (!sliderPosMaybe.has_value()) {
+            DEBUG("No slider %d position found", i + 1);
+            continue;
+        }
+
+        auto sliderPos = sliderPosMaybe.value();
+
         createAbsolutePort(
-            sliderPositions[i],
+            sliderPos,
             module,
             MiniLab3::SLIDER_OUTPUT + i,
-            [i](MiniLab3* lab) -> AbsoluteParam* { return lab->sliders[i]; },
+            [i](MiniLab3* lab) { return lab->sliders[i]; },
             false
         );
     }
+}
+
+void MiniLab3Widget::createStatusLight(MiniLab3* module) {
+    addChild(createLightCentered<SmallLight<GreenLight>>(
+        findNamed("Light").value(), module, MiniLab3::STATUS_LIGHT
+    ));
+}
+
+void MiniLab3Widget::createMidiSelector(MiniLab3* module) {
+    auto* display = createWidget<MidiDisplay>(mm2px(Vec(0.0, 11.f)));
+    display->box.size = mm2px(Vec(5.08 * 9, 29.012));
+    display->setMidiPort(module ? &module->midiInput : nullptr);
+    addChild(display);
 }
 
 void MiniLab3Widget::appendContextMenu(Menu* menu) {
@@ -116,5 +138,23 @@ void MiniLab3Widget::appendContextMenu(Menu* menu) {
 }
 
 void MiniLab3Widget::step() {
+    if (module) {
+        auto* lab = dynamic_cast<MiniLab3*>(module);
+
+        if (!lab) {
+            return;
+        }
+
+        auto _panel = dynamic_cast<SvgPanel*>(getPanel());
+        auto rightExpander = lab->rightExpander.module;
+        if (rightExpander && _panel->panelBorder->isVisible()) {
+            _panel->panelBorder->hide();
+            _panel->fb->setDirty();
+        } else if (!rightExpander && !_panel->panelBorder->isVisible()) {
+            _panel->panelBorder->show();
+            _panel->fb->setDirty();
+        }
+    }
+
     ModuleWidget::step();
 }

@@ -124,14 +124,17 @@ std::tuple<int, int> MiniLab3::scan() {
 
             if (myDriverId != pad->driverId) {
                 pad->driverId = myDriverId;
+                pad->dirty = true;
             }
 
             if (myDeviceId != pad->deviceId) {
                 pad->deviceId = myDeviceId;
+                pad->dirty = true;
             }
 
             if (myChannel != pad->channel) {
                 pad->channel = myChannel;
+                pad->dirty = true;
             }
 
             if (pad->isActive) {

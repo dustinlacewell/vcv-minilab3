@@ -9,8 +9,8 @@
 
 using namespace rack;
 
-template <typename T>
-struct BaseWidget : ModuleWidget {
+template <typename T, typename W>
+struct BaseWidget : ModuleWidget, SvgHelper<W> {
 
     OutputPort* createAbsolutePort(
         Vec pos,
@@ -18,6 +18,13 @@ struct BaseWidget : ModuleWidget {
         int outputId,
         std::function<AbsoluteParam*(T*)> getParam,
         bool convertToPx = true
+    );
+
+    void createAbsolutePort(
+        std::string elementName,
+        T* module,
+        int outputId,
+        std::function<AbsoluteParam*(T*)> getParam
     );
 
     OutputPort* createRelativePort(
@@ -28,11 +35,18 @@ struct BaseWidget : ModuleWidget {
         bool convertToPx = true
     );
 
+    void createRelativePort(
+        std::string elementName,
+        T* module,
+        int outputId,
+        std::function<RelativeParam*(T*)> getParam
+    );
+
     void onReset();
 };
 
-template <typename T>
-OutputPort* BaseWidget<T>::createAbsolutePort(
+template <typename T, typename W>
+OutputPort* BaseWidget<T, W>::createAbsolutePort(
     Vec pos,
     T* module,
     int outputId,
@@ -40,7 +54,9 @@ OutputPort* BaseWidget<T>::createAbsolutePort(
     // optional boolean of whether to convert to px
     bool convertToPx
 ) {
-    auto* port = createOutputCentered<OutputPort>(convertToPx ? mm2px(pos) : pos, module, outputId);
+    auto* port = createOutputCentered<OutputPort>(
+        convertToPx ? mm2px(pos) : pos, module, outputId
+    );
 
     if (module) {
         auto* param = getParam(module);
@@ -52,8 +68,31 @@ OutputPort* BaseWidget<T>::createAbsolutePort(
     return port;
 }
 
-template <typename T>
-OutputPort* BaseWidget<T>::createRelativePort(
+template <typename T, typename W>
+void BaseWidget<T, W>::createAbsolutePort(
+    std::string elementName,
+    T* module,
+    int outputId,
+    std::function<AbsoluteParam*(T*)> getParam
+) {
+    auto posMaybe = SvgHelper<W>::findNamed(elementName);
+
+    if (!posMaybe.has_value()) {
+        DEBUG("No %s position found", elementName.c_str());
+        return;
+    }
+
+    createAbsolutePort(
+        posMaybe.value(),
+        module,
+        outputId,
+        getParam,
+        false
+    );
+}
+
+template <typename T, typename W>
+OutputPort* BaseWidget<T, W>::createRelativePort(
     Vec pos,
     T* module,
     int outputId,
@@ -61,7 +100,9 @@ OutputPort* BaseWidget<T>::createRelativePort(
     // optional boolean of whether to convert to px
     bool convertToPx
 ) {
-    auto* port = createOutputCentered<OutputPort>(convertToPx ? mm2px(pos) : pos, module, outputId);
+    auto* port = createOutputCentered<OutputPort>(
+        convertToPx ? mm2px(pos) : pos, module, outputId
+    );
 
     if (module) {
         RelativeParam* param = getParam(module);
@@ -71,4 +112,27 @@ OutputPort* BaseWidget<T>::createRelativePort(
 
     addOutput(port);
     return port;
+}
+
+template <typename T, typename W>
+void BaseWidget<T, W>::createRelativePort(
+    std::string elementName,
+    T* module,
+    int outputId,
+    std::function<RelativeParam*(T*)> getParam
+) {
+    auto posMaybe = SvgHelper<W>::findNamed(elementName);
+
+    if (!posMaybe.has_value()) {
+        DEBUG("No %s position found", elementName.c_str());
+        return;
+    }
+
+    createRelativePort(
+        posMaybe.value(),
+        module,
+        outputId,
+        getParam,
+        false
+    );
 }

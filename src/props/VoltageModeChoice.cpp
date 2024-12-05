@@ -10,7 +10,8 @@ std::vector<std::tuple<std::string, VoltageMode>> VoltageModeChoice::getChoices(
         {"0V:10V", VoltageMode::UNIPOLAR_10},
         {"-1V:1V", VoltageMode::BIPOLAR_1},
         {"-5V:5V", VoltageMode::BIPOLAR_5},
-        {"-10V:10V", VoltageMode::BIPOLAR_10}};
+        {"-10V:10V", VoltageMode::BIPOLAR_10}
+    };
 }
 
 VoltageModeChoice::VoltageModeChoice(

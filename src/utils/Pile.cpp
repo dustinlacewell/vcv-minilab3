@@ -34,7 +34,7 @@ int Pile::getStrength() {
 }
 
 void Pile::setStrength(int newStrength) {
-    strength = newStrength;
+    strength = newStrength > 0 ? newStrength : 1;
 }
 
 int Pile::getValue() {
