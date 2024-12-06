@@ -1,7 +1,8 @@
 #include "widgets/MiniLogWidget.hpp"
 #include "MiniLogWidget.hpp"
 
-MiniLogWidget::MiniLogWidget(MiniLog* module) : BaseWidget<MiniLog, MiniLogWidget>() {
+MiniLogWidget::MiniLogWidget(MiniLog* module)
+    : BaseWidget<MiniLog, MiniLogWidget>() {
     setModule(module);
     loadPanel(asset::plugin(pluginInstance, "res/MiniLog.svg"));
 
@@ -28,6 +29,25 @@ void MiniLogWidget::step() {
         std::string s = miniLog->messages.shift();
         log->push(s);
     }
+
+    auto* log = dynamic_cast<MiniLog*>(module);
+    auto _panel = dynamic_cast<SvgPanel*>(getPanel());
+
+    if (!log) {
+        return;
+    }
+
+    if (log->connected) {
+        if (_panel && _panel->panelBorder->isVisible()) {
+            _panel->panelBorder->hide();
+            _panel->fb->setDirty();
+        }
+    } else {
+        if (_panel && !_panel->panelBorder->isVisible()) {
+            _panel->panelBorder->show();
+            _panel->fb->setDirty();
+        }
+    }
 }
 
 void MiniLogWidget::createStatusLight(MiniLog* module) {
@@ -37,7 +57,7 @@ void MiniLogWidget::createStatusLight(MiniLog* module) {
 }
 
 void MiniLogWidget::createLogWidget(MiniLog* module) {
-    log = createWidget<TextLogWidget>(mm2px(Vec(0, 11.f)));
-    log->box.size = mm2px(Vec(40.64, 128.5f - 11.f - 4.f));
+    log = createWidget<TextLogWidget>(Vec(4, 34.5));
+    log->box.size = Vec(112, 338);
     addChild(log);
 }

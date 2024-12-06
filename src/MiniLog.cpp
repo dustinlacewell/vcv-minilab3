@@ -56,6 +56,7 @@ void MiniLog::processMessage(midi::Message& msg) {
 }
 
 void MiniLog::adjustLight(bool connected) {
+    this->connected = connected;
     lights[STATUS_LIGHT].setBrightness(connected ? 1.0 : 0.0);
 }
 

@@ -17,6 +17,7 @@ MiniLab3Widget::MiniLab3Widget(MiniLab3* module)
     createBendPort(module);
     createModPort(module);
     createKnobPorts(module);
+    createSliderPorts(module);
 }
 
 void MiniLab3Widget::createGatePort(MiniLab3* module) {
@@ -99,7 +100,7 @@ void MiniLab3Widget::createKnobPorts(MiniLab3* module) {
 
 void MiniLab3Widget::createSliderPorts(MiniLab3* module) {
     for (int i = 0; i < 4; i++) {
-        auto sliderPosMaybe = findNamed("Slider" + std::to_string(i + 1));
+        auto sliderPosMaybe = findNamed("Fader" + std::to_string(i + 1));
 
         if (!sliderPosMaybe.has_value()) {
             DEBUG("No slider %d position found", i + 1);
@@ -146,11 +147,21 @@ void MiniLab3Widget::step() {
         }
 
         auto _panel = dynamic_cast<SvgPanel*>(getPanel());
+
+        if (!_panel) {
+            return;
+        }
+
         auto rightExpander = lab->rightExpander.module;
-        if (rightExpander && _panel->panelBorder->isVisible()) {
+        auto leftExpander = lab->leftExpander.module;
+        auto rightIsG8Pad = rightExpander && rightExpander->model == modelG8Pad;
+        auto leftIsLog = leftExpander && leftExpander->model == modelMiniLog;
+        auto connected = rightIsG8Pad || leftIsLog;
+
+        if (connected && _panel->panelBorder->isVisible()) {
             _panel->panelBorder->hide();
             _panel->fb->setDirty();
-        } else if (!rightExpander && !_panel->panelBorder->isVisible()) {
+        } else if (!connected && !_panel->panelBorder->isVisible()) {
             _panel->panelBorder->show();
             _panel->fb->setDirty();
         }

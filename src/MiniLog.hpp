@@ -17,6 +17,7 @@ struct MiniLog : Module {
     enum OutputId { OUTPUTS_LEN };
     enum LightId { STATUS_LIGHT, LIGHTS_LEN };
 
+    bool connected = false;
     dsp::ClockDivider lightDivider;
     MidiMessageFilter midiMessageFilter;
     MidiMessageRenderer midiMessageRenderer;

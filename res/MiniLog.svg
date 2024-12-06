@@ -11,6 +11,7 @@
    sodipodi:docname="MiniLog.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
   <sodipodi:namedview
@@ -24,9 +25,9 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="2.5877449"
-     inkscape:cx="37.870812"
-     inkscape:cy="167.52038"
+     inkscape:zoom="1.829812"
+     inkscape:cx="-59.022458"
+     inkscape:cy="263.14179"
      inkscape:window-width="2560"
      inkscape:window-height="1369"
      inkscape:window-x="-8"
@@ -44,6 +45,13 @@
        height="133.10101"
        x="-2.0539365"
        y="-2" />
+    <rect
+       style="fill:#111111;stroke:url(#linearGradient3);stroke-width:0.264996;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+       id="rect2"
+       width="39.482006"
+       height="116.34836"
+       x="0.57920265"
+       y="10.715831" />
   </g>
   <g
      inkscape:groupmode="layer"
@@ -63,7 +71,30 @@
          y="6.8309588">log</tspan></text>
   </g>
   <defs
-     id="defs3816" />
+     id="defs3816">
+    <linearGradient
+       id="linearGradient2"
+       inkscape:collect="always">
+      <stop
+         style="stop-color:#1d1d1d;stop-opacity:1;"
+         offset="0"
+         id="stop2" />
+      <stop
+         style="stop-color:#535353;stop-opacity:1;"
+         offset="1"
+         id="stop3" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2"
+       id="linearGradient3"
+       x1="21.010153"
+       y1="54.337528"
+       x2="20.907907"
+       y2="63.232853"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.99601433,0,0,2.5690514,0.08119544,-18.828263)" />
+  </defs>
   <g
      inkscape:groupmode="layer"
      id="Ports"
@@ -83,12 +114,23 @@
      id="DesignFinal"
      inkscape:label="DesignFinal">
     <rect
-       style="fill:#262630;fill-opacity:1;stroke:#324d9e;stroke-width:0;stroke-linecap:square;stroke-linejoin:bevel;stroke-dasharray:none;stroke-opacity:0.405556"
+       style="fill:#262630;stroke:#324d9e;stroke-width:0;stroke-linecap:square;stroke-linejoin:bevel;stroke-opacity:0.405556"
        id="rect1"
        width="44.543385"
        height="133.10101"
        x="-2.0539365"
        y="-2" />
+    <g
+       id="rect3">
+      <path
+         style="fill:#111111;paint-order:markers fill stroke"
+         d="M 0.57920265,10.715831 H 40.061209 V 127.06419 H 0.57920265 Z"
+         id="path4" />
+      <path
+         style="fill:url(#linearGradient3);paint-order:markers fill stroke"
+         d="M 0.44726563,10.583984 V 127.19727 H 40.193359 V 10.583984 Z M 0.7109375,10.847656 H 39.927734 V 126.93164 H 0.7109375 Z"
+         id="path5" />
+    </g>
   </g>
   <g
      inkscape:groupmode="layer"

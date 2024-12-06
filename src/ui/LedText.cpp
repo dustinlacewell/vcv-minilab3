@@ -38,6 +38,14 @@ void LedTextDisplay::drawLayer(const DrawArgs& args, int layer) {
         nvgStrokeWidth(args.vg, 2.0);
         nvgStroke(args.vg);
 
+        // Add a light gray line across the bottom
+        nvgBeginPath(args.vg);
+        nvgMoveTo(args.vg, 0, box.size.y);
+        nvgLineTo(args.vg, box.size.x, box.size.y);
+        nvgStrokeColor(args.vg, nvgRGB(80*.5, 80*.5, 80*.5));  // Light gray color
+        nvgStrokeWidth(args.vg, 2.0);
+        nvgStroke(args.vg);
+
         std::shared_ptr<Font> font = APP->window->loadFont(
             asset::system("res/fonts/ShareTechMono-Regular.ttf")
         );

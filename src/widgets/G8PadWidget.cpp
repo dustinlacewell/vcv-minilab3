@@ -21,13 +21,28 @@ G8PadWidget::G8PadWidget(G8Pad* module) : BaseWidget<G8Pad, G8PadWidget>() {
 void G8PadWidget::step() {
     if (module) {
         auto* pad = dynamic_cast<G8Pad*>(module);
+        auto _panel = dynamic_cast<SvgPanel*>(getPanel());
+
+        if (!pad) {
+            return;
+        }
+
         int padId = pad->position;
         if (padId >= 0) {
             padIdText->text = string::f("%02d", padId);
+            if (_panel && _panel->panelBorder->isVisible()) {
+                _panel->panelBorder->hide();
+                _panel->fb->setDirty();
+            }
         } else {
             padIdText->text = "--";
+            if (_panel && !_panel->panelBorder->isVisible()) {
+                _panel->panelBorder->show();
+                _panel->fb->setDirty();
+            }
         }
     }
+
     ModuleWidget::step();
 }
 
