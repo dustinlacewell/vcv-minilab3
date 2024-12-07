@@ -46,8 +46,7 @@ struct BaseWidget : ModuleWidget, SvgHelper<W> {
         Vec pos,
         T* module,
         int outputId,
-        std::function<AbsoluteParam*(T*)> getParam,
-        bool convertToPx = true
+        std::function<AbsoluteParam*(T*)> getParam
     );
 
     void createAbsolutePort(
@@ -61,8 +60,7 @@ struct BaseWidget : ModuleWidget, SvgHelper<W> {
         Vec pos,
         T* module,
         int outputId,
-        std::function<RelativeParam*(T*)> getParam,
-        bool convertToPx = true
+        std::function<RelativeParam*(T*)> getParam
     );
 
     void createRelativePort(
@@ -156,13 +154,11 @@ OutputPort* BaseWidget<T, W>::createAbsolutePort(
     Vec pos,
     T* module,
     int outputId,
-    std::function<AbsoluteParam*(T*)> getParam,
-    // optional boolean of whether to convert to px
-    bool convertToPx
+    std::function<AbsoluteParam*(T*)> getParam
 ) {
-    auto* port = createOutputCentered<OutputPort>(
-        convertToPx ? mm2px(pos) : pos, module, outputId
-    );
+    DEBUG("port pos before: %f, %f", pos.x, pos.y);
+    auto* port = createOutputCentered<OutputPort>(pos, module, outputId);
+    DEBUG("port pos after: %f, %f", port->box.pos.x, port->box.pos.y);
 
     if (module) {
         auto* param = getParam(module);
@@ -188,7 +184,7 @@ void BaseWidget<T, W>::createAbsolutePort(
         return;
     }
 
-    createAbsolutePort(posMaybe.value(), module, outputId, getParam, false);
+    createAbsolutePort(posMaybe.value(), module, outputId, getParam);
 }
 
 template <typename T, typename W>
@@ -196,13 +192,9 @@ OutputPort* BaseWidget<T, W>::createRelativePort(
     Vec pos,
     T* module,
     int outputId,
-    std::function<RelativeParam*(T*)> getParam,
-    // optional boolean of whether to convert to px
-    bool convertToPx
+    std::function<RelativeParam*(T*)> getParam
 ) {
-    auto* port = createOutputCentered<OutputPort>(
-        convertToPx ? mm2px(pos) : pos, module, outputId
-    );
+    auto* port = createOutputCentered<OutputPort>(pos, module, outputId);
 
     if (module) {
         RelativeParam* param = getParam(module);
@@ -228,5 +220,5 @@ void BaseWidget<T, W>::createRelativePort(
         return;
     }
 
-    createRelativePort(posMaybe.value(), module, outputId, getParam, false);
+    createRelativePort(posMaybe.value(), module, outputId, getParam);
 }

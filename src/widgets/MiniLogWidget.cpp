@@ -4,7 +4,7 @@
 MiniLogWidget::MiniLogWidget(MiniLog* module)
     : BaseWidget<MiniLog, MiniLogWidget>() {
     setModule(module);
-    loadPanel("res/MiniLog.svg");
+    loadPanel("res/Log.svg");
 
     createStatusLight(module);
     createLogWidget(module);

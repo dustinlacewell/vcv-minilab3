@@ -27,7 +27,7 @@
      showgrid="false"
      inkscape:zoom="2.5385119"
      inkscape:cx="50.226276"
-     inkscape:cy="212.13215"
+     inkscape:cy="212.13216"
      inkscape:window-width="1879"
      inkscape:window-height="1211"
      inkscape:window-x="276"
@@ -1245,129 +1245,6 @@
   </g>
   <g
      inkscape:groupmode="layer"
-     id="Ports"
-     inkscape:label="Ports"
-     style="display:inline"
-     transform="matrix(2.9571985,0,0,2.9571985,-31.215747,104.46822)">
-    <circle
-       style="fill:#0000ff"
-       id="Fader1"
-       cx="18.706934"
-       cy="40.128201"
-       inkscape:label="Fader1"
-       r="1.8404053" />
-    <circle
-       style="fill:#0000ff"
-       id="Fader2"
-       cx="28.490082"
-       cy="40.128201"
-       inkscape:label="Fader2"
-       r="1.8404053" />
-    <circle
-       style="fill:#0000ff"
-       id="Fader3"
-       cx="38.273232"
-       cy="40.128201"
-       r="1.8404053"
-       inkscape:label="Fader3" />
-    <circle
-       style="fill:#0000ff"
-       id="Knob1"
-       cx="18.706934"
-       cy="61.578384"
-       inkscape:label="Knob1"
-       r="1.8404053" />
-    <circle
-       style="fill:#0000ff"
-       id="Knob2"
-       cx="28.490082"
-       cy="61.578384"
-       inkscape:label="Knob2"
-       r="1.8404053" />
-    <circle
-       style="fill:#0000ff"
-       id="Knob3"
-       cx="38.273232"
-       cy="61.578384"
-       r="1.8404053"
-       inkscape:label="Knob3" />
-    <circle
-       style="fill:#0000ff"
-       id="Knob4"
-       cx="48.056377"
-       cy="61.578384"
-       r="1.8404053"
-       inkscape:label="Knob4" />
-    <circle
-       style="fill:#0000ff"
-       id="Knob5"
-       cx="18.706934"
-       cy="75.414642"
-       inkscape:label="Knob5"
-       r="1.8404053" />
-    <circle
-       style="fill:#0000ff"
-       id="Knob6"
-       cx="28.490082"
-       cy="75.414642"
-       inkscape:label="Knob6"
-       r="1.8404053" />
-    <circle
-       style="fill:#0000ff"
-       id="Knob7"
-       cx="38.273232"
-       cy="75.414642"
-       r="1.8404053"
-       inkscape:label="Knob7" />
-    <circle
-       style="fill:#0000ff"
-       id="Knob8"
-       cx="48.056377"
-       cy="75.414642"
-       r="1.8404053"
-       inkscape:label="Knob8" />
-    <circle
-       style="fill:#0000ff"
-       id="Fader4"
-       cx="48.056377"
-       cy="40.128201"
-       r="1.8404053"
-       inkscape:label="Fader4" />
-    <ellipse
-       style="fill:#0000ff"
-       id="Gate"
-       cx="18.706934"
-       cy="18.850992"
-       inkscape:label="Gate"
-       rx="1.84"
-       ry="1.8404053" />
-    <ellipse
-       style="fill:#0000ff;stroke-width:0;stroke-dasharray:none"
-       id="Light"
-       cx="16.878794"
-       cy="-29.69693"
-       inkscape:label="Light"
-       rx="0.99000001"
-       ry="0.99021822" />
-    <ellipse
-       style="fill:#0000ff"
-       id="Bend"
-       cx="33.381508"
-       cy="18.900518"
-       inkscape:label="Bend"
-       rx="1.84"
-       ry="1.8404053" />
-    <ellipse
-       style="fill:#0000ff"
-       id="Mod"
-       cx="48.056377"
-       cy="18.801466"
-       inkscape:label="Mod"
-       rx="1.84"
-       ry="1.8404053" />
-  </g>
-  <g
-     inkscape:groupmode="layer"
      id="DesignFinal"
      inkscape:label="DesignFinal"
      transform="matrix(2.9571985,0,0,2.9571985,-0.21984113,5.9120369e-6)">
@@ -1489,5 +1366,128 @@
        style="font-weight:bold;font-size:6.96774px;font-family:'Nightmare Codehack';-inkscape-font-specification:'Nightmare Codehack Bold';text-align:center;text-anchor:middle;fill:#ffffff;stroke:#000000;stroke-width:0;stroke-linecap:square;stroke-linejoin:bevel"
        inkscape:label="brand"
        aria-label="ldle" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="Ports"
+     inkscape:label="Ports"
+     style="display:inline"
+     transform="matrix(2.9571985,0,0,2.9571985,-31.215747,104.46822)">
+    <circle
+       style="fill:#0000ff"
+       id="Fader1"
+       cx="18.706934"
+       cy="40.128201"
+       inkscape:label="Fader1"
+       r="1.8404053" />
+    <circle
+       style="fill:#0000ff"
+       id="Fader2"
+       cx="28.490082"
+       cy="40.128201"
+       inkscape:label="Fader2"
+       r="1.8404053" />
+    <circle
+       style="fill:#0000ff"
+       id="Fader3"
+       cx="38.273232"
+       cy="40.128201"
+       r="1.8404053"
+       inkscape:label="Fader3" />
+    <circle
+       style="fill:#0000ff"
+       id="Knob1"
+       cx="18.706934"
+       cy="61.578384"
+       inkscape:label="Knob1"
+       r="1.8404053" />
+    <circle
+       style="fill:#0000ff"
+       id="Knob2"
+       cx="28.490082"
+       cy="61.578384"
+       inkscape:label="Knob2"
+       r="1.8404053" />
+    <circle
+       style="fill:#0000ff"
+       id="Knob3"
+       cx="38.273232"
+       cy="61.578384"
+       r="1.8404053"
+       inkscape:label="Knob3" />
+    <circle
+       style="fill:#0000ff"
+       id="Knob4"
+       cx="48.056377"
+       cy="61.578384"
+       r="1.8404053"
+       inkscape:label="Knob4" />
+    <circle
+       style="fill:#0000ff"
+       id="Knob5"
+       cx="18.706934"
+       cy="75.414642"
+       inkscape:label="Knob5"
+       r="1.8404053" />
+    <circle
+       style="fill:#0000ff"
+       id="Knob6"
+       cx="28.490082"
+       cy="75.414642"
+       inkscape:label="Knob6"
+       r="1.8404053" />
+    <circle
+       style="fill:#0000ff"
+       id="Knob7"
+       cx="38.273232"
+       cy="75.414642"
+       r="1.8404053"
+       inkscape:label="Knob7" />
+    <circle
+       style="fill:#0000ff"
+       id="Knob8"
+       cx="48.056377"
+       cy="75.414642"
+       r="1.8404053"
+       inkscape:label="Knob8" />
+    <circle
+       style="fill:#0000ff"
+       id="Fader4"
+       cx="48.056377"
+       cy="40.128201"
+       r="1.8404053"
+       inkscape:label="Fader4" />
+    <ellipse
+       style="fill:#0000ff"
+       id="Gate"
+       cx="18.706934"
+       cy="18.850992"
+       inkscape:label="Gate"
+       rx="1.84"
+       ry="1.8404053" />
+    <ellipse
+       style="fill:#0000ff;stroke-width:0;stroke-dasharray:none"
+       id="Light"
+       cx="16.878794"
+       cy="-29.69693"
+       inkscape:label="Light"
+       rx="0.99000001"
+       ry="0.99021822" />
+    <ellipse
+       style="fill:#0000ff"
+       id="Bend"
+       cx="33.381508"
+       cy="18.900518"
+       inkscape:label="Bend"
+       rx="1.84"
+       ry="1.8404053" />
+    <ellipse
+       style="fill:#0000ff"
+       id="Mod"
+       cx="48.056377"
+       cy="18.801466"
+       inkscape:label="Mod"
+       rx="1.84"
+       ry="1.8404053" />
   </g>
 </svg>

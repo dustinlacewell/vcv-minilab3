@@ -7,7 +7,7 @@
 
 MiniPadWidget::MiniPadWidget(MiniPad* module) : BaseWidget<MiniPad, MiniPadWidget>() {
     setModule(module);
-    loadPanel("res/G8Pad.svg");
+    loadPanel("res/Pad.svg");
     createStatusLight(module);
     createIndexLabel(module);
     createGatePort(module);

@@ -50,7 +50,6 @@ struct BufferedDrawFunctionWidgetOnLayer : BufferedDrawFunctionWidget {
 };
 
 struct OutputPort : SvgPort {
-    // vector of ModularContextMenuItems
     BaseParam* param;
     float lastValue = 0.0f;
     VoltageMode lastMode = VoltageMode::UNIPOLAR_1;
@@ -61,12 +60,11 @@ struct OutputPort : SvgPort {
     BufferedDrawFunctionWidget* bwSlew{nullptr};
 
     OutputPort();
-    void setParam(BaseParam* param);
-    void appendContextMenu(Menu* menu) override;
     void step() override;
+    void appendContextMenu(Menu* menu) override;
+    void setParam(BaseParam* param);
     void drawValueRing(NVGcontext* vg);
     void drawSlewRing(NVGcontext* vg);
-    //    void drawValueCap(NVGcontext* vg);
     void setupWidgets();
     void setValue(float v);
 

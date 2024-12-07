@@ -35,8 +35,7 @@ void MiniLabWidget::createGatePort(MiniLab* module) {
         gatePos,
         module,
         MiniLab::GATE_OUTPUT,
-        [](MiniLab* lab) { return lab->gate; },
-        false
+        [](MiniLab* lab) { return lab->gate; }
     );
 }
 
@@ -54,8 +53,7 @@ void MiniLabWidget::createBendPort(MiniLab* module) {
         bendPos,
         module,
         MiniLab::BEND_OUTPUT,
-        [](MiniLab* lab) { return lab->bend; },
-        false
+        [](MiniLab* lab) { return lab->bend; }
     );
 }
 
@@ -73,8 +71,7 @@ void MiniLabWidget::createModPort(MiniLab* module) {
         modPos,
         module,
         MiniLab::MOD_OUTPUT,
-        [](MiniLab* lab) { return lab->mod; },
-        false
+        [](MiniLab* lab) { return lab->mod; }
     );
 }
 
@@ -93,8 +90,7 @@ void MiniLabWidget::createKnobPorts(MiniLab* module) {
             knobPos,
             module,
             MiniLab::KNOB_OUTPUT + i,
-            [i](MiniLab* lab) { return lab->knobs[i]; },
-            false
+            [i](MiniLab* lab) { return lab->knobs[i]; }
         );
     }
 }
@@ -114,8 +110,7 @@ void MiniLabWidget::createSliderPorts(MiniLab* module) {
             sliderPos,
             module,
             MiniLab::SLIDER_OUTPUT + i,
-            [i](MiniLab* lab) { return lab->sliders[i]; },
-            false
+            [i](MiniLab* lab) { return lab->sliders[i]; }
         );
     }
 }
