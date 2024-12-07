@@ -4,7 +4,7 @@
 MiniLogWidget::MiniLogWidget(MiniLog* module)
     : BaseWidget<MiniLog, MiniLogWidget>() {
     setModule(module);
-    loadPanel(asset::plugin(pluginInstance, "res/MiniLog.svg"));
+    loadPanel("res/MiniLog.svg");
 
     createStatusLight(module);
     createLogWidget(module);
@@ -37,17 +37,7 @@ void MiniLogWidget::step() {
         return;
     }
 
-    if (log->connected) {
-        if (_panel && _panel->panelBorder->isVisible()) {
-            _panel->panelBorder->hide();
-            _panel->fb->setDirty();
-        }
-    } else {
-        if (_panel && !_panel->panelBorder->isVisible()) {
-            _panel->panelBorder->show();
-            _panel->fb->setDirty();
-        }
-    }
+    updateBorders({nullptr}, {modelMiniLab});
 }
 
 void MiniLogWidget::createStatusLight(MiniLog* module) {

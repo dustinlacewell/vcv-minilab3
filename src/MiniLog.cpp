@@ -24,7 +24,7 @@ void MiniLog::whenReinit(std::function<void()> callback) {
 void MiniLog::process(const ProcessArgs& args) {
     if (lightDivider.process()) {
         if (rightExpander.module) {
-            auto miniLab = dynamic_cast<MiniLab3*>(rightExpander.module);
+            auto miniLab = dynamic_cast<MiniLab*>(rightExpander.module);
             if (miniLab) {
                 adjustLight(true);
             } else {

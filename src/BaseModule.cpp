@@ -78,7 +78,7 @@ AbsoluteParam* BaseModule::createAbsoluteOutput(
 }
 
 RelativeParam* BaseModule::createRelativeOutput(int output, std::string label) {
-    auto p = configOutput(output, label);
+    configOutput(output, label);
     auto param = std::make_unique<RelativeParam>(label, &outputs[output]);
     auto raw = param.get();
     params.push_back(std::move(param));

@@ -6,7 +6,7 @@
 
 #include <math.h>
 
-#include "../G8Pad.hpp"
+#include "MiniPad.hpp"
 #include "OutputPort.hpp"
 
 using namespace rack;

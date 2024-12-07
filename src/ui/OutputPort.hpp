@@ -2,7 +2,7 @@
 
 #include <rack.hpp>
 
-#include "../MiniLab3.hpp"
+#include "../MiniLab.hpp"
 #include "../menu/ModularContextMenuItem.hpp"
 
 using namespace rack;

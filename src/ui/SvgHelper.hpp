@@ -23,7 +23,9 @@ struct SvgHelper {
             auto panel = createPanel(filename);
             panel->panelBorder->visible = true;
             svg = panel->svg;
-            moduleWidget()->setPanel(panel);
+            auto widget = moduleWidget();
+            widget->setPanel(panel);
+            widget->box.size = panel->box.size;
         } else {
             // Once loaded, VCV Rack caches the panel internally.
             // We have to force it to reload the file.
@@ -74,6 +76,20 @@ struct SvgHelper {
         for (NSVGshape* shape = shapes; shape != nullptr; shape = shape->next) {
             callback(shape);
         }
+    }
+
+    // return the actual shape
+    std::optional<NSVGshape*> findShape(std::string name) {
+        NSVGshape* result = nullptr;
+
+        forEachShape([&](NSVGshape* shape) {
+            if (std::string(shape->id) == name) {
+                result = shape;
+                return;
+            }
+        });
+
+        return result;
     }
 
     std::optional<Vec> findNamed(std::string name) {

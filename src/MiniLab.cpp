@@ -1,18 +1,20 @@
-#include "MiniLab3.hpp"
+#include "MiniLab.hpp"
 
-#include "G8Pad.hpp"
+#include "MiniPad.hpp"
 #include "MiniLog.hpp"
 #include "consts/midi.hpp"
-#include "widgets/MiniLab3Widget.hpp"
+#include "widgets/MiniLabWidget.hpp"
+#include "utils/getBrightness.hpp"
 
-rack::plugin::Model* modelMiniLab3 =
-    createModel<MiniLab3, MiniLab3Widget>("MiniLab3");
+rack::plugin::Model* modelMiniLab =
+    createModel<MiniLab, MiniLabWidget>("MiniLab");
 
-MiniLab3::MiniLab3() : BaseModule() {
+MiniLab::MiniLab() : BaseModule() {
     scanDivider.setDivision(1024);
     midiDivider.setDivision(16);
     paramDivider.setDivision(8);
 
+    isReady = false;
     isActive = true;
     lights[STATUS_LIGHT].setBrightness(1.0f);
 
@@ -28,18 +30,38 @@ MiniLab3::MiniLab3() : BaseModule() {
             }
         );
     }
+
+    gate->send(1);
 }
 
-void MiniLab3::process(const ProcessArgs& args) {
+void MiniLab::process(const ProcessArgs& args) {
     if (scanDivider.process()) {
+        auto driverId = midiInput.getDriverId();
+        auto deviceId = midiInput.getDeviceId();
+        auto channel = midiInput.getChannel();
+
+        if (!isReady) {
+            if (driverId != -1 && deviceId != -1 && channel != 15) {
+                isReady = true;
+            }
+        } else {
+            if (driverId == -1 || deviceId == -1 || channel == 15) {
+                isReady = false;
+            }
+        }
+
         auto [nActive, nTotal] = scan();
 
-        auto isActive = nActive == 0;
+        auto isActive = isReady && nActive == 0;
 
         if (isActive != this->isActive) {
             this->isActive = isActive;
-            lights[STATUS_LIGHT].setBrightness(isActive ? 1.0f : 0.0f);
             gate->send(isActive ? 1 : 0);
+        }
+
+        auto brightness = getBrightness(isReady, isActive);
+        if (lights[STATUS_LIGHT].getBrightness() != brightness) {
+            lights[STATUS_LIGHT].setBrightness(brightness);
         }
     }
 
@@ -61,7 +83,7 @@ void MiniLab3::process(const ProcessArgs& args) {
     }
 }
 
-void MiniLab3::processMessage(const midi::Message& msg) {
+void MiniLab::processMessage(const midi::Message& msg) {
     auto note = msg.getNote();
     auto value = msg.getValue();
     auto status = msg.getStatus();
@@ -109,15 +131,15 @@ void MiniLab3::processMessage(const midi::Message& msg) {
     }
 }
 
-std::tuple<int, int> MiniLab3::scan() {
+std::tuple<int, int> MiniLab::scan() {
     int nActive = 0;
     int padIndex = 0;  // Start at 1 since MiniLab is 0
     Module* current = rightExpander.module;
 
     while (current) {
-        if (current->model == modelG8Pad) {
+        if (current->model == modelMiniPad) {
             padIndex++;
-            auto pad = static_cast<G8Pad*>(current);
+            auto pad = static_cast<MiniPad*>(current);
             auto myDriverId = midiInput.getDriverId();
             auto myDeviceId = midiInput.getDeviceId();
             auto myChannel = midiInput.getChannel();
@@ -148,7 +170,7 @@ std::tuple<int, int> MiniLab3::scan() {
     return std::make_tuple(nActive, padIndex);
 }
 
-void MiniLab3::processParams() {
+void MiniLab::processParams() {
     gate->process();
     velocity->process();
     bend->process();

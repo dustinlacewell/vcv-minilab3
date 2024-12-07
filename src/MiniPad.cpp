@@ -1,30 +1,49 @@
-#include "G8Pad.hpp"
+#include "MiniPad.hpp"
 #include "consts/midi.hpp"
 #include "plugin.hpp"
 #include "utils/padNotes.hpp"
-#include "widgets/G8PadWidget.hpp"
+#include "widgets/MiniPadWidget.hpp"
+#include "utils/getBrightness.hpp"
 
-rack::plugin::Model* modelG8Pad = createModel<G8Pad, G8PadWidget>("G8Pad");
+rack::plugin::Model* modelMiniPad =
+    createModel<MiniPad, MiniPadWidget>("MiniPad");
 
-G8Pad::G8Pad() : BaseModule() {
+MiniPad::MiniPad() : BaseModule() {
     driverDivider.setDivision(4096);
     positionDivider.setDivision(1024);
     midiDivider.setDivision(16);
     paramDivider.setDivision(256);
 }
 
-void G8Pad::process(const ProcessArgs& args) {
+void MiniPad::process(const ProcessArgs& args) {
     if (positionDivider.process()) {
         Module* current = leftExpander.module;
 
         int pos = 0;
         bool found = false;
+        bool labReady = false;
+
+        // auto driverId = midiInput.getDriverId();
+        // auto deviceId = midiInput.getDeviceId();
+        // auto channel = midiInput.getChannel();
+
+        // if (!isReady) {
+        //     if (driverId != -1 && deviceId != -1 && channel != 15) {
+        //         isReady = true;
+        //     }
+        // } else {
+        //     if (driverId == -1 || deviceId == -1 || channel == 15) {
+        //         isReady = false;
+        //     }
+        // }
+
         while (current) {
-            if (current->model == modelG8Pad) {
+            if (current->model == modelMiniPad) {
                 pos++;
-            } else if (current->model == modelMiniLab3) {
+            } else if (current->model == modelMiniLab) {
                 pos++;
                 found = true;
+                labReady = static_cast<MiniLab*>(current)->isReady;
                 break;
             }
 
@@ -36,9 +55,14 @@ void G8Pad::process(const ProcessArgs& args) {
         } else {
             position = -1;
             isActive = false;
-            lights[STATUS_LIGHT].setBrightness(0.0f);
             gate->send(0);
             return;
+        }
+
+        auto brightness = getBrightness(labReady, isActive);
+
+        if (lights[STATUS_LIGHT].getBrightness() != brightness) {
+            lights[STATUS_LIGHT].setBrightness(brightness);
         }
     }
 
@@ -50,32 +74,32 @@ void G8Pad::process(const ProcessArgs& args) {
 
         if (driverId != currentDriverId) {
             DEBUG(
-                "G8Pad: MIDI driver changed to %d, was %d",
+                "MiniPad: MIDI driver changed to %d, was %d",
                 driverId,
                 currentDriverId
             );
             midiInput.setDriverId(driverId);
-            DEBUG("G8Pad: MIDI driver now: %d", midiInput.getDriverId());
+            DEBUG("MiniPad: MIDI driver now: %d", midiInput.getDriverId());
         }
 
         if (deviceId != currentDeviceId) {
             DEBUG(
-                "G8Pad: MIDI device changed to %d was %d",
+                "MiniPad: MIDI device changed to %d was %d",
                 deviceId,
                 currentDeviceId
             );
             midiInput.setDeviceId(deviceId);
-            DEBUG("G8Pad: MIDI device now: %d", midiInput.getDeviceId());
+            DEBUG("MiniPad: MIDI device now: %d", midiInput.getDeviceId());
         }
 
         if (channel != currentChannel) {
             DEBUG(
-                "G8Pad: MIDI channel changed to %d was %d",
+                "MiniPad: MIDI channel changed to %d was %d",
                 channel,
                 currentChannel
             );
             midiInput.setChannel(channel);
-            DEBUG("G8Pad: MIDI channel now: %d", midiInput.getChannel());
+            DEBUG("MiniPad: MIDI channel now: %d", midiInput.getChannel());
         }
     }
 
@@ -91,7 +115,7 @@ void G8Pad::process(const ProcessArgs& args) {
     }
 }
 
-void G8Pad::processMessage(const midi::Message& msg) {
+void MiniPad::processMessage(const midi::Message& msg) {
     auto note = msg.getNote();
     auto value = msg.getValue();
     auto status = msg.getStatus();
@@ -112,14 +136,12 @@ void G8Pad::processMessage(const midi::Message& msg) {
         if (isNoteOn) {
             if (!isActive) {
                 isActive = true;
-                lights[STATUS_LIGHT].setBrightness(1.0f);
                 gate->send(1);
                 velocity->send(value);
             }
         } else if (isNoteOff) {
             if (isActive) {
                 isActive = false;
-                lights[STATUS_LIGHT].setBrightness(0.0f);
                 gate->send(0);
             }
         }
