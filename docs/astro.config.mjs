@@ -10,19 +10,7 @@ export default defineConfig({
 			social: {
 				github: 'https://github.com/dustinlacewell/vcv-minilab3',
 			},
-			sidebar: [
-				{
-					label: 'Guides',
-					items: [
-						// Each item here is one entry in the navigation menu.
-						{ label: 'Example Guide', slug: 'guides/example' },
-					],
-				},
-				{
-					label: 'Reference',
-					autogenerate: { directory: 'reference' },
-				},
-			],
+			sidebar: [],
 			customCss: [
 				'./src/styles/custom.scss',
 				'./src/styles/content.scss',
