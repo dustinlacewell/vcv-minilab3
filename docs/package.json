@@ -1,0 +1,21 @@
+{
+  "name": "docs",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/starlight": "^0.29.2",
+    "@fontsource/nunito": "^5.1.0",
+    "astro": "^4.16.10",
+    "sharp": "^0.32.5"
+  },
+  "devDependencies": {
+    "sass-embedded": "^1.82.0"
+  }
+}

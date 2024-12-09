@@ -1,0 +1,165 @@
+@use "./vars.scss";
+
+
+// Common styles for both themes
+.page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+
+    .main-frame {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+
+        main {
+            margin-top: 7px;
+        }
+
+        .lg\:sl-flex {
+            display: flex;
+            flex-grow: 1;
+
+            .right-sidebar-container {
+                .right-sidebar {
+                    flex-grow: 1;
+                }
+            }
+
+            .main-pane {
+                flex-grow: 1;
+            }
+        }
+    }
+}
+
+.site-title {
+    font-family: "Nunito", sans-serif;
+}
+
+.content-panel {
+    height: 100%;
+
+    .sl-container {
+        padding: 3rem 5rem;
+
+        @media (max-width: vars.$mobile) {
+            padding: 2rem 1rem;
+        }
+
+        img {
+            width: 100%;
+            height: auto;
+        }
+    }
+
+    h1 {
+        margin-bottom: 3rem;
+    }
+
+    &:first-child {
+        display: none;
+    }
+}
+
+.hero {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 3rem;
+
+    img {
+        width: 100%;
+    }
+}
+
+// Light theme specific styles
+:root[data-theme="light"] {
+    --sl-color-text-accent: black;
+    --sl-color-bg-sidebar: white;
+}
+
+// Dark theme specific styles
+:root[data-theme="dark"] {
+    --sl-color-text-accent: white;
+    --sl-color-bg-sidebar: black;
+}
+
+html[data-theme="dark"] {
+    .main-frame {
+        .lg\:sl-flex {
+            .main-pane {
+                background:
+                    linear-gradient(rgba(0, 0, 0, 0.7),
+                        rgba(0, 0, 0, 0.7)),
+                    url("/rackbg.png") repeat;
+                background-size: calc(50vh - 160px);
+                background-color: #111111ff;
+            }
+        }
+    }
+
+    .header {
+        background-color: vars.$slate;
+    }
+
+    .sidebar-pane {
+        border-top: 2px solid rgb(100, 100, 100);
+
+        ul li {
+            span {
+                color: vars.$yellow;
+            }
+
+            a[aria-current="page"] {
+                background: vars.$yellow !important;
+
+                span {
+                    color: vars.$black !important;
+                }
+            }
+        }
+    }
+
+    .right-sidebar-container {
+        .right-sidebar {
+            background-color: vars.$black;
+
+        
+            li a {
+                color: vars.$yellow;
+                font-family: "Share Tech Mono", monospace;
+                font-size: 1rem;
+            }
+        }
+    }
+
+    site-search button *,
+    .social-icons svg *,
+    starlight-theme-select * {
+        color: vars.$yellow;
+    }
+
+    .content-panel {
+        .sl-container {
+            background: vars.$content;
+
+            img {
+                box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.5);
+            }
+        }
+    }
+}
+
+starlight-toc {
+
+    // a[aria-current="true"] {
+    //     background: vars.$yellow !important;
+    //     color: #000 !important;
+    // }
+
+    h2 {
+        display: none !important;
+    }
+
+}

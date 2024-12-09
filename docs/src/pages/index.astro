@@ -1,0 +1,99 @@
+---
+import { type MarkdownHeading } from "astro";
+import Page from "@astrojs/starlight/components/Page.astro";
+import { getCollection } from "astro:content";
+
+export interface TocItem extends MarkdownHeading {
+    children: TocItem[];
+}
+
+interface TocOpts {
+    minHeadingLevel: number;
+    maxHeadingLevel: number;
+    title: string;
+}
+
+export function injectChild(items: TocItem[], item: TocItem): void {
+    const lastItem = items.at(-1);
+    if (!lastItem || lastItem.depth >= item.depth) {
+        items.push(item);
+    } else {
+        return injectChild(lastItem.children, item);
+    }
+}
+
+export function generateToC(
+    headings: MarkdownHeading[],
+    { minHeadingLevel, maxHeadingLevel, title }: TocOpts,
+) {
+    headings = headings.filter(
+        ({ depth }) => depth >= minHeadingLevel && depth <= maxHeadingLevel,
+    );
+    const toc: Array<TocItem> = [
+        { depth: 2, slug: "_top", text: title, children: [] },
+    ];
+    for (const heading of headings) {
+        injectChild(toc, { ...heading, children: [] });
+    }
+    return toc;
+}
+
+export function getToC({ entry, lang, headings }: any) {
+    const tocConfig = {
+        maxHeadingLevel: 3,
+        minHeadingLevel: 1,
+        title: "Overview",
+    };
+
+    return {
+        ...tocConfig,
+        items: generateToC(headings, {
+            ...tocConfig,
+            title: "",
+        }),
+    };
+}
+
+const docs = await getCollection("docs");
+const entry = docs[0];
+const entryMeta = {
+    dir: "ltr",
+    lang: "en",
+    locale: "en_US",
+} as any;
+const slug = "index";
+const id = "index";
+const isFallback = true;
+const route = {
+    entry,
+    entryMeta,
+    slug,
+    id,
+    isFallback,
+};
+const { Content, headings } = await entry.render();
+---
+
+<Page
+    hasSidebar={false}
+    headings={headings}
+    sidebar={[]}
+    lastUpdated={undefined}
+    slug="index"
+    id="index"
+    dir="ltr"
+    lang="en"
+    locale="en_US"
+    editUrl={undefined}
+    labels={{}}
+    toc={getToC({ entry, lang: "en", headings })}
+    isMobile={false}
+    entry={entry}
+    entryMeta={entryMeta}
+    pagination={{ next: undefined, prev: undefined }}
+    siteTitle="minilab3"
+    siteTitleHref="/"
+    title="title"
+>
+    <Content frontmatter={entry.data} />
+</Page>

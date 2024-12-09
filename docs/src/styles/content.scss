@@ -1,0 +1,15 @@
+@use "./vars";
+
+.warning {
+    padding: 5px;
+    background: #000;
+    margin-top: 3rem !important;
+    margin-bottom: 3rem;
+    font-family: 'Share Tech Mono', monospace;
+    div {
+        padding: 2rem;
+        color: vars.$yellow;
+        background: linear-gradient(180deg, #252525 0%, #111111 50%);
+        border-top: 2px solid gray;
+    }
+}
