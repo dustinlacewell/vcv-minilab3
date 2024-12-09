@@ -199,3 +199,7 @@ How many notches (see resolution above) to turn per MIDI CC.
 Knobs have rotational symmetry. As you change between pads, it doesn't matter what the knobs current values are. The physical knob can't be out of sync. 
 
 With faders, it's different. When switching between pads, the fader values might not correspond with where they are physically.
+
+#### Why is there no V/OCT, etc?
+
+The Fundamental MIDI > CV module does that stuff better.
