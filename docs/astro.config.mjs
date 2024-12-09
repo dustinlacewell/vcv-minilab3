@@ -14,7 +14,7 @@ export default defineConfig({
 			customCss: [
 				'./src/styles/custom.scss',
 				'./src/styles/content.scss',
-			]
+			],
 		}),
 	],
 });

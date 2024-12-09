@@ -28,6 +28,14 @@
 
             .main-pane {
                 flex-grow: 1;
+
+                .content-panel {
+                    .sl-container {
+                        img {
+                            box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.5);
+                        }
+                    }
+                }
             }
         }
     }
@@ -125,7 +133,7 @@ html[data-theme="dark"] {
         .right-sidebar {
             background-color: vars.$black;
 
-        
+
             li a {
                 color: vars.$yellow;
                 font-family: "Share Tech Mono", monospace;
@@ -143,10 +151,6 @@ html[data-theme="dark"] {
     .content-panel {
         .sl-container {
             background: vars.$content;
-
-            img {
-                box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.5);
-            }
         }
     }
 }
