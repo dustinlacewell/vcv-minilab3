@@ -23,16 +23,10 @@ Imagine you had *hundreds* of MIDI knobs and mod wheels.
 
 For each pad on the Minilab3, pressing it will get you a whole new set of the non-pad surfaces.
 
-As an example, say I just twist the Minilab3's first knob. We get blue activity:
+As an example, say I just twist the Minilab3's first knob. We get red activity. But if I hold down the first pad, an independently tracked blue knob value comes out of the expander module:
 
 <p align="center">
-  <img src="https://github.com/dustinlacewell/vcv-minilab3/blob/main/docs/public/main-knob.png?raw=true" alt="Minilab3 module"/>
-</p>
-
-But if I hold down the first pad, an independently tracked red knob value comes out of the expander module:
-
-<p align="center">
-  <img src="https://github.com/dustinlacewell/vcv-minilab3/blob/main/docs/public/pad-knob.png?raw=true" alt="Minilab3 module"/>
+  <img src="https://github.com/dustinlacewell/vcv-minilab3/blob/main/docs/public/scope.gif?raw=true" alt="Minilab3 module"/>
 </p>
 
 The Aturia Minilab3 has 8 pads, so that's already 64 logical knobs.
