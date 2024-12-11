@@ -5,7 +5,7 @@ A pad-multiplexer for <a href="https://www.arturia.com/products/hybrid-synths/mi
 </p>
 
 <p align="center">
-  <img src="https://github.com/dustinlacewell/vcv-minilab3/blob/master/minilab.png?raw=true" alt="Minilab3"/>
+  <img src="https://github.com/dustinlacewell/vcv-minilab3/blob/main/docs/public/controller.png?raw=true" alt="Minilab3"/>
 </p>
 
 <p align="center">
@@ -13,7 +13,7 @@ The VCV Rack module.
 </p>
 
 <p align="center">
-  <img src="https://github.com/dustinlacewell/vcv-minilab3/blob/master/module.png?raw=true" alt="Minilab3 module"/>
+  <img src="https://github.com/dustinlacewell/vcv-minilab3/blob/main/docs/public/module.png?raw=true" alt="Minilab3 module"/>
 </p>
 
 
@@ -26,32 +26,32 @@ For each pad on the Minilab3, pressing it will get you a whole new set of the no
 As an example, say I just twist the Minilab3's first knob. We get blue activity:
 
 <p align="center">
-  <img src="https://github.com/dustinlacewell/vcv-minilab3/blob/master/main-knob.png?raw=true" alt="Minilab3 module"/>
+  <img src="https://github.com/dustinlacewell/vcv-minilab3/blob/main/docs/public/main-knob.png?raw=true" alt="Minilab3 module"/>
 </p>
 
 But if I hold down the first pad, an independently tracked red knob value comes out of the expander module:
 
 <p align="center">
-  <img src="https://github.com/dustinlacewell/vcv-minilab3/blob/master/pad-knob.png?raw=true" alt="Minilab3 module"/>
+  <img src="https://github.com/dustinlacewell/vcv-minilab3/blob/main/docs/public/pad-knob.png?raw=true" alt="Minilab3 module"/>
 </p>
 
 The Aturia Minilab3 has 8 pads, so that's already 64 logical knobs.
 
 <p align="center">
-  <img src="https://github.com/dustinlacewell/vcv-minilab3/blob/master/8-pads.png?raw=true" alt="Minilab3 module"/>
+  <img src="https://github.com/dustinlacewell/vcv-minilab3/blob/main/docs/public/8-pads.png?raw=true" alt="Minilab3 module"/>
 </p>
 
 *Buuuut*, it has *two banks* of pads making for 16 pads, or **128 logical knobs**!
 
 <p align="center">
-  <img src="https://github.com/dustinlacewell/vcv-minilab3/blob/master/16-pads.png?raw=true" alt="Minilab3 module"/>
+  <img src="https://github.com/dustinlacewell/vcv-minilab3/blob/main/docs/public/16-pads.png?raw=true" alt="Minilab3 module"/>
 </p>
 
 And *technically*, there's 15 available channels so you *could* take it to *1,920 knobs*...
 
 
 <p align="center">
-  <img src="https://github.com/dustinlacewell/vcv-minilab3/blob/master/15-channels.png?raw=true" alt="Minilab3 module"/>
+  <img src="https://github.com/dustinlacewell/vcv-minilab3/blob/main/docs/public/15-channels.png?raw=true" alt="Minilab3 module"/>
 </p>
 
 ...but your computer will give up first lol.
