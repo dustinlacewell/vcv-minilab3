@@ -92,11 +92,9 @@ void MiniPad::process(const ProcessArgs& args) {
 }
 
 void MiniPad::processControl(const midi::Message& msg) {
-    DEBUG("MiniPad::processControl");
     auto channel = msg.getChannel();
 
     if (channel != ControlChannel) {
-        DEBUG("MiniPad::processControl: channel != ControlChannel");
         return;
     }
 
@@ -109,26 +107,20 @@ void MiniPad::processControl(const midi::Message& msg) {
     auto isNoteChange = isNoteOn || isNoteOff;
 
     int padId = padForNote(note);
-    DEBUG("MiniPad::processControl: padId = %d", padId);
 
     if (isNoteChange) {
         if (padId == -1 || padId != position) {
-            DEBUG("MiniPad::processControl: padId: %d != %d", padId, position);
             return;
         }
 
         if (isNoteOn) {
-            DEBUG("MiniPad::processControl: isNoteOn");
             if (!isActive) {
-                DEBUG("MiniPad::processControl: setting active");
                 isActive = true;
                 gate->send(1);
                 velocity->send(value);
             }
         } else if (isNoteOff) {
-            DEBUG("MiniPad::processControl: isNoteOff");
             if (isActive) {
-                DEBUG("MiniPad::processControl: setting inactive");
                 isActive = false;
                 gate->send(0);
             }

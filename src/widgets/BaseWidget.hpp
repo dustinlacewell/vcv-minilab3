@@ -77,7 +77,6 @@ struct BaseWidget : ModuleWidget, SvgHelper<W> {
         T* myModule = dynamic_cast<T*>(module);
 
         if (!myModule) {
-            DEBUG("updateBorders: could not cast module");
             return;
         }
 
@@ -156,9 +155,7 @@ OutputPort* BaseWidget<T, W>::createAbsolutePort(
     int outputId,
     std::function<AbsoluteParam*(T*)> getParam
 ) {
-    DEBUG("port pos before: %f, %f", pos.x, pos.y);
     auto* port = createOutputCentered<OutputPort>(pos, module, outputId);
-    DEBUG("port pos after: %f, %f", port->box.pos.x, port->box.pos.y);
 
     if (module) {
         auto* param = getParam(module);
