@@ -13,7 +13,7 @@ The VCV Rack module.
 </p>
 
 <p align="center">
-  <img src="https://github.com/dustinlacewell/vcv-minilab3/blob/main/docs/public/module.png?raw=true" alt="Minilab3 module"/>
+  <img src="https://github.com/dustinlacewell/vcv-minilab3/blob/main/docs/public/hero.png?raw=true" alt="Minilab3 module"/>
 </p>
 
 
