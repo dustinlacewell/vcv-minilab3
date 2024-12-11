@@ -1,1 +1,0 @@
-SET RACK_DIR=/d/ext/vcv/Rack-SDK
