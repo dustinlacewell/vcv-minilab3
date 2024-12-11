@@ -49,9 +49,17 @@ Faders always come through, even if there's an active MiniPad.
 
 **Operation:**
 - First, [configure your hardware](#configure-your-hardware)
-- Select your MIDI driver and device.
+- Select your MIDI driver, device and channel.
 - Connect outputs to other VCV modules
 - Use your MiniLab!
+
+
+<div class="warning">
+<div>
+   <p>Channel 16 is reserved for pad MIDI. If you try to select it, 'All Channels' will be selected instead.</p>
+</div>
+</div>
+
 
 <div style="width: 100%; margin-bottom: 5rem; display: flex; flex-direction: row-reverse;">
 <div style="width: 40%;">
@@ -194,6 +202,10 @@ How many notches (see resolution above) to turn per MIDI CC.
    - Use slew limiting for smooth transitions
    - Configure encoder resolution and speed to taste
 
+#### Why can't I use Channel 16?
+
+Channel 16 is reserved for communicating with your MiniLab3's pads.
+
 #### Why not multiplex the faders?
 
 Knobs have rotational symmetry. As you change between pads, it doesn't matter what the knobs current values are. The physical knob can't be out of sync. 
@@ -202,4 +214,4 @@ With faders, it's different. When switching between pads, the fader values might
 
 #### Why is there no V/OCT, etc?
 
-The Fundamental MIDI > CV module does that stuff better.
+Use the Fundamental MIDI > CV module for that!
