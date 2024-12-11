@@ -23,20 +23,6 @@ void MiniPad::process(const ProcessArgs& args) {
         bool found = false;
         bool labReady = false;
 
-        // auto driverId = midiInput.getDriverId();
-        // auto deviceId = midiInput.getDeviceId();
-        // auto channel = midiInput.getChannel();
-
-        // if (!isReady) {
-        //     if (driverId != -1 && deviceId != -1 && channel != 15) {
-        //         isReady = true;
-        //     }
-        // } else {
-        //     if (driverId == -1 || deviceId == -1 || channel == 15) {
-        //         isReady = false;
-        //     }
-        // }
-
         while (current) {
             if (current->model == modelMiniPad) {
                 pos++;
@@ -73,38 +59,28 @@ void MiniPad::process(const ProcessArgs& args) {
         int currentChannel = midiInput.getChannel();
 
         if (driverId != currentDriverId) {
-            DEBUG(
-                "MiniPad: MIDI driver changed to %d, was %d",
-                driverId,
-                currentDriverId
-            );
             midiInput.setDriverId(driverId);
-            DEBUG("MiniPad: MIDI driver now: %d", midiInput.getDriverId());
+            midiControl.setDriverId(driverId);
         }
 
         if (deviceId != currentDeviceId) {
-            DEBUG(
-                "MiniPad: MIDI device changed to %d was %d",
-                deviceId,
-                currentDeviceId
-            );
             midiInput.setDeviceId(deviceId);
-            DEBUG("MiniPad: MIDI device now: %d", midiInput.getDeviceId());
+            midiControl.setDeviceId(deviceId);
         }
 
         if (channel != currentChannel) {
-            DEBUG(
-                "MiniPad: MIDI channel changed to %d was %d",
-                channel,
-                currentChannel
-            );
             midiInput.setChannel(channel);
-            DEBUG("MiniPad: MIDI channel now: %d", midiInput.getChannel());
+            midiControl.setChannel(ControlChannel);
         }
     }
 
     if (midiDivider.process()) {
         midi::Message msg;
+
+        while (midiControl.tryPop(&msg, args.frame)) {
+            processControl(msg);
+        }
+
         while (midiInput.tryPop(&msg, args.frame)) {
             processMessage(msg);
         }
@@ -115,32 +91,44 @@ void MiniPad::process(const ProcessArgs& args) {
     }
 }
 
-void MiniPad::processMessage(const midi::Message& msg) {
-    auto note = msg.getNote();
-    auto value = msg.getValue();
-    auto status = msg.getStatus();
+void MiniPad::processControl(const midi::Message& msg) {
+    DEBUG("MiniPad::processControl");
     auto channel = msg.getChannel();
 
-    auto isControlChannel = channel == ControlChannel;
+    if (channel != ControlChannel) {
+        DEBUG("MiniPad::processControl: channel != ControlChannel");
+        return;
+    }
+
+    auto note = msg.getNote();
+    auto value = msg.getValue();
+    auto status = msg.getStatus();    
+
     auto isNoteOn = status == 0x9;
     auto isNoteOff = status == 0x8;
     auto isNoteChange = isNoteOn || isNoteOff;
 
     int padId = padForNote(note);
+    DEBUG("MiniPad::processControl: padId = %d", padId);
 
-    if (isControlChannel && isNoteChange) {
+    if (isNoteChange) {
         if (padId == -1 || padId != position) {
+            DEBUG("MiniPad::processControl: padId: %d != %d", padId, position);
             return;
         }
 
         if (isNoteOn) {
+            DEBUG("MiniPad::processControl: isNoteOn");
             if (!isActive) {
+                DEBUG("MiniPad::processControl: setting active");
                 isActive = true;
                 gate->send(1);
                 velocity->send(value);
             }
         } else if (isNoteOff) {
+            DEBUG("MiniPad::processControl: isNoteOff");
             if (isActive) {
+                DEBUG("MiniPad::processControl: setting inactive");
                 isActive = false;
                 gate->send(0);
             }
@@ -148,10 +136,23 @@ void MiniPad::processMessage(const midi::Message& msg) {
 
         return;
     }
+}
+
+void MiniPad::processMessage(const midi::Message& msg) {
+    auto channel = msg.getChannel();
+
+    if (channel == ControlChannel) {
+        return;
+    }
 
     if (!isActive) {
         return;
     }
+
+    auto note = msg.getNote();
+    auto value = msg.getValue();
+    auto status = msg.getStatus();
+    int padId = padForNote(note);    
 
     switch (msg.getStatus()) {
         case PitchBend:
@@ -170,4 +171,15 @@ void MiniPad::processMessage(const midi::Message& msg) {
             }
             break;
     }
+}
+
+void MiniPad::dataFromJson(json_t* rootJ) {
+    BaseModule::dataFromJson(rootJ);
+
+    driverId = midiInput.getDriverId();
+    deviceId = midiInput.getDeviceId();    
+
+    midiControl.setDriverId(driverId);
+    midiControl.setDeviceId(deviceId);
+    midiControl.setChannel(ControlChannel);
 }

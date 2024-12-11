@@ -40,12 +40,17 @@ void MiniLab::process(const ProcessArgs& args) {
         auto deviceId = midiInput.getDeviceId();
         auto channel = midiInput.getChannel();
 
+        if (channel == ControlChannel) {
+            midiInput.setChannel(-1);
+            return;
+        }
+        
         if (!isReady) {
-            if (driverId != -1 && deviceId != -1 && channel != 15) {
+            if (driverId != -1 && deviceId != -1 && channel != ControlChannel) {
                 isReady = true;
             }
         } else {
-            if (driverId == -1 || deviceId == -1 || channel == 15) {
+            if (driverId == -1 || deviceId == -1 || channel == ControlChannel) {
                 isReady = false;
             }
         }
@@ -90,10 +95,14 @@ void MiniLab::processMessage(const midi::Message& msg) {
     auto channel = msg.getChannel();
 
     auto isControlChange = status == 0xb;
-    auto isControlChannel = channel == ControlChannel;
     auto isNoteOn = status == 0x9;
     auto isNoteOff = status == 0x8;
     auto isNoteChange = isNoteOn || isNoteOff;
+
+    // never handle control channel messages
+    if (channel == ControlChannel) {
+        return;
+    }
 
     // always process sliders
     if (isControlChange) {
@@ -105,11 +114,6 @@ void MiniLab::processMessage(const midi::Message& msg) {
     }
 
     if (!isActive) {
-        return;
-    }
-
-    // never handle pad toggles
-    if (isControlChannel && isNoteChange) {
         return;
     }
 
@@ -132,6 +136,10 @@ void MiniLab::processMessage(const midi::Message& msg) {
 }
 
 std::tuple<int, int> MiniLab::scan() {
+    auto myDriverId = midiInput.getDriverId();
+    auto myDeviceId = midiInput.getDeviceId();
+    auto myChannel = midiInput.getChannel();
+
     int nActive = 0;
     int padIndex = 0;  // Start at 1 since MiniLab is 0
     Module* current = rightExpander.module;
@@ -140,9 +148,6 @@ std::tuple<int, int> MiniLab::scan() {
         if (current->model == modelMiniPad) {
             padIndex++;
             auto pad = static_cast<MiniPad*>(current);
-            auto myDriverId = midiInput.getDriverId();
-            auto myDeviceId = midiInput.getDeviceId();
-            auto myChannel = midiInput.getChannel();
 
             if (myDriverId != pad->driverId) {
                 pad->driverId = myDriverId;

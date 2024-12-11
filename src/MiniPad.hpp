@@ -4,6 +4,7 @@
 #include "BaseModule.hpp"
 
 struct MiniPad : BaseModule {
+    midi::InputQueue midiControl;
     int driverId = -1;
     int deviceId = -1;
     int channel = -1;
@@ -12,6 +13,7 @@ struct MiniPad : BaseModule {
 
     MiniPad();
     void process(const ProcessArgs& args) override;
+    void dataFromJson(json_t* rootJ) override;
 
    private:
     dsp::ClockDivider driverDivider;
@@ -20,5 +22,6 @@ struct MiniPad : BaseModule {
     dsp::ClockDivider paramDivider;
 
     int getPadIdFromNote(int note) const;
-    void processMessage(const midi::Message& msg);
+    void processControl(const midi::Message& msg);
+    void processMessage(const midi::Message& msg);    
 };

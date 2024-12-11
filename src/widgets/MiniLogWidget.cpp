@@ -31,8 +31,6 @@ void MiniLogWidget::step() {
     }
 
     auto* log = dynamic_cast<MiniLog*>(module);
-    auto _panel = dynamic_cast<SvgPanel*>(getPanel());
-
     if (!log) {
         return;
     }
