@@ -29,7 +29,7 @@ void MiniLabWidget::createGatePort(MiniLab* module) {
         return;
     }
 
-    auto gatePos = gatePosMaybe.value();
+    auto gatePos = *gatePosMaybe;
 
     createAbsolutePort(
         gatePos,
@@ -47,7 +47,7 @@ void MiniLabWidget::createBendPort(MiniLab* module) {
         return;
     }
 
-    auto bendPos = bendPosMaybe.value();
+    auto bendPos = *bendPosMaybe;
 
     createAbsolutePort(
         bendPos,
@@ -65,7 +65,7 @@ void MiniLabWidget::createModPort(MiniLab* module) {
         return;
     }
 
-    auto modPos = modPosMaybe.value();
+    auto modPos = *modPosMaybe;
 
     createAbsolutePort(
         modPos,
@@ -84,7 +84,7 @@ void MiniLabWidget::createKnobPorts(MiniLab* module) {
             continue;
         }
 
-        auto knobPos = knobPosMaybe.value();
+        auto knobPos = *knobPosMaybe;
 
         createRelativePort(
             knobPos,
@@ -104,7 +104,7 @@ void MiniLabWidget::createSliderPorts(MiniLab* module) {
             continue;
         }
 
-        auto sliderPos = sliderPosMaybe.value();
+        auto sliderPos = *sliderPosMaybe;
 
         createAbsolutePort(
             sliderPos,
@@ -117,7 +117,7 @@ void MiniLabWidget::createSliderPorts(MiniLab* module) {
 
 void MiniLabWidget::createStatusLight(MiniLab* module) {
     addChild(createLightCentered<SmallLight<GreenLight>>(
-        findNamed("Light").value(), module, MiniLab::STATUS_LIGHT
+        *findNamed("Light"), module, MiniLab::STATUS_LIGHT
     ));
 }
 

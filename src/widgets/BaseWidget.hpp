@@ -181,7 +181,7 @@ void BaseWidget<T, W>::createAbsolutePort(
         return;
     }
 
-    createAbsolutePort(posMaybe.value(), module, outputId, getParam);
+    createAbsolutePort(*posMaybe, module, outputId, getParam);
 }
 
 template <typename T, typename W>
@@ -217,5 +217,5 @@ void BaseWidget<T, W>::createRelativePort(
         return;
     }
 
-    createRelativePort(posMaybe.value(), module, outputId, getParam);
+    createRelativePort(*posMaybe, module, outputId, getParam);
 }

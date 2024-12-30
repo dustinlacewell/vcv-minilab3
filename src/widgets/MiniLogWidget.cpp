@@ -40,7 +40,7 @@ void MiniLogWidget::step() {
 
 void MiniLogWidget::createStatusLight(MiniLog* module) {
     addChild(createLightCentered<SmallLight<GreenLight>>(
-        findNamed("Light").value(), module, MiniLog::STATUS_LIGHT
+        *findNamed("Light"), module, MiniLog::STATUS_LIGHT
     ));
 }
 

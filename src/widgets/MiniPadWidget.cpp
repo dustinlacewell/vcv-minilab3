@@ -47,7 +47,7 @@ void MiniPadWidget::appendContextMenu(Menu* menu) {
 
 void MiniPadWidget::createStatusLight(MiniPad* module) {
     addChild(createLightCentered<SmallLight<GreenLight>>(
-        findNamed("Light").value(), module, MiniPad::STATUS_LIGHT
+        *findNamed("Light"), module, MiniPad::STATUS_LIGHT
     ));
 }
 
@@ -93,7 +93,7 @@ void MiniPadWidget::createKnobPorts(MiniPad* module) {
 }
 
 void MiniPadWidget::createIndexLabel(MiniPad* module) {
-    auto indexPos = findNamed("Index").value();
+    auto indexPos = *findNamed("Index");
     indexPos.x -= 12;
     indexPos.y -= 12;
 
