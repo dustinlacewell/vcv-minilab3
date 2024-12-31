@@ -3,57 +3,6 @@ import { type MarkdownHeading } from "astro";
 import Page from "@astrojs/starlight/components/Page.astro";
 import { getCollection } from "astro:content";
 
-export interface TocItem extends MarkdownHeading {
-    children: TocItem[];
-}
-
-interface TocOpts {
-    minHeadingLevel: number;
-    maxHeadingLevel: number;
-    title: string;
-}
-
-export function injectChild(items: TocItem[], item: TocItem): void {
-    const lastItem = items.at(-1);
-    if (!lastItem || lastItem.depth >= item.depth) {
-        items.push(item);
-    } else {
-        return injectChild(lastItem.children, item);
-    }
-}
-
-export function generateToC(
-    headings: MarkdownHeading[],
-    { minHeadingLevel, maxHeadingLevel, title }: TocOpts,
-) {
-    headings = headings.filter(
-        ({ depth }) => depth >= minHeadingLevel && depth <= maxHeadingLevel,
-    );
-    const toc: Array<TocItem> = [
-        { depth: 2, slug: "_top", text: title, children: [] },
-    ];
-    for (const heading of headings) {
-        injectChild(toc, { ...heading, children: [] });
-    }
-    return toc;
-}
-
-export function getToC({ entry, lang, headings }: any) {
-    const tocConfig = {
-        maxHeadingLevel: 3,
-        minHeadingLevel: 1,
-        title: "Overview",
-    };
-
-    return {
-        ...tocConfig,
-        items: generateToC(headings, {
-            ...tocConfig,
-            title: "",
-        }),
-    };
-}
-
 const docs = await getCollection("docs");
 const entry = docs[0];
 const entryMeta = {
@@ -86,7 +35,7 @@ const { Content, headings } = await entry.render();
     locale="en_US"
     editUrl={undefined}
     labels={{}}
-    toc={getToC({ entry, lang: "en", headings })}
+    toc={undefined}
     isMobile={false}
     entry={entry}
     entryMeta={entryMeta}
@@ -95,5 +44,78 @@ const { Content, headings } = await entry.render();
     siteTitleHref="/"
     title="title"
 >
-    <Content frontmatter={entry.data} />
+    <div class="unfilled-background landing">
+        <section class="hero-section">
+            <h1 class="hero-section__title">Minilab3</h1>
+            <span class="hero-section__subtitle">
+                A pad-multiplexer for <a href="">Aturia's Minilab3</a> & <a href="">VCV Rack</a>
+            </span>
+            <img class="hero-section__image" src="/controller-transparent.png" alt="Minilab3" />
+        </section>
+
+        <section class="modules-section">
+            <h1>The VCV Rack modules:</h1>
+            <img src="/hero.png" alt="Minilab3" />
+        </section>
+
+        <section class="multiplexer-section">
+            <h1 class="multiplexer-section__title">Multiplexer?</h1>
+            <div class="multiplexer-section__content opaque">
+                <img src="/scope.gif" alt="Minilab3" class="multiplexer-section__image" />
+                <div class="multiplexer-section__text">
+                    <p class="intro">
+                        Imagine you had <i>hundreds</i> of MIDI knobs and mod wheels.
+                    </p>
+                    <p>
+                        For each pad on the Minilab3, pressing it will get you a
+                        whole new set of the non-pad surfaces.
+                    </p>
+                    <p>
+                        As an example, say I just twist the Minilab3's first
+                        knob. We get red activity. But if I hold down the first
+                        pad, an independently tracked blue knob value comes out
+                        of the expander module.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="virtual-knobs-section">
+            <h1>
+                Virtual Knobs = Pads <span style={{ fontSize: "2rem" }}>x</span> Knobs
+            </h1>
+            <p class="virtual-knobs-section__description">
+                The Aturia Minilab3 has 8 pads, so that's already <i>64 logical knobs</i>.
+            </p>
+            <img src="/8-pads.png" alt="8 pads configuration" />
+            <p class="virtual-knobs-section__description">
+                <i>Buuuut</i>, it has two banks of pads making for 16 pads,
+                or <b>128 logical knobs</b>!
+            </p>
+            <img src="/16-pads.png" alt="16 pads configuration" />
+            <p class="virtual-knobs-section__description">
+                And <i>technically</i>, there's 15 available channels so you <i>could</i>
+                take it to <i>1,920 knobs</i>...
+            </p>
+            <img src="/15-channels.png" alt="15 channels configuration" />
+            <p class="virtual-knobs-section__footnote">
+                ...but your computer would probably explode first lol.
+            </p>
+        </section>
+
+        <section class="install-section">
+            <a href="https://library.vcvrack.com/Minilab3" rel="me" class="action-button">
+                <h1>Install Minilab3</h1>
+                <div>
+                    <span>from the VCV Library</span>
+                </div>
+            </a>
+            <a href="/docs" rel="me" class="action-button">
+                <h1>Learn to Use</h1>
+                <div>
+                    <span>from the Documentation</span>
+                </div>
+            </a>
+        </section>
+    </div>
 </Page>

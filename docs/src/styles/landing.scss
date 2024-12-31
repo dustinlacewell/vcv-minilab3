@@ -1,0 +1,238 @@
+@use "./vars.scss";
+
+footer {
+    display: none !important;
+}
+
+.landing {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+
+    h1 {
+        margin: 0;
+        margin-bottom: 1em;
+        font-size: 3rem;
+        font-weight: 700;
+    }
+
+    .hero-section {
+        text-align: center;
+
+        &__title {
+            margin: 0;
+        }
+
+        &__subtitle {
+            font-size: 2rem;
+            font-style: italic;
+        }
+
+        img {
+            max-width: 1080px;
+            margin: 0 auto;
+            display: block;
+        }
+    }
+
+    .modules-section {
+        img {
+            max-width: 1080px;
+            margin: 0 auto;
+            display: block;
+        }
+    }
+
+    .multiplexer-section {
+        &__title {
+            font-size: 3rem;
+            text-align: right;
+        }
+
+        &__content {
+            display: flex;
+            flex-direction: row-reverse;
+            gap: 3rem;
+            align-items: start;
+
+            img {
+                max-width: 400px;
+                margin: 0 auto;
+            }
+        }
+
+        &__text {
+            text-align: right;
+            font-size: 1.2rem;
+            margin-top: -1rem;
+            padding: 0;
+
+            .intro {
+                font-size: 1.5rem;
+            }
+        }
+
+        &__image {
+            max-width: 400px;
+            margin: 5em 5em;
+        }
+    }
+
+    .virtual-knobs-section {
+        text-align: center;
+
+        &__description {
+            font-size: 2rem;
+            padding-bottom: 2rem;
+        }
+
+        &__footnote {
+            font-size: 1rem;
+            padding-bottom: 2rem;
+        }
+
+        img {
+            max-width: 1080px;
+            margin: 0 auto;
+            display: block;
+        }
+    }
+
+    .install-section {
+        display: flex;
+        justify-content: center;
+        gap: 3rem;
+
+        .action-button {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 0;
+            text-decoration: none;
+            background-color: black;
+            padding: 1rem;
+            border-radius: 0.5rem;
+
+            h1 {
+                margin: 0;
+                padding: 0;
+            }
+        }
+    }
+}
+
+// Light theme specific styles
+html[data-theme="light"] {
+    .landing {
+        color: black;
+
+        .action-button {
+            color: white;
+
+            h1 {
+                color: white;
+            }
+        }
+
+        img {
+            &[src="/controller-transparent.png"] {
+                box-shadow: none !important;
+            }
+        }
+    }
+}
+
+// Dark theme specific styles
+html[data-theme="dark"] {
+    .landing {
+        background: rgba(1, 1, 1, .4);
+        border-radius: 8px;
+        color: white;
+
+        a {
+            color: vars.$yellow;
+        }
+
+        h1 {
+            -webkit-text-stroke-width: 2px;
+            -webkit-text-stroke-color: rgba(61, 61, 61, 0.194);
+        }
+
+        .opaque {
+            background: rgba(1, 1, 1, .8);
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .action-button {
+            border: 1px solid vars.$yellow;
+            color: vars.$yellow;
+
+            h1 {
+                color: vars.$yellow;
+            }
+        }
+    }
+}
+
+@media (max-width: 960px) {
+    .landing {
+        padding: 0 !important;
+    }
+
+    h1 {
+        text-align: center !important;
+    }
+
+    .install-section {
+        flex-direction: column;
+        gap: 3rem;
+
+        a {
+            margin: 0 auto;
+        }
+    }
+
+    .multiplexer-section {
+        &__content {
+            flex-direction: column !important;
+
+            img {
+                margin: 0 auto !important;
+            }
+
+            p {
+                text-align: center !important;
+            }
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .landing {
+        padding: 0 !important;
+    }
+
+    h1 {
+        text-align: center !important;
+    }
+
+    .install-section {
+        flex-direction: column;
+        gap: 3rem;
+    }
+
+    .multiplexer-section__content {
+        flex-direction: column !important;
+
+        img {
+            margin: 0 auto !important;
+        }
+
+        p {
+            text-align: center !important;
+        }
+    }
+}

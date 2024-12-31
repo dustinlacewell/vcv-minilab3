@@ -2,7 +2,7 @@
 title: ''
 description: ''
 ---
-# User Guide
+# Minilab3 Documentation
 
 
 ![hero.png](/hero.png)
@@ -157,17 +157,17 @@ Each fader is associated with a different control code.
 Fader control codes: **80**, **81**, **82**, **83**
 
 
-<div style="float: right; clear: both; width: 45%;">
-<div style="margin: auto; background: #111111ff; width: 160px; display: flex; flex-direction: column; align-items: center; border-radius: 10px">
-<video width="134" height="136" loop="true" autoplay muted playsinline>
-  <source src="/unipolar.mp4" type="video/mp4" />
-</video>
-<span>unipolar</span>
-<video width="134" height="136" loop="true" muted playsinline autoplay>
-  <source src="/bipolar.mp4" type="video/mp4" />
-</video>
-<span>bipolar</span>
-</div>
+<div class="port-animations">
+   <div>
+      <video loop="true" autoplay muted playsinline>
+         <source src="/unipolar.mp4" type="video/mp4" />
+      </video>
+      <span>unipolar</span>
+      <video loop="true" muted playsinline autoplay>
+         <source src="/bipolar.mp4" type="video/mp4" />
+      </video>
+      <span>bipolar</span>
+   </div>
 </div>
 
 

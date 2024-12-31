@@ -1,5 +1,60 @@
 @use "./vars.scss";
 
+footer {
+    display: none !important;
+}
+
+starlight-toc {
+    h2 {
+        display: none !important;
+    }
+}
+
+.header {
+    a {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 1rem;
+    }
+
+    .site-title {
+        font-family: "Nunito", sans-serif;
+    }
+}
+
+h1 {
+    font-size: 3rem;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: "Nunito", sans-serif !important;
+}
+
+.port-animations {
+    float: right;
+    clear: both;
+    width: 45%;
+
+    div {
+        margin: auto;
+        background: #111111ff;
+        width: 160px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border-radius: 10px;
+        padding-bottom: 2rem;
+    }
+
+    video {
+        width: 134px;
+        height: 136px;
+    }
+}
 
 // Common styles for both themes
 .page {
@@ -30,43 +85,40 @@
                 flex-grow: 1;
 
                 .content-panel {
+                    height: 100%;
+                    border: none !important;
+
+                    .unfilled-background {
+                        padding: 3rem 5rem;
+                    }
+
+                    .filled-background {
+                        padding: 3rem 5rem;
+                    }
+
                     .sl-container {
+                        // padding: 3rem 5rem;
+                        @media (max-width: vars.$mobile) {
+                            padding: 2rem 1rem;
+                        }
+
                         img {
+                            width: 100%;
+                            height: auto;
                             box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.5);
                         }
+                    }
+
+                    h1 {
+                        margin-bottom: 3rem;
+                    }
+
+                    &:first-child {
+                        display: none;
                     }
                 }
             }
         }
-    }
-}
-
-.site-title {
-    font-family: "Nunito", sans-serif;
-}
-
-.content-panel {
-    height: 100%;
-
-    .sl-container {
-        padding: 3rem 5rem;
-
-        @media (max-width: vars.$mobile) {
-            padding: 2rem 1rem;
-        }
-
-        img {
-            width: 100%;
-            height: auto;
-        }
-    }
-
-    h1 {
-        margin-bottom: 3rem;
-    }
-
-    &:first-child {
-        display: none;
     }
 }
 
@@ -93,6 +145,18 @@
     --sl-color-bg-sidebar: black;
 }
 
+html[data-theme="light"] {
+    a {
+        color: vars.$black;
+    }
+
+    .port-animations {
+        span {
+            color: white;
+        }
+    }
+}
+
 html[data-theme="dark"] {
     .main-frame {
         .lg\:sl-flex {
@@ -109,6 +173,11 @@ html[data-theme="dark"] {
 
     .header {
         background-color: vars.$slate;
+
+        a {
+            color: vars.$yellow;
+        }
+
     }
 
     .sidebar-pane {
@@ -149,21 +218,9 @@ html[data-theme="dark"] {
     }
 
     .content-panel {
-        .sl-container {
+        .filled-background {
+            padding: 3rem 5rem;
             background: vars.$content;
         }
     }
-}
-
-starlight-toc {
-
-    // a[aria-current="true"] {
-    //     background: vars.$yellow !important;
-    //     color: #000 !important;
-    // }
-
-    h2 {
-        display: none !important;
-    }
-
 }

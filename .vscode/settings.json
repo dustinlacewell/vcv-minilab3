@@ -71,5 +71,6 @@
         "variant": "cpp",
         "bitset": "cpp",
         "regex": "cpp"
-    }
+    },
+    "cmake.sourceDirectory": "D:/ext/vcv/vcv-minilab3/docs/node_modules/bare-fs"
 }

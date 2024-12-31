@@ -1,0 +1,41 @@
+---
+import Page from "@astrojs/starlight/components/Page.astro";
+import { getCollection } from "astro:content";
+import { getToC } from "../lib/toc";
+
+const docs = await getCollection("docs");
+const entry = docs[0];
+const entryMeta = {
+    dir: "ltr",
+    lang: "en",
+    locale: "en_US",
+} as any;
+
+const { Content, headings } = await entry.render();
+---
+
+<Page
+    hasSidebar={false}
+    headings={headings}
+    sidebar={[]}
+    lastUpdated={undefined}
+    slug="index"
+    id="index"
+    dir="ltr"
+    lang="en"
+    locale="en_US"
+    editUrl={undefined}
+    labels={{}}
+    toc={getToC({ entry, lang: "en", headings })}
+    isMobile={false}
+    entry={entry}
+    entryMeta={entryMeta}
+    pagination={{ next: undefined, prev: undefined }}
+    siteTitle="minilab3"
+    siteTitleHref="/"
+    title="title"
+>
+    <div class="content filled-background">
+        <Content frontmatter={entry.data} />
+    </div>
+</Page>
