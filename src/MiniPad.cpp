@@ -12,7 +12,7 @@ MiniPad::MiniPad() : BaseModule() {
     driverDivider.setDivision(4096);
     positionDivider.setDivision(1024);
     midiDivider.setDivision(16);
-    paramDivider.setDivision(256);
+    paramDivider.setDivision(8);
 }
 
 void MiniPad::process(const ProcessArgs& args) {
