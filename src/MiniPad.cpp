@@ -132,6 +132,17 @@ void MiniPad::processControl(const midi::Message& msg) {
 
 void MiniPad::processMessage(const midi::Message& msg) {
     auto channel = msg.getChannel();
+    auto status = msg.getStatus();
+    auto note = msg.getNote();
+    auto value = msg.getValue();
+    int padId = padForNote(note);    
+
+    if (status == KeyPressure) {
+        if (padId == position) {
+            touch->send(value);
+        }
+        return;
+    }
 
     if (channel == ControlChannel) {
         return;
@@ -141,19 +152,14 @@ void MiniPad::processMessage(const midi::Message& msg) {
         return;
     }
 
-    auto note = msg.getNote();
-    auto value = msg.getValue();
-    auto status = msg.getStatus();
-    int padId = padForNote(note);    
-
     switch (msg.getStatus()) {
         case PitchBend:
             bend->send(value);
             break;
-        case KeyPressure:
-            if (padId == position)
-                touch->send(value);
-            break;
+        // case KeyPressure:
+        //     if (padId == position)
+        //         touch->send(value);
+        //     break;
         case ControlChange:
             if (note == ModWheel) {
                 mod->send(value);
