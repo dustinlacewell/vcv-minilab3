@@ -3,8 +3,8 @@ import Page from "@astrojs/starlight/components/Page.astro";
 import { getCollection } from "astro:content";
 import { getToC } from "../lib/toc";
 
-const docs = await getCollection("docs");
-const entry = docs[1];
+const changes = await getCollection("docs");
+const entry = changes[0];
 const entryMeta = {
     dir: "ltr",
     lang: "en",
