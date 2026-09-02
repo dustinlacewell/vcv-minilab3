@@ -128,16 +128,8 @@ void BaseParam::send(int value) {
 }
 
 void BaseParam::process() {
-    auto target = slew->getTarget();
-    auto current = slew->getCurrentOutput();
-
-    if (abs(target - current) < 0.0001f) {
-        return;
-    }
-
     auto slewed = slewEnabled() ? slew->getSlewed(APP->engine->getSampleTime())
                                 : slew->getTarget();
-
     auto scaled = rescaler->rescale(slewed);
     output->setVoltage(scaled);
 }
